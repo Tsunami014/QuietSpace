@@ -1,9 +1,14 @@
-\documentclass{article}
+% Font
+\usepackage[T1]{fontenc}
+\usepackage[sfdefault]{atkinson}
+
+% Custom commands
+\newcommand{\todo}[1][finish]{\Large{\hl{\textbf{TODO: #1}}}}
+% \todo or \todo[This]
+
+% Box around page
 \usepackage{pgf}
 \usepackage{pgfpages}
-\usepackage[T1]{fontenc}
-\usepackage[sfdefault]{AlegreyaSans}
-
 \pgfpagesdeclarelayout{boxed}
 {
   \edef\pgfpageoptionborder{0pt}
