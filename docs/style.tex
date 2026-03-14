@@ -3,8 +3,10 @@
 \usepackage[sfdefault]{atkinson}
 
 % Custom commands
-\newcommand{\todo}[1][finish]{\Large{\hl{\textbf{TODO: #1}}}}
-% \todo or \todo[This]
+\newcommand{\todo}[1][finish]{%
+  {\Large\hl{\textbf{TODO: #1}}}%
+}
+% Usage: \todo or \todo[This]
 
 % Box around page
 \usepackage{pgf}

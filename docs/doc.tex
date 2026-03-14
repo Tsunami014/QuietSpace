@@ -1,6 +1,13 @@
-\documentclass{article}
-\input{docs/style}
+\documentclass[14pt]{article}
+\input{style}
 \usepackage{soul}
+
+% Chart packages
+\usepackage{float}
+\usepackage{pgfgantt}
+\usepackage{xltabular}
+\input{dfd}
+\input{structc}
 
 \author{Max Worrall}
 \title{Quiet Space}
@@ -14,84 +21,317 @@
 
 
 \section{Identifying and Defining}
-\todo[This whole section]
 
 \subsection{Problem Statement}
 % Outline the problem or opportunity that the project addresses. Consider who is affected by this issue.
 % Explain why this problem or opportunity is significant.
 % Justify the development of a software solution as an appropriate response.
-People have busy, bustling lives. In the time between actions, when people are waiting for public transport, or for friends to arrive, or are just bored - many people play mobile games which are optimised for attention, including ads and trackers and may even increase stress. Everyone with a phone is affected by this, as phones come with an app store which incentavises downloading these apps. This is significant as increased stress in an already busy life can lead to negative consequences such as burnout. Developing a space designed to be consistently rewarding through random generation yet still relaxing can help solve this problem. Instead of spending free moments playing mobile games which increase stress and are unsecure, people can play a game which decreases stress while still being rewarding enough that they will play again next time.
+People have busy, bustling lives. In the time between actions, when people are waiting for public transport, or for friends to arrive, or are just bored - many people play mobile games which are optimised for attention, including ads and trackers and may even increase stress. Everyone with a phone is affected by this, as phones come with an app store which incentavises downloading these apps. This is significant as increased stress in an already busy life can lead to negative consequences such as burnout. Developing a space designed to be consistently rewarding yet still relaxing can help solve this problem. Instead of spending free moments playing mobile games which increase stress and are unsecure, people can play a game which decreases stress while still being rewarding enough that they will play again next time. This will lead to an increased mental health of users and a positive impact on society.
 
 \subsection{Project Purpose and Boundaries}
 % Outline what the project is trying to achieve.
-The project will try to create a space on the internet for people to come to relax. It will try to be randomly generated so the world is different each time, incentavising exploration and revisiting the app; while containing ambience to decrease stress. The game will also be reshapable, so users can spend their time doing whatever they desire in the game with no consequences, allowing for users to vent any negative emotions on a little world to hopefully make them feel a little better.
+The project will try to create a space on the internet for people to come to relax. It will try to be randomly generated so the world is different each time, incentavising exploration and revisiting the app; while containing ambience to decrease stress. The game will also be flexible, so users can spend their time doing whatever they desire in the game with no consequences; allowing for users to vent any negative emotions on a little world to make them feel better.
 
 \subsection{Stakeholder Requirements}
 % Identify stakeholders (client, users, teacher, peers). 
 % Describe their needs, expectations, and how these influenced the project direction.
-The stakeholders are the general public. Their needs are a way to fill in time or to relax that is not stress-inducing
+The stakeholders are the general public. Their needs are a way to fill in time or to relax that is not stress-inducing with no ads or hidden trackers.
 
 \subsection{Functional Requirements}
 % List and describe what the system must do.
 The system must do the following:
 \begin{itemize}
-    \item hi
+    \item Users must be able to walk around in a procedurally generated world
+    \item Users must be able to move around parts of the world
+    \item Users must be able to come back to previous worlds they were at
 \end{itemize}
 
 \subsection{Non-Functional Requirements}
 % List and describe system qualities such as: 
     % Performance, Usability, Security, Reliability
+The system must have the following qualities:
+\begin{itemize}
+    \item The website must be optimised for load times
+    \item The generated world must load within 2 seconds
+    \item Throughout the game the loading of the world should be quick enough to be invisible to the user
+    \item The system must log bugs in the background, ensuring the game continues running smoothly
+    \item The UI must be designed to work on various screens
+    \item The website must be playable in any modern browser
+    \item The game must store data in a secure location in the browser
+\end{itemize}
 
 \subsection{Constraints}
 % Identify limitations affecting the project, such as: 
     % Time, Technical knowledge, Hardware/software access
+The limitations on this project are:
+\begin{itemize}
+    \item I have not created HTML games before and have limited JS experience
+    \item Procedural generation is difficult and time-consuming to get accurate
+\end{itemize}
 
 \subsection{Requirements Analysis and Prioritisation}
 % Analyse the functional and non-functional requirements. In your analysis, consider:
     % - Which requirements were prioritised and why
     % - Trade-offs made due to constraints
     % - How requirements align with the identified problem or opportunity
+\todo
 
 
 \section{Research and Planning}
 
 \subsection{Development Methodology}
 % Describe the development approach used (e.g. Agile, Waterfall, WAgile).
-% Justify the suitability of this methodology. You could consider… 
+% Justify the suitability of this methodology. You could consider...
     % Project size and complexity, Time constraints, Feedback and iteration requirements
+The Waterfall approach was chosen for this app, as this app will be a game with significant complexity, so ensuring the purpose, style and gameplay choices of the app remain consistant is important. The main complexity of the app comes from the procedurally generated terrain, so ensuring that is satisfactory before continuing is critical.
 
 \subsection{Tools and Technologies}
 % Justify the selection of software applications, engines, developer tools, programming languages, IDEs, frameworks, libraries and/or hardware components.
 % Explain how these tools supported efficient and effective development.
+The project will use plain HTML and Javascript due to its simplicity and ease of use. It also allows the app to be statically hosted, and also decreases load time due to reduced dependency loading requirements. This also increases privacy as there is less reliance on other tools.
+That choice additionally benefits efficient development, as it makes debugging easy as browsers' built-in debuggers will use the exact code I have written instead of the compiled version of it. Lastly, plain HTML ensures compatability with all modern browsers.
 
 \subsection{Gantt Chart / Timeline}
 % Include a timeline showing key project milestones.
 % Explain how time was allocated to planning, development, testing, and evaluation.
 
+\begin{figure}[H]
+  \begingroup
+  % Some macro stuff to make it easier
+  \pgfmathsetmacro{\tone}{-6}
+  \pgfmathsetmacro{\hols}{\tone + 10}
+  \pgfmathsetmacro{\ttwo}{\hols + 2}
+  \newcommand{\baritem}[4]{%
+    \begingroup
+      \pgfmathtruncatemacro{\BARstart}{#3 + (#2)}
+      \pgfmathtruncatemacro{\BARend}{#4 + (#2)}
+      \ganttbar{#1}{\BARstart}{\BARend}
+    \endgroup
+  }
+
+  \begin{center}
+    \begin{ganttchart}[
+      y unit title=0.4cm,
+      y unit chart=0.5cm,
+      vgrid,
+      hgrid, 
+      title label anchor/.style={below=-1.6ex},
+      title height=1,
+      progress label text={},
+      bar height=0.7,
+      ]{1}{14}
+
+      % Title
+      \gantttitle{Term 1}{4}
+      \gantttitle{Hols}{2}
+      \gantttitle{Term 2}{8} \\
+      \gantttitlelist{7,...,10}{1}
+      \gantttitlelist{1,...,2}{1}
+      \gantttitlelist{1,...,8}{1}
+      \\
+
+      % Tasks
+      \ganttgroup{Design}{1}{5} \\
+      \baritem{Identifying and defining}{\tone}{7}{8} \\
+      \baritem{Research and Planning}{\tone}{7}{10} \\
+      \baritem{System Design}{\tone}{8}{11} \\
+      \ganttgroup{Producing}{5}{11} \\
+      \baritem{Drawing assets}{\hols}{1}{5} \\
+      \baritem{Core game loop}{\hols}{1}{2} \\
+      \baritem{Procedural world}{\hols}{1}{6} \\
+      \baritem{Peer feedback}{\ttwo}{2}{4} \\
+      \baritem{Final polish}{\ttwo}{4}{5} \\
+      \ganttgroup{Testing}{9}{11} \\
+      \baritem{Testing and debugging}{\ttwo}{3}{5} \\
+      \ganttgroup{Evaluation}{10}{13} \\
+      \baritem{Reflection}{\ttwo}{4}{7} \\
+      \ganttgroup{Finalisation}{5}{6}
+      \ganttgroup{Finalisation}{11}{14} \\
+      \baritem{Finalising Design}{\hols}{1}{2} \\
+      \baritem{Finalising the game}{\ttwo}{5}{7} \\
+      \baritem{Finalising everything}{\ttwo}{6}{8}
+    \end{ganttchart}
+  \end{center}
+  \caption{Gantt Chart}
+  \endgroup
+\end{figure}
+
+\todo[The explaining]
+
 \subsection{Communication Plan}
 % Explain how client or peer feedback was obtained and incorporated.
+Peer feedback was obtained through showcasing the project throughout the stages of development to ensure the plan always satisfied the core need before continuing.
+This additionally ensures minimal backtracking to stick with the waterfall approach.
 
 \subsection{Resource Allocation Justification}
 % Justify the resource allocation for the project, including:
     % Time, Software and hardware tools, Human input (client, peers, teacher feedback)
+The time was split up such that the design would take up until about the first week of the holidays, such that I would have time to implement the app in time, but also in the holidays I can polish off the design as the last few weeks of term 1 are all exams. The core game loop won't take long to implement as there aren't any complex mechanics except the procedural world which I have assigned a long time for, in addition to drawing assets. These end in about week 4 as I will need to increase my study in other subjects, leaving less time. And leaving enough time before the task is due
 
 
+\pagebreak % To make the diagrams fit on the page better
 \section{System Design}
 
-\subsection{Context Diagram}
-
 \subsection{Data Flow Diagrams}
-\subsubsection{DFD level 0}
-\subsubsection{DFD level 1}
+\subsubsection{Level 0 (Context diagram)}
+\begin{figure}[H]
+  \begin{center}
+  \begin{dfd}
+
+    % All the nodes in a matrix layout
+    \matrix{
+      \node[xtern] (playr) {Player}; \&
+      \node[process] (main) {Game\\system}; \&
+      \node[datastore] (worlddat) {Database};
+      \\
+    };
+
+    % The arrows & labels between the nodes
+    \draw[to] (playr) to[bend left=25]
+        node[midway,above] {Interaction/\\Movement}
+      (main);
+    \draw[to] (main) to[bend left=25]
+        node[midway,below] {Display Screen}
+      (playr);
+    \draw[to] (main) to[bend left=25]
+        node[midway,above] {Store world/\\user data}
+      (worlddat);
+    \draw[to] (worlddat) to[bend left=25]
+        node[midway,below] {Retrieve world/\\user data}
+      (main);
+  \end{dfd}
+  \end{center}
+\end{figure}
+
+\subsubsection{Level 1}
+\begin{figure}[H]
+  \begin{center}
+  \begin{dfd}
+
+    % All the nodes in a matrix layout
+    \matrix{
+           \node[xtern] (playr) {Player};
+        \&
+        \&
+      \\
+           \node[process] (displ) {Display};
+        \& \node[process] (interac) {Interaction/\\movement};
+        \&
+      \\
+
+        \& \node[process] (generate) {Generate\\terrain};
+        \& \node[datastore] (worlddat) {World data};
+      \\
+    };
+
+    % The arrows & labels between the nodes
+    \draw[to] (displ) --
+        node[midway,left,align=right] {Display\\screen}
+      (playr);
+    \draw[to] (generate) --
+        node[midway,left,align=right] {Fetch world\hspace*{1em}\\contents}
+      (displ);
+    \draw[to] (worlddat) --
+        node[midway,above] {Get world}
+        node[midway,below] {data}
+      (generate);
+    \draw[to] (interac) to[bend left=25]
+        node[midway,right,align=left] {Update world\\\hspace*{1em}data}
+      (worlddat);
+    \draw[to] (playr) to[bend right=10]
+        node[midway,right,align=left] {Move/\\\hspace*{1em}interact}
+      (interac);
+    \draw[to] (interac) --
+        node[midway,above] {Update}
+        node[midway,below] {screen}
+      (displ);
+  \end{dfd}
+  \end{center}
+\end{figure}
 
 \subsection{Structure Chart}
+\begin{figure}[H]
+  \begin{center}
+  \begin{structc}
+
+    \node[module] (main) at (0, 0) {Game system};
+
+    \node[module] (startup) at (-3, -4) {Startup};
+        \draw[to] (main.south) --
+          (startup.north);
+    \node[module] (gameplay) at (3, -4) {Gameplay};
+        \draw[to] (main.south) --
+          (gameplay.north);
+    \draw[to,draw=none] (main.south) --
+        node[pos=0,diamondmark] {}
+        node[pos=1,repeat] {\dfdLoop[1.5]{Hello}}
+      ($(main.south) + (0,-1.2)$);
+
+    \node[module] (choosewrld) at (-3, -7) {Choose world};
+        \draw[to] (startup) --
+            node[pos=0.4,data] {\dfdData{Dat}{1}[90][west]}
+          (choosewrld);
+
+    \node[module] (load) at (1.5, -8) {Load world};
+        \draw[to] (gameplay) --
+          (load);
+    \node[module] (play) at (4.5, -8) {Play in world};
+        \draw[to] (gameplay) --
+            node[pos=0.0,diamondmark] {}
+            node[pos=0.4,data] {\dfdData[black]{Dat2}{-1}}
+            node[pos=0.7,data] {\dfdData{Dat}{1}}
+          (play);
+
+  \end{structc}
+  \end{center}
+\end{figure}
 
 \subsection{IPO Chart}
+\begin{xltabular}{\textwidth}{|X|X|X|} 
+  \hline
+  Inputs & Processes & Outputs \\
+  \hline\hline
+  \endhead
+  \multicolumn{2}{c}{\emph{Continued on next page}}
+  \endfoot
+  \hline
+  \endlastfoot
+
+  User movement & Buffer new terrain at edges of screen & New generated terrain in a buffer outside screen, so when user moves more it becomes visible \\ \hline
+  2 & 7 & 78 \\ \hline
+  3 & 545 & 778 \\ \hline
+  4 & 545 & 18744 \\ \hline
+  5 & 88 & 788 \\ \hline
+\end{xltabular}
 
 \subsection{Data Dictionary}
+\begin{xltabular}{\textwidth}{|X|X|X|X|X|X|} 
+  \hline
+  Variable & Datatype & Description & Example & Validation \\
+  \hline\hline
+  \endhead
+  \hline
+  \multicolumn{5}{c}{\emph{Continued on next page}}
+  \endfoot
+  \hline
+  \endlastfoot
+  Username & String & The name of the user, used for dialog & "Madeline" & Can only contain printable characters, and no newlines \\ \hline
+  User image & Enum value & The image to use for the player, chosen out of a couple hand-made preset options & Default & Must be a valid enum value \\ \hline
+  Worlds data & List[World data (see below)] & The world data contents for each world the user has avaliable & - & Must follow the valid world data format (below) \\ \hline
+  \multicolumn{5}{c}{} \\
+  \multicolumn{5}{c}{\large{\textbf{World data}}} \\ \hline
+  Variable & Datatype & Description & Example & Validation \\ \hline \hline
+  Seed & int & The seed for world generation & 1234567890 & No validation, any integer will work \\ \hline
+  Changes & List[Changes (see below)] & The changes the user has made to the world & - & Must follow the valid change layout data format (below) \\ \hline
+  \multicolumn{5}{c}{} \\
+  \multicolumn{5}{c}{\large{\textbf{Changes data}}} \\ \hline
+  Pos & Tuple[int, int] & The position of the change & (10, 32) & No validation, any point will work \\ \hline
+  Item & Enum value & The decoration that replaces the one that would otherwise exist on that tile & Air & Must be a valid enum value \\ \hline
+\end{xltabular}
 
 \subsection{UML Class Diagram}
 % If OOP
+A UML Class Diagram is not required in this case, as the code will not use OOP or classes.
 
 
 \section{Producing and Implementing}

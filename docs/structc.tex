@@ -1,0 +1,42 @@
+% A custom structure chart environment
+\usepackage{xparse}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+
+% Define a wrapper for tikz that has custom styles for structure charts
+\newenvironment{structc}
+{
+\begin{tikzpicture}[
+  font=\sffamily,
+  every matrix/.style={ampersand replacement=\&,column sep=2cm,row sep=2cm},
+  module/.style={draw,thick,inner sep=.3cm},
+  diamondmark/.style={draw,diamond,fill=white!10,minimum size=5mm,sloped,transform shape,xshift=2.5mm},
+  repeat/.style={sloped,transform shape,anchor=center},
+  data/.style={sloped,transform shape,yshift=2.5mm},
+  to/.style={-,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
+  every node/.style={align=center}
+]
+}
+{
+\end{tikzpicture}
+}
+
+\NewDocumentCommand{\dfdData}{O{white} m m O{0} O{south}}{
+  \begin{tikzpicture}[baseline]
+    \node[circle,draw,fill=#1,minimum size=3mm] (c) {};
+
+    \pgfmathparse{#3>=0 ? "east" : "west"}
+    \edef\anchor{\pgfmathresult}
+    \draw[->,>=stealth',line width=0.5pt] (c.\anchor) -- ++(#3*2mm,0);
+
+    \node[above=0.2mm of c,anchor=#5,rotate=#4,overlay] {\footnotesize #2};
+  \end{tikzpicture}
+}
+
+\newcommand{\dfdLoop}[2][0.3]{
+  \begin{tikzpicture}[baseline]
+    \pgfmathsetmacro{\xscale}{-(1/#1)*0.5}
+    \draw[->,>=stealth',thick,xscale=\xscale] (0,0) arc (30:330:#1);
+    \node[anchor=east,align=center,rotate=90,overlay,yshift=-1mm] at (#1*-2*\xscale,\xscale) {\footnotesize #2};
+  \end{tikzpicture}
+}
