@@ -2,14 +2,22 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows}
 
+% Defines a max size for process bubbles
+\newlength{\procsze}
+\newcommand{\sizeprocess}[1]{
+  \setlength{\procsze}{#1}
+}
+
 % Define a wrapper for tikz that has custom styles for data flow diagrams
 \newenvironment{dfd}
 {
 \begin{tikzpicture}[
+  x=2cm, y=2cm,
   font=\sffamily,
   every matrix/.style={ampersand replacement=\&,column sep=2cm,row sep=2cm},
-  xtern/.style={draw,thick,fill=yellow!20,inner sep=.3cm},
-  process/.style={draw,thick,circle,fill=blue!20},
+  xtern/.style={draw,thick,inner sep=.3cm},
+  process/.style={draw,thick,circle},
+  sized/.style={minimum size=\procsze},
   datastore/.style={draw,very thick,shape=datastore,inner sep=.3cm},
   dots/.style={gray,scale=2},
   to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},

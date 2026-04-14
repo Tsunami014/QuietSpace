@@ -21,6 +21,7 @@
 
 
 \section{Identifying and Defining}
+\todo[Finalise everything]
 
 \subsection{Problem Statement}
 % Outline the problem or opportunity that the project addresses. Consider who is affected by this issue.
@@ -41,9 +42,15 @@ The stakeholders are the general public. Their needs are a way to fill in time o
 % List and describe what the system must do.
 The system must do the following:
 \begin{itemize}
-    \item Users must be able to walk around in a procedurally generated world
-    \item Users must be able to move around parts of the world
-    \item Users must be able to come back to previous worlds they were at
+  \item Users must be able to make a new world, load an external world or load a world they have played before
+  \begin{itemize}
+    \item Users must be able to export and share their worlds in a secure and private way
+  \end{itemize}
+  \item Users must be able to walk around in a procedurally generated world
+  \item Users must be able to add or remove blocks from the world
+  \item Users must be able to guided on how to interact with the game
+  \item The game must provide a calm environment
+  \item The game must be able to save the world the user is in
 \end{itemize}
 
 \subsection{Non-Functional Requirements}
@@ -51,13 +58,17 @@ The system must do the following:
     % Performance, Usability, Security, Reliability
 The system must have the following qualities:
 \begin{itemize}
-    \item The website must be optimised for load times
-    \item The generated world must load within 2 seconds
+  \item The game must be optimised for load times
+  \begin{itemize}
+    \item Worlds must load within 2 seconds
+    \item The game must start up within 2 seconds
     \item Throughout the game the loading of the world should be quick enough to be invisible to the user
-    \item The system must log bugs in the background, ensuring the game continues running smoothly
-    \item The UI must be designed to work on various screens
-    \item The website must be playable in any modern browser
-    \item The game must store data in a secure location in the browser
+  \end{itemize}
+  \item The system must be avaliable 99.9\% of the time, ensuring avaliability
+  \item The system must run reliably, logging bugs in the background to not interrupt the gameplay if possible
+  \item The UI must be designed to work on various sized screens
+  \item The website must be playable in any modern browser
+  \item The game must store data in a secure location, protected from other users
 \end{itemize}
 
 \subsection{Constraints}
@@ -67,6 +78,7 @@ The limitations on this project are:
 \begin{itemize}
     \item I have not created HTML games before and have limited JS experience
     \item Procedural generation is difficult and time-consuming to get accurate
+    \item I will need to curate a set of assets to ensure the game looks nice
 \end{itemize}
 
 \subsection{Requirements Analysis and Prioritisation}
@@ -78,6 +90,7 @@ The limitations on this project are:
 
 
 \section{Research and Planning}
+\todo[Finalise everything]
 
 \subsection{Development Methodology}
 % Describe the development approach used (e.g. Agile, Waterfall, WAgile).
@@ -169,8 +182,8 @@ This additionally ensures minimal backtracking to stick with the waterfall appro
 The time was split up such that the design would take up until about the first week of the holidays, such that I would have time to implement the app in time, but also in the holidays I can polish off the design as the last few weeks of term 1 are all exams. The core game loop won't take long to implement as there aren't any complex mechanics except the procedural world which I have assigned a long time for, in addition to drawing assets. These end in about week 4 as I will need to increase my study in other subjects, leaving less time. And leaving enough time before the task is due
 
 
-\pagebreak % To make the diagrams fit on the page better
 \section{System Design}
+\todo
 
 \subsection{Data Flow Diagrams}
 \subsubsection{Level 0 (Context diagram)}
@@ -208,42 +221,41 @@ The time was split up such that the design would take up until about the first w
   \begin{center}
   \begin{dfd}
 
-    % All the nodes in a matrix layout
+    \sizeprocess{6em}
     \matrix{
-           \node[xtern] (playr) {Player};
-        \&
-        \&
-      \\
-           \node[process] (displ) {Display};
-        \& \node[process] (interac) {Interaction/\\movement};
-        \&
-      \\
-
-        \& \node[process] (generate) {Generate\\terrain};
-        \& \node[datastore] (worlddat) {World data};
-      \\
+         \node[xtern] (playr) {Player};
+      \&
+    \\
+         \node[process,sized] (displ) {Render\\display};
+      \& \node[process,sized] (interac) {Interaction\\logic};
+    \\
+         \node[process,sized] (generate) {Generate\\terrain};
+      \& \node[datastore] (worlddat) {World data};
+    \\
     };
 
     % The arrows & labels between the nodes
-    \draw[to] (displ) --
-        node[midway,left,align=right] {Display\\screen}
+    \draw[to] (displ) to[bend right=25]
+        node[midway,right,align=left] {Display\\screen}
       (playr);
     \draw[to] (generate) --
-        node[midway,left,align=right] {Fetch world\hspace*{1em}\\contents}
+        node[midway,left,align=right] {New\\terrain}
       (displ);
     \draw[to] (worlddat) --
-        node[midway,above] {Get world}
-        node[midway,below] {data}
-      (generate);
-    \draw[to] (interac) to[bend left=25]
-        node[midway,right,align=left] {Update world\\\hspace*{1em}data}
+        node[midway,align=left,xshift=0.6em,yshift=1em] {Get world\\\hspace*{1.5em}data}
+      (displ);
+    \draw[to] (interac) to[bend left=5]
+        node[midway,right,align=left] {Update world\\data\\}
       (worlddat);
-    \draw[to] (playr) to[bend right=10]
-        node[midway,right,align=left] {Move/\\\hspace*{1em}interact}
+    \draw[to] (playr) to[bend left=25]
+        node[midway,right,align=left,yshift=0.5em] {Interact}
       (interac);
     \draw[to] (interac) --
-        node[midway,above] {Update}
+        node[midway,above] {Refresh}
         node[midway,below] {screen}
+      (displ);
+    \draw[to] (playr) to[bend right=25]
+        node[midway,left,align=right] {Refresh\\screen}
       (displ);
   \end{dfd}
   \end{center}
@@ -256,30 +268,30 @@ The time was split up such that the design would take up until about the first w
 
     \node[module] (main) at (0, 0) {Game system};
 
-    \node[module] (startup) at (-3, -4) {Startup};
+    \node[module] (startup) at (-1, -1) {Startup};
         \draw[to] (main.south) --
           (startup.north);
-    \node[module] (gameplay) at (3, -4) {Gameplay};
+    \node[module] (gameplay) at (1, -1) {Gameplay};
         \draw[to] (main.south) --
           (gameplay.north);
     \draw[to,draw=none] (main.south) --
         node[pos=0,diamondmark] {}
-        node[pos=1,repeat] {\dfdLoop[1.5]{Hello}}
-      ($(main.south) + (0,-1.2)$);
+        node[pos=1,repeat] {\dfdLoop[0.4]{Until user quits}}
+      ($(main.south) + (0,-0.35)$);
 
-    \node[module] (choosewrld) at (-3, -7) {Choose world};
+    \node[module] (choosewrld) at (-1.5, -2) {Choose world};
         \draw[to] (startup) --
-            node[pos=0.4,data] {\dfdData{Dat}{1}[90][west]}
+            node[pos=0.4,data] {\dfdData{Dat}{1}[-90][east]}
           (choosewrld);
 
-    \node[module] (load) at (1.5, -8) {Load world};
+    \node[module] (load) at (0.5, -2.25) {Load world};
         \draw[to] (gameplay) --
           (load);
-    \node[module] (play) at (4.5, -8) {Play in world};
+    \node[module] (play) at (2, -2.25) {Play in world};
         \draw[to] (gameplay) --
             node[pos=0.0,diamondmark] {}
-            node[pos=0.4,data] {\dfdData[black]{Dat2}{-1}}
-            node[pos=0.7,data] {\dfdData{Dat}{1}}
+            node[pos=0.35,data] {\dfdData[black]{Dat2}{-1}}
+            node[pos=0.8,data] {\dfdData{Dat}{1}}
           (play);
 
   \end{structc}

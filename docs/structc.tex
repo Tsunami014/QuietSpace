@@ -7,6 +7,7 @@
 \newenvironment{structc}
 {
 \begin{tikzpicture}[
+  x=2cm, y=3cm,
   font=\sffamily,
   every matrix/.style={ampersand replacement=\&,column sep=2cm,row sep=2cm},
   module/.style={draw,thick,inner sep=.3cm},
@@ -35,8 +36,8 @@
 
 \newcommand{\dfdLoop}[2][0.3]{
   \begin{tikzpicture}[baseline]
-    \pgfmathsetmacro{\xscale}{-(1/#1)*0.5}
-    \draw[->,>=stealth',thick,xscale=\xscale] (0,0) arc (30:330:#1);
-    \node[anchor=east,align=center,rotate=90,overlay,yshift=-1mm] at (#1*-2*\xscale,\xscale) {\footnotesize #2};
+    \pgfmathsetmacro{\xscale}{-(1/#1)*0.3}
+    \draw[->,>=stealth',thick,xscale=\xscale] (0,0) arc (30:330:#1)
+      node[midway,sloped,above,overlay,xscale=-1,yscale=-1/\xscale,yshift=-3ex]{\footnotesize #2};
   \end{tikzpicture}
 }
