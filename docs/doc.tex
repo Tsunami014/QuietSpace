@@ -273,26 +273,30 @@ The time was split up such that the design would take up until about the first w
           (startup.north);
     \node[module] (gameplay) at (1, -1) {Gameplay};
         \draw[to] (main.south) --
+            node[pos=0.8,data={World\\ID}] {\dfdData}
           (gameplay.north);
     \draw[to,draw=none] (main.south) --
-        node[pos=0,diamondmark] {}
         node[pos=1,repeat] {\dfdLoop[0.4]{Until user quits}}
       ($(main.south) + (0,-0.35)$);
 
-    \node[module] (choosewrld) at (-1.5, -2) {Choose world};
-        \draw[to] (startup) --
-            node[pos=0.4,data] {\dfdData{Dat}{1}[-90][east]}
-          (choosewrld);
+    \node[module] (load) at (1, -2) {Load world};
+        \draw[to] (gameplay.south) -- (load);
+    \node[module] (play) at (2.5, -2) {Play world};
+        \draw[to] (gameplay.south) -- (play);
+    \node[module] (save) at (4, -2) {Save world};
+        \draw[to] (gameplay.south) -- (save);
 
-    \node[module] (load) at (0.5, -2.25) {Load world};
-        \draw[to] (gameplay) --
-          (load);
-    \node[module] (play) at (2, -2.25) {Play in world};
-        \draw[to] (gameplay) --
-            node[pos=0.0,diamondmark] {}
-            node[pos=0.35,data] {\dfdData[black]{Dat2}{-1}}
-            node[pos=0.8,data] {\dfdData{Dat}{1}}
-          (play);
+    \node[module] (xprt) at (-0.5, -2) {Export world};
+        \draw[to] (startup.south) --
+            node[pos=0.6,data={World\\ID}] {\dfdData}
+          (xprt.north);
+    \node[module] (choose) at (-2, -2) {Choose world\\to play};
+        \draw[to] (startup.south) --
+            node[pos=0.6,data={World\\ID}] {\dfdData[black]}
+         (choose.north);
+    \draw[to,draw=none] (startup.south) --
+        node[pos=0,diamondflip] {}
+      ($(startup.south) + (-0.2,-1)$);
 
   \end{structc}
   \end{center}
