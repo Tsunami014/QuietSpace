@@ -7,16 +7,18 @@
 \newenvironment{structc}
 {
 \begin{tikzpicture}[
-  x=2cm, y=3cm,
+  x=2cm, y=3.4cm,
   font=\sffamily,
-  every matrix/.style={ampersand replacement=\&,column sep=2cm,row sep=2cm},
+  every matrix/.style={ampersand replacement=\&,column sep=2cm,row sep=3cm},
   module/.style={draw,thick,inner sep=.3cm},
   diamondmark/.style={draw,diamond,fill=white!10,minimum size=5mm,sloped,transform shape,xshift=2.5mm},
-  diamondflip/.style={diamondmark,xshift=-5mm},
+  diamondmark flip/.style={diamondmark,xshift=-5mm},
   repeat/.style={sloped,transform shape,anchor=center},
   data custom/.style={sloped,yshift=3mm,label={##1}},
+  data flip custom/.style={sloped,yshift=-3mm,label={##1}},
   data/.style={data custom={[data label]90:{##1}}},
-  data label/.style={transform shape=false,font=\sffamily\footnotesize,align=center,label distance=-3mm,yshift=-2mm},
+  data flip/.style={data flip custom={[data label]-90:{##1}}},
+  data label/.style={transform shape=false,font=\sffamily\footnotesize,anchor=center,align=center,label distance=1.5mm},
   to/.style={-,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
   every node/.style={align=center}
 ]
@@ -35,10 +37,10 @@
   \end{tikzpicture}
 }
 
-\newcommand{\dfdLoop}[2][0.3]{
+\NewDocumentCommand{\dfdLoop}{O{0.3} O{1} m}{
   \begin{tikzpicture}[baseline]
     \pgfmathsetmacro{\xscale}{-(1/#1)*0.3}
-    \draw[->,>=stealth',thick,xscale=\xscale] (0,0) arc (30:330:#1)
-      node[midway,sloped,above,overlay,xscale=-1,yscale=-1/\xscale,yshift=-3ex]{\footnotesize #2};
+    \draw[->,>=stealth',thick,xscale=#2*\xscale] (0,0) arc (30:330:#1)
+      node[midway,sloped,above,overlay,xscale=-1,yscale=-1/(#2*\xscale),yshift=-3ex]{\footnotesize #3};
   \end{tikzpicture}
 }
