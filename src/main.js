@@ -1,6 +1,7 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
+var tiles;
 
 const pbhei = 40
 const pbgap = 4
@@ -32,9 +33,9 @@ async function load() {
             drawLoading((++i)/max)
         }
     }
-    file = await import("/src/tiles.js")
+    tiles = await import("/src/tiles.js")
     nxt()
-    await file.load(nxt)
+    await tiles.load(nxt)
 
     if (i < max-1) {
         console.warn("Went under maximum by "+(max-i))
@@ -44,11 +45,30 @@ async function load() {
 
 var x = 0
 var y = 0
+const units = 8 // How many units in one block (one block is 2x1 'blocks')
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = "black";
-    ctx.fillRect(x, y, 10, 10)
+    var cols = Math.floor((canvas.width/canvas.height + 1) * 4)
+    if (cols > 12) {
+        cols = 12
+    }
+    const blk = Math.ceil(canvas.width/cols) // width
+    const hblk = Math.floor(blk/2) // height or half width
+    const qblk = Math.floor(blk/4) // half height (quarter width)
+    const rows = Math.floor(canvas.height/hblk)*2
+
+    for (let i = 0; i < rows; i++) {
+        const offs = i%2 == 0 ? 0 : 0.5
+        for (let j = 0; j < cols; j++) {
+            const source = tiles.getTile("road")
+            if (source) {
+                const xpos = blk*(j-offs)
+                const ypos = qblk*i
+                ctx.drawImage(...source, xpos, ypos, blk+2, hblk+2)
+            }
+        }
+    }
 }
 
 // Keep keys in a dict
