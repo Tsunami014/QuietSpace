@@ -34,15 +34,60 @@ async function load() {
     }
     file = await import("/src/tiles.js")
     nxt()
-    file.load(nxt)
+    await file.load(nxt)
+
+    if (i < max-1) {
+        console.warn("Went under maximum by "+(max-i))
+    }
+}
+
+
+var x = 0
+var y = 0
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = "black";
+    ctx.fillRect(x, y, 10, 10)
+}
+
+// Keep keys in a dict
+const keys = {}
+window.addEventListener('keydown', (e) => keys[e.key] = true)
+window.addEventListener('keyup', (e) => keys[e.key] = false)
+
+function tick() {
+    var oldx = x
+    var oldy = y
+    if (keys['ArrowUp']) {
+        y -= 2
+    }
+    if (keys['ArrowDown']) {
+        y += 2
+    }
+    if (keys['ArrowLeft']) {
+        x -= 1
+    }
+    if (keys['ArrowRight']) {
+        x += 1
+    }
+    if (oldx != x || oldy != y) {
+        draw()
+    }
 }
 
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    drawLoading(0);
-    load()
 }
 window.addEventListener('resize', resizeCanvas);
-resizeCanvas(); // Initial draw
+
+async function init() {
+    resizeCanvas();
+    drawLoading(0);
+    await load()
+    draw()
+    setInterval(tick, 17)
+}
+init()
