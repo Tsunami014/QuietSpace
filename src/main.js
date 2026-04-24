@@ -58,13 +58,16 @@ function draw() {
     const qblk = Math.floor(blk/4) // half height (quarter width)
     const rows = Math.floor(canvas.height/hblk)*2
 
+    const xoffs = (x%units)/units * blk
+    const yoffs = (y%units)/units * hblk
+
     for (let i = 0; i < rows; i++) {
         const offs = i%2 == 0 ? 0 : 0.5
         for (let j = 0; j < cols; j++) {
             const source = tiles.getTile("road")
             if (source) {
-                const xpos = blk*(j-offs)
-                const ypos = qblk*i
+                const xpos = blk*(j-offs) - xoffs
+                const ypos = qblk*i - yoffs
                 ctx.drawImage(...source, xpos, ypos, blk+2, hblk+2)
             }
         }
@@ -76,20 +79,21 @@ const keys = {}
 window.addEventListener('keydown', (e) => keys[e.key] = true)
 window.addEventListener('keyup', (e) => keys[e.key] = false)
 
+const speed = 0.5
 function tick() {
     var oldx = x
     var oldy = y
     if (keys['ArrowUp']) {
-        y -= 2
+        y -= speed*2
     }
     if (keys['ArrowDown']) {
-        y += 2
+        y += speed*2
     }
     if (keys['ArrowLeft']) {
-        x -= 1
+        x -= speed
     }
     if (keys['ArrowRight']) {
-        x += 1
+        x += speed
     }
     if (oldx != x || oldy != y) {
         draw()
