@@ -2,6 +2,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 var tiles;
+var gen;
 
 const pbhei = 40
 const pbgap = 4
@@ -24,7 +25,7 @@ function drawLoading(progress) {
 }
 
 async function load() {
-    const max = 6;
+    const max = 5;
     var i = 0
     function nxt() {
         if (i >= max) {
@@ -36,6 +37,8 @@ async function load() {
     tiles = await import("/src/tiles.js")
     nxt()
     await tiles.load(nxt)
+    gen = await import("/src/gen.js")
+    nxt()
 
     if (i < max-1) {
         console.warn("Went under maximum by "+(max-i))
@@ -58,17 +61,32 @@ function draw() {
     const qblk = Math.floor(blk/4) // half height (quarter width)
     const rows = Math.floor(canvas.height/hblk)*2
 
-    const xoffs = (x%units)/units * blk
-    const yoffs = (y%units)/units * hblk
+    var txoffs = Math.floor(Math.abs(x)/units)
+    let xoffs = Math.abs(x/units*blk)%blk
+    if (x < 0) {
+        xoffs = -xoffs
+    } else {
+        txoffs = -txoffs
+    }
+    txoffs = Math.round(txoffs + cols/2)
+    var tyoffs = Math.floor(Math.abs(y)/units)*2
+    let yoffs = Math.abs(y/units*hblk)%hblk
+    if (y < 0) {
+        yoffs = -yoffs
+    } else {
+        tyoffs = -tyoffs
+    }
+    tyoffs = Math.round(tyoffs+rows/2)
 
-    for (let i = 0; i < rows; i++) {
-        const offs = i%2 == 0 ? 0 : 0.5
-        for (let j = 0; j < cols; j++) {
-            const source = tiles.getTile("road")
+    for (let i = -3; i < rows+3; i++) {
+        const offs = (i+tyoffs)%2 == 0 ? 0 : 0.5
+        for (let j = -2; j < cols+2; j++) {
+            const source = tiles.getTile(gen.getTile(j-txoffs, i-tyoffs))
             if (source) {
-                const xpos = blk*(j-offs) - xoffs
-                const ypos = qblk*i - yoffs
-                ctx.drawImage(...source, xpos, ypos, blk+2, hblk+2)
+                ctx.drawImage(...source,
+                    blk*(j-offs)-hblk - xoffs - 1,
+                    qblk*i - yoffs - 1,
+                    blk+2, hblk+2)
             }
         }
     }
