@@ -1,12 +1,29 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
+var x = 0
+var y = 0
+const units = 8 // How many units in one block (one block is 2x1 'blocks')
+
+function getSizes() {
+    var cols = Math.floor((canvas.width/canvas.height + 1) * 4)
+    if (cols > 12) {
+        cols = 12
+    }
+    const blk = Math.ceil(canvas.width/cols) // width
+    const hblk = Math.floor(blk/2) // height or half width
+    const rows = Math.floor(canvas.height/hblk)*2
+    return [cols, rows, blk, hblk]
+}
+
+
 var tiles;
 var gen;
 
 const pbhei = 40
 const pbgap = 4
 function drawLoading(progress) {
+    resizeCanvas();
     const pbx = canvas.width / 6
     const pby = (canvas.height - pbhei) / 2;
     const pbwid = canvas.width - pbx*2;
@@ -35,6 +52,7 @@ async function load() {
         }
     }
     tiles = await import("/src/tiles.js")
+    resizeCanvas(true)
     nxt()
     await tiles.load(nxt)
     gen = await import("/src/gen.js")
@@ -46,20 +64,12 @@ async function load() {
 }
 
 
-var x = 0
-var y = 0
-const units = 8 // How many units in one block (one block is 2x1 'blocks')
-
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    var cols = Math.floor((canvas.width/canvas.height + 1) * 4)
-    if (cols > 12) {
-        cols = 12
-    }
-    const blk = Math.ceil(canvas.width/cols) // width
-    const hblk = Math.floor(blk/2) // height or half width
+    ctx.imageSmoothingEnabled = false;
+
+    const [cols, rows, blk, hblk] = getSizes()
     const qblk = Math.floor(blk/4) // half height (quarter width)
-    const rows = Math.floor(canvas.height/hblk)*2
 
     var txoffs = Math.floor(Math.abs(x)/units)
     let xoffs = Math.abs(x/units*blk)%blk
@@ -78,24 +88,16 @@ function draw() {
     }
     tyoffs = Math.round(tyoffs+rows/2)
 
-    for (let i = -3; i < rows+3; i++) {
+    for (let i = -3; i < rows+6; i++) {
         const offs = (i+tyoffs)%2 == 0 ? 0 : 0.5
         for (let j = -2; j < cols+2; j++) {
-            const tpos = [j-txoffs, i-tyoffs]
-            const [source, flip] = tiles.getTile(gen.getTile(...tpos), gen.hash(-1, ...tpos))
+            const tx = j-txoffs
+            const ty = i-tyoffs
+            const source = tiles.getTile(gen.getTile(tx, ty), gen.hash(-1, tx, ty))
             if (source) {
-                let x = blk*(j-offs)-hblk - xoffs - 1
-                let y = qblk*i - yoffs - 1
-                if (flip) {
-                    ctx.save();
-                    ctx.scale(...flip);
-                    if (flip[0] == -1) x = -x - (blk+2)
-                    if (flip[1] == -1) y = -y - (hblk+2)
-                }
-                ctx.drawImage(...source, x, y, blk+2, hblk+2)
-                if (flip) {
-                    ctx.restore();
-                }
+                ctx.drawImage(source,
+                    blk*(j-offs)-hblk - xoffs, qblk*i - yoffs,
+                    blk, hblk)
             }
         }
     }
@@ -109,6 +111,14 @@ window.addEventListener('keyup', (e) => keys[e.key] = false)
 const speed = 0.5
 const speeddiag = Math.sqrt(5)*speed/2
 function tick() {
+    if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+        resizeCanvas(true)
+        if (!tiles.pixel) {
+            tiles.reloadAllTiles().then(()=>{ draw();tick() })
+            return
+        }
+        draw()
+    }
     var dx = 0
     var dy = 0
     if (keys['ArrowUp'])    dy = -1
@@ -121,20 +131,24 @@ function tick() {
         y += (diag? speeddiag:speed*2)*dy
         draw()
     }
+    requestAnimationFrame(tick)
 }
 
 
-function resizeCanvas() {
+function resizeCanvas(setTles) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    if (setTles) {
+        const [cols, rows, blk, hblk] = getSizes()
+        tiles.setTleSzes(blk, hblk)
+    }
 }
-window.addEventListener('resize', resizeCanvas);
 
 async function init() {
     resizeCanvas();
     drawLoading(0);
     await load()
     draw()
-    setInterval(tick, 17)
+    tick()
 }
 init()

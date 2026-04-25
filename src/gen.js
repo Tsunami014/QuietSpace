@@ -22,8 +22,8 @@ var _cache = []
 const mxCacheLen = 10
 function cachehash(...args) {
     for (let i = _cache.length-1; i >= 0; i--) {
-        const [val, args] = _cache[i]
-        if (val === args) return resp;
+        const [args2, val] = _cache[i]
+        if (args === args2) return val;
     }
     if (_cache.length+1 > mxCacheLen) {
         _cache = _cache.slice(1)

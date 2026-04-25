@@ -1,6 +1,36 @@
 const files = new Map()
 const tiles = new Map()
 
+export const pixel = false
+
+var tleWid;
+var tleHei;
+export function setTleSzes(wid, hei) {
+    tleWid = wid*2
+    tleHei = hei*2
+}
+async function makeTile(sheet, tle, flipH=false, flipV=false) {
+    var w; var h;
+    if (pixel) {
+        w = sheet.w
+        h = sheet.h
+    } else {
+        w = tleWid * (sheet.w/32)
+        h = tleHei * (sheet.h/16)
+    }
+
+    const c = new OffscreenCanvas(w, h);
+    const ctx = c.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    ctx.save();
+    ctx.translate(flipH ? w : 0, flipV ? h : 0);
+    ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
+    ctx.drawImage(sheet.img, tle[0]*sheet.w, tle[1]*sheet.h, sheet.w, sheet.h, 0, 0, w, h);
+    ctx.restore();
+
+    return await createImageBitmap(c);
+}
+
 
 // S on a diagonal = SW
 const dirs = ["E", "N", "S", "W"]
@@ -9,38 +39,37 @@ const nxtdirs = {
     "S": {nxt: "W", y: true}, "W": {nxt: "N", x: true}
 }
 const straightflips = {"NS": "EW", "EW": "NS"}
-function loadTileType(t) {
+async function loadTileType(sheet, realnam, t) {
     if (t.type == "rand") {
-        return [{type: "rand", opts: t.options}]
+        tiles.set(realnam, await Promise.all(
+            t.options.map(opt => makeTile(sheet, opt))
+        ))
     } else if (t.type == "edge") {
+        tiles.set(realnam, await makeTile(sheet, t.fill))
         // TODO: Finish
-        return [
-            {tile: t.fill}
-        ]
     } else if (t.type == "line") {
-        const out = []
         var tle = t["1"].slice(1)
         var tnam = t["1"][0]
-        var flip = {h: false, v: false}
-        function pushTile() {
-            out.push({tile: tle, namPrefix: tnam,
-                flipH: flip.h, flipV: flip.v})
+        var flipH = false; var flipV = false;
+        async function pushTile() {
+            tiles.set(realnam+"_"+tnam, await makeTile(sheet, tle, flipH, flipV))
         }
         for (let i = 0; i < 4; i++) {
-            pushTile()
+            await pushTile()
             let nxt = nxtdirs[tnam]
             tnam = nxt.nxt
-            if (nxt.x) flip.h = !flip.h
-            if (nxt.y) flip.v = !flip.v
+            if (nxt.x) flipH = !flipH
+            if (nxt.y) flipV = !flipV
         }
-        flip = {h: false, v: false}
+        flipH = false; flipV = false;
         tle = t.straight.slice(1)
         tnam = t.straight[0]
-        pushTile()
+        await pushTile()
         tnam = straightflips[tnam]
-        flip.v = true
-        pushTile()
+        flipV = true
+        await pushTile()
         // TODO: Corners
+        flipH = false; flipV = false;
         var thole = t["3"][0]
         tle = t["3"].slice(1)
         for (let i = 0; i < 4; i++) {
@@ -48,41 +77,41 @@ function loadTileType(t) {
                 if (nxt == thole) return prev
                 return prev+nxt
             })
-            pushTile()
+            await pushTile()
             let nxt = nxtdirs[thole]
             thole = nxt.nxt
-            if (nxt.x) flip.h = !flip.h
-            if (nxt.y) flip.v = !flip.v
+            if (nxt.x) flipH = !flipH
+            if (nxt.y) flipV = !flipV
         }
-        flip = {h: false, v: false}
+        flipH = false; flipV = false;
         tle = t["4"]
         tnam = dirs.reduce((prev,nxt)=>{return prev+nxt})
-        pushTile()
-        return out
+        await pushTile()
     } else {
         console.log(t)
         console.log("Unknown type:", t.type)
-        return [{type: "?"}]
     }
 }
 
-async function loadTiles(nam, tls, prefix="") {
+async function loadTiles(sheet, tls, prefix="") {
     for (const tnam in tls) {
         const realnam = tnam == "."? prefix.slice(0,prefix.length-1):prefix+tnam
         const t = tls[tnam];
         if (Array.isArray(t)) {
-            tiles.set(realnam, {img: nam, tile: t})
+            tiles.set(realnam, await makeTile(sheet, t))
         } else if ('type' in t) {
-            loadTileType(t).forEach(it=>{
-                tiles.set(realnam+(it.namPrefix ? "_"+it.namPrefix : ""),
-                    {img: nam, ...it})
-            })
+            await loadTileType(sheet, realnam, t)
         } else {
-            loadTiles(nam, t, prefix?realnam+"_":tnam+"_")
+            await loadTiles(sheet, t, realnam+"_")
         }
     }
 }
 
+export async function reloadAllTiles() {
+    for (const nam in files) {
+        await loadTiles({img: files[nam][0], w: 32, h: 16}, files[nam][1])
+    }
+}
 export async function load(nxt) {
     let file = await fetch("/assets/tiles.json")
     let js = await file.json()
@@ -90,10 +119,10 @@ export async function load(nxt) {
     for (const nam in js) {
         const img = new Image()
         img.src = `assets/${nam}.svg`
-        files.set(nam, img)
+        files.set(nam, [img, js[nam]])
         await img.decode()
         nxt()
-        await loadTiles(nam, js[nam])
+        await loadTiles({img: img, w: 32, h: 16}, js[nam])
         nxt()
     }
 }
@@ -102,24 +131,11 @@ export function getTile(tname, rand) {
     const tle = tiles.get(tname)
     if (!tle) {
         console.log("Unknown tile:", tname)
-        return [null, null]
+        return null
     } else {
-        const img = files.get(tle.img)
-        if (tle.type == "?") {
-            return [img, 0, 0, 0, 0]
+        if (Array.isArray(tle)) {
+            return tle[rand%tle.length]
         }
-        var tlepos;
-        if (tle.type == "rand") {
-            tlepos = tle.opts[rand%tle.opts.length]
-        } else {
-            tlepos = tle.tile
-        }
-        var flip = null;
-        if (tle.flipH || tle.flipV) {
-            flip = [tle.flipH? -1:1, tle.flipV? -1:1]
-        }
-        const wid = 32
-        const hei = 16
-        return [[img, tlepos[0]*wid, tlepos[1]*hei, wid, hei], flip]
+        return tle
     }
 }
