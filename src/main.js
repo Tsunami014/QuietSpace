@@ -81,12 +81,21 @@ function draw() {
     for (let i = -3; i < rows+3; i++) {
         const offs = (i+tyoffs)%2 == 0 ? 0 : 0.5
         for (let j = -2; j < cols+2; j++) {
-            const source = tiles.getTile(gen.getTile(j-txoffs, i-tyoffs))
+            const tpos = [j-txoffs, i-tyoffs]
+            const [source, flip] = tiles.getTile(gen.getTile(...tpos), gen.hash(-1, ...tpos))
             if (source) {
-                ctx.drawImage(...source,
-                    blk*(j-offs)-hblk - xoffs - 1,
-                    qblk*i - yoffs - 1,
-                    blk+2, hblk+2)
+                let x = blk*(j-offs)-hblk - xoffs - 1
+                let y = qblk*i - yoffs - 1
+                if (flip) {
+                    ctx.save();
+                    ctx.scale(...flip);
+                    if (flip[0] == -1) x = -x - (blk+2)
+                    if (flip[1] == -1) y = -y - (hblk+2)
+                }
+                ctx.drawImage(...source, x, y, blk+2, hblk+2)
+                if (flip) {
+                    ctx.restore();
+                }
             }
         }
     }

@@ -2,7 +2,7 @@ const seed = 42
 
 // My custom randomness - an amalgamation of various algorithms
 const _hashStrs = [0x27D4EB2D, 0x9E3779B1, 0x165667B1, 0xC2B2AE35, 0x85EBCA6B]
-function hash(...args) {
+export function hash(...args) {
     let h = seed
     for (let i = 0; i < args.length; i++) {
         h ^= args[i] * _hashStrs[i]
@@ -18,10 +18,37 @@ function hash(...args) {
     return parseInt(out.slice(hlen, hlen*2))
 }
 
+var _cache = []
+const mxCacheLen = 10
+function cachehash(...args) {
+    for (let i = _cache.length-1; i >= 0; i--) {
+        const [val, args] = _cache[i]
+        if (val === args) return resp;
+    }
+    if (_cache.length+1 > mxCacheLen) {
+        _cache = _cache.slice(1)
+    }
+    const out = hash(...args)
+    _cache.push([args, out])
+    return out
+}
+
+
 export function getTile(x, y) {
-    if (hash(x, y)%2 == 0) {
-        return "road"
+    const realpos = [x-Math.floor((y-1)/2), x+Math.floor(y/2)]
+    const tl = [Math.floor(realpos[0]/10), Math.floor(realpos[1]/10)]
+    const loclpos = [realpos[0]%10, realpos[1]%10]
+    if (loclpos[0] == 0) {
+        if (loclpos[1] == 0) {
+            return "road_dash_ENSW"
+        }
+        return "road_dash_EW"
+    } else if (loclpos[1] == 0) {
+        return "road_dash_NS"
+    }
+    if (cachehash(0, ...tl)%2 == 0) {
+        return "footpath"
     } else {
-        return "road_cone"
+        return "grass"
     }
 }
