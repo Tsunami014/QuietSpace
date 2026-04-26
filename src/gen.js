@@ -31,7 +31,7 @@ function setSeed(nseed) {
     for (let i = 0; i < 10; i++) {
         islandSze += hash(-999, 2, i)%200
     }
-    outerRingSze = (hash(-999, 3)%5) + 5
+    outerRingSze = (hash(-999, 3)%6) + 6
     outerRingSze *= outerRingSze
 
     sandDist = islandSze-outerRingSze*4
@@ -113,13 +113,17 @@ export function getTile(x, y) {
         return "sand"
     }
 
-    if (loclx == 0) {
-        if (locly == 0) {
+    if (loclx == 0 || locly == 0) {
+        if (loclx == 0 && locly == 0) {
             return "road_dash_ENSW"
         }
+        if (hash(-1, realx, realy)%200 == 0) {
+            return "road_cone"
+        }
+        if (locly == 0) {
+            return "road_dash_NS"
+        }
         return "road_dash_EW"
-    } else if (locly == 0) {
-        return "road_dash_NS"
     }
     if (loclx == 1) {
         if (locly == 1) {
