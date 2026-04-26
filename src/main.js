@@ -66,7 +66,7 @@ async function load() {
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.imageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false
 
     const [cols, rows, blk, hblk] = getSizes()
     const qblk = Math.floor(blk/4) // half height (quarter width)
@@ -96,8 +96,8 @@ function draw() {
             const source = tiles.getTile(gen.getTile(tx, ty), gen.hash(-1, tx, ty))
             if (source) {
                 ctx.drawImage(source,
-                    blk*(j-offs)-hblk - xoffs, qblk*i - yoffs,
-                    blk, hblk)
+                    blk*(j-offs)-hblk - xoffs - 1, qblk*i - yoffs - offs,
+                    blk+2, hblk+offs*2)
             }
         }
     }

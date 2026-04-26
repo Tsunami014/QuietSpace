@@ -15,13 +15,13 @@ async function makeTile(sheet, tle, flipH=false, flipV=false) {
         w = sheet.w
         h = sheet.h
     } else {
-        w = tleWid * (sheet.w/32)
-        h = tleHei * (sheet.h/16)
+        w = tleWid * (sheet.w/32) + 10
+        h = tleHei * (sheet.h/16) + 4
     }
 
     const c = new OffscreenCanvas(w, h);
     const ctx = c.getContext('2d');
-    ctx.imageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false
     ctx.save();
     ctx.translate(flipH ? w : 0, flipV ? h : 0);
     ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
