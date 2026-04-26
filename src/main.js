@@ -98,7 +98,7 @@ function draw() {
             if (source) {
                 ctx.drawImage(source,
                     blk*(j-offs)-hblk - xoffs, qblk*i - yoffs,
-                    blk+1, hblk+1)
+                    blk+(tiles.pixel?0:1), hblk+(tiles.pixel?0:1))
             }
         }
     }
