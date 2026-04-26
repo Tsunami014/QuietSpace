@@ -43,14 +43,13 @@ function drawLoading(progress) {
 }
 
 async function load() {
-    const max = 5;
+    const max = 7;
     var i = 0
     function nxt() {
-        if (i >= max) {
-            console.warn("Went over maximum by "+i)
-        } else {
-            drawLoading((++i)/max)
+        if (i <= max) {
+            drawLoading(i/max)
         }
+        i++
     }
     tiles = await import("/src/tiles.js")
     resizeCanvas(true)
@@ -59,8 +58,10 @@ async function load() {
     gen = await import("/src/gen.js")
     nxt()
 
-    if (i < max-1) {
-        console.warn("Went under maximum by "+(max-i))
+    if (i > max) {
+        console.warn("Went over maximum by "+(i-max)+" (should be "+i+")")
+    } else if (i < max) {
+        console.warn("Went under maximum by "+(max-i)+" (should be "+i+")")
     }
 }
 
@@ -96,9 +97,13 @@ function draw() {
             const ty = i-tyoffs
             const source = tiles.getTile(gen.getTile(tx, ty), gen.hash(-1, tx, ty))
             if (source) {
-                ctx.drawImage(source,
-                    blk*(j-offs)-hblk - xoffs, qblk*i - yoffs,
-                    blk+(tiles.pixel?0:1), hblk+(tiles.pixel?0:1))
+                const xpos = blk*(j-offs) - xoffs
+                const ypos = qblk*i - yoffs
+                const wid = source.wid * blk
+                const hei = source.hei * hblk
+                ctx.drawImage(source.img,
+                    xpos-wid+hblk, ypos-hei+hblk,
+                    wid+(tiles.pixel?0:1), hei+(tiles.pixel?0:1))
             }
         }
     }

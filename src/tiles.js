@@ -15,8 +15,8 @@ async function makeTile(sheet, tle, flipH=false, flipV=false, rotate=0) {
         w = sheet.w
         h = sheet.h
     } else {
-        w = tleWid * (sheet.w/32) + 4
-        h = tleHei * (sheet.h/16) + 2
+        w = (tleWid + 4) * (sheet.w/32)
+        h = (tleHei + 2) * (sheet.h/16)
     }
     const r = (rotate+4) % 4
     const yscale = (r%2) + 1
@@ -34,7 +34,7 @@ async function makeTile(sheet, tle, flipH=false, flipV=false, rotate=0) {
     ctx.drawImage(sheet.img, tle[0]*sheet.w, tle[1]*sheet.h, sheet.w, sheet.h, 0, 0, w, h);
     ctx.restore();
 
-    return await createImageBitmap(c);
+    return {img: await createImageBitmap(c), wid: (sheet.w/32), hei: (sheet.h/16)};
 }
 
 
@@ -134,7 +134,7 @@ async function loadTiles(sheet, tls, prefix="") {
 
 export async function reloadAllTiles() {
     for (const [nam, data] of files) {
-        await loadTiles({img: data[0], w: 32, h: 16}, data[1])
+        await loadTiles(data[0], data[1])
     }
 }
 export async function load(nxt) {
@@ -144,10 +144,12 @@ export async function load(nxt) {
     for (const nam in js) {
         const img = new Image()
         img.src = `assets/${nam}.svg`
-        files.set(nam, [img, js[nam]])
+        var spl = nam.split("x")
+        const dat = {img: img, w: 32*parseInt(spl[0], 10), h: 16*parseInt(spl[1], 10)}
+        files.set(nam, [dat, js[nam]])
         await img.decode()
         nxt()
-        await loadTiles({img: img, w: 32, h: 16}, js[nam])
+        await loadTiles(dat, js[nam])
         nxt()
     }
 }
