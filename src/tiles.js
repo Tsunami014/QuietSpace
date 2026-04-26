@@ -9,21 +9,27 @@ export function setTleSzes(wid, hei) {
     tleWid = wid*2
     tleHei = hei*2
 }
-async function makeTile(sheet, tle, flipH=false, flipV=false) {
+async function makeTile(sheet, tle, flipH=false, flipV=false, rotate=0) {
     var w; var h;
     if (pixel) {
         w = sheet.w
         h = sheet.h
     } else {
-        w = tleWid * (sheet.w/32) + 10
-        h = tleHei * (sheet.h/16) + 4
+        w = tleWid * (sheet.w/32) + 4
+        h = tleHei * (sheet.h/16) + 2
     }
+    const r = (rotate+4) % 4
+    const yscale = (r%2) + 1
+    const xscale = 1 / yscale
 
     const c = new OffscreenCanvas(w, h);
     const ctx = c.getContext('2d');
     ctx.imageSmoothingEnabled = false
     ctx.save();
-    ctx.translate(flipH ? w : 0, flipV ? h : 0);
+    ctx.translate(w / 2, h / 2);
+    ctx.rotate(r * Math.PI / 2);
+    ctx.scale(xscale, yscale);
+    ctx.translate((flipH ? w : 0) - w/2, (flipV ? h : 0) - h/2);
     ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
     ctx.drawImage(sheet.img, tle[0]*sheet.w, tle[1]*sheet.h, sheet.w, sheet.h, 0, 0, w, h);
     ctx.restore();
@@ -39,13 +45,32 @@ const nxtdirs = {
     "S": {nxt: "W", y: true}, "W": {nxt: "N", x: true}
 }
 const straightflips = {"NS": "EW", "EW": "NS"}
+const straightturns = {"NW": "EN", "EN": "ES", "ES": "SW", "SW": "NW"}
 async function loadTileType(sheet, realnam, t) {
     if (t.type == "rand") {
         tiles.set(realnam, await Promise.all(
             t.options.map(opt => makeTile(sheet, opt))
         ))
     } else if (t.type == "edge") {
-        tiles.set(realnam, await makeTile(sheet, t.fill))
+        tiles.set(realnam, await makeTile(sheet, t["4"]))
+        var tle = t["1"].slice(1)
+        var tnam = t["1"][0]
+        var flipH = false; var flipV = false;
+        var rot
+        async function pushTile() {
+            tiles.set(realnam+"_"+tnam, await makeTile(sheet, tle, flipH, flipV, rot))
+        }
+        for (rot = 0; rot < 4; rot++) {
+            await pushTile()
+            let nxt = nxtdirs[tnam]
+            tnam = nxt.nxt
+        }
+        tle = t["2"].slice(1)
+        tnam = t["2"][0]
+        for (rot = 0; rot < 4; rot++) {
+            await pushTile()
+            tnam = straightturns[tnam]
+        }
         // TODO: Finish
     } else if (t.type == "line") {
         var tle = t["1"].slice(1)

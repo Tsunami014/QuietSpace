@@ -34,19 +34,44 @@ function cachehash(...args) {
 }
 
 
+const plotSze = 10
 export function getTile(x, y) {
-    const realpos = [x-Math.floor((y-1)/2), x+Math.floor(y/2)]
-    const tl = [Math.floor(realpos[0]/10), Math.floor(realpos[1]/10)]
-    const loclpos = [realpos[0]%10, realpos[1]%10]
-    if (loclpos[0] == 0) {
-        if (loclpos[1] == 0) {
+    const realx = x-Math.floor((y-1)/2)
+    const realy = x+Math.floor(y/2)
+    const loclx = ((realx%plotSze)+plotSze) % plotSze
+    const locly = ((realy%plotSze)+plotSze) % plotSze
+    if (loclx == 0) {
+        if (locly == 0) {
             return "road_dash_ENSW"
         }
         return "road_dash_EW"
-    } else if (loclpos[1] == 0) {
+    } else if (locly == 0) {
         return "road_dash_NS"
     }
-    if (cachehash(0, ...tl)%2 == 0) {
+    if (loclx == 1) {
+        if (locly == 1) {
+            return "footpath_E"
+        }
+        if (locly == plotSze-1) {
+            return "footpath_N"
+        }
+        return "footpath_EN"
+    } else if (locly == 1) {
+        if (loclx == plotSze-1) {
+            return "footpath_S"
+        }
+        return "footpath_ES"
+    } else if (loclx == plotSze-1) {
+        if (locly == plotSze-1) {
+            return "footpath_W"
+        }
+        return "footpath_SW"
+    } else if (locly == plotSze-1) {
+        return "footpath_NW"
+    }
+    const tlx = Math.floor(realx/plotSze)
+    const tly = Math.floor(realy/plotSze)
+    if (cachehash(0, tlx, tly)%2 == 0) {
         return "footpath"
     } else {
         return "grass"

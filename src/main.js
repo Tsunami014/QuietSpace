@@ -96,8 +96,8 @@ function draw() {
             const source = tiles.getTile(gen.getTile(tx, ty), gen.hash(-1, tx, ty))
             if (source) {
                 ctx.drawImage(source,
-                    blk*(j-offs)-hblk - xoffs - 1, qblk*i - yoffs - offs,
-                    blk+2, hblk+offs*2)
+                    blk*(j-offs)-hblk - xoffs, qblk*i - yoffs,
+                    blk, hblk)
             }
         }
     }
