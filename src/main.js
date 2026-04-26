@@ -10,7 +10,8 @@ function getSizes() {
     if (cols > 12) {
         cols = 12
     }
-    const blk = Math.ceil(canvas.width/cols) // width
+    var blk = Math.ceil(canvas.width/cols) // width
+    blk -= blk%4
     const hblk = Math.floor(blk/2) // height or half width
     const rows = Math.floor(canvas.height/hblk)*2
     return [cols, rows, blk, hblk]
@@ -72,7 +73,7 @@ function draw() {
     const qblk = Math.floor(blk/4) // half height (quarter width)
 
     var txoffs = Math.floor(Math.abs(x)/units)
-    let xoffs = Math.abs(x/units*blk)%blk
+    let xoffs = Math.round(Math.abs(x/units*blk)%blk)
     if (x < 0) {
         xoffs = -xoffs
     } else {
@@ -80,7 +81,7 @@ function draw() {
     }
     txoffs = Math.round(txoffs + cols/2)
     var tyoffs = Math.floor(Math.abs(y)/units)*2
-    let yoffs = Math.abs(y/units*hblk)%hblk
+    let yoffs = Math.round(Math.abs(y/units*hblk)%hblk)
     if (y < 0) {
         yoffs = -yoffs
     } else {
@@ -90,14 +91,14 @@ function draw() {
 
     for (let i = -3; i < rows+6; i++) {
         const offs = (i+tyoffs)%2 == 0 ? 0 : 0.5
-        for (let j = -2; j < cols+2; j++) {
+        for (let j = -2; j < cols+3; j++) {
             const tx = j-txoffs
             const ty = i-tyoffs
             const source = tiles.getTile(gen.getTile(tx, ty), gen.hash(-1, tx, ty))
             if (source) {
                 ctx.drawImage(source,
                     blk*(j-offs)-hblk - xoffs, qblk*i - yoffs,
-                    blk, hblk)
+                    blk+1, hblk+1)
             }
         }
     }

@@ -133,8 +133,8 @@ async function loadTiles(sheet, tls, prefix="") {
 }
 
 export async function reloadAllTiles() {
-    for (const nam in files) {
-        await loadTiles({img: files[nam][0], w: 32, h: 16}, files[nam][1])
+    for (const [nam, data] of files) {
+        await loadTiles({img: data[0], w: 32, h: 16}, data[1])
     }
 }
 export async function load(nxt) {
