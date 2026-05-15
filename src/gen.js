@@ -115,7 +115,6 @@ export function getTile(x, y) {
 
     if (loclx == 0 || locly == 0) {
         if (loclx == 0 && locly == 0) {
-            return "block"
             return "road_dash_ENSW"
         }
         if (hash(-1, realx, realy)%200 == 0) {

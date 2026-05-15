@@ -6,7 +6,8 @@ var y = 0
 const units = 8 // How many units in one block (one block is 2x1 'blocks')
 
 function getSizes() {
-    var cols = Math.floor((canvas.width/canvas.height + 1) * 4)
+    // Edit this to change the screen sizing ratio
+    var cols = Math.floor((canvas.width/canvas.height + 1) * 3.4)
     if (cols > 12) {
         cols = 12
     }
@@ -19,6 +20,7 @@ function getSizes() {
 
 
 var tiles;
+var player;
 var gen;
 
 const pbhei = 40
@@ -43,7 +45,7 @@ function drawLoading(progress) {
 }
 
 async function load() {
-    const max = 7;
+    const max = 10;
     var i = 0
     function nxt() {
         if (i <= max) {
@@ -56,6 +58,10 @@ async function load() {
     nxt()
     await tiles.load(nxt)
     gen = await import("/src/gen.js")
+    nxt()
+    player = await import("/src/player.js")
+    nxt()
+    await player.load(nxt)
     nxt()
 
     if (i > max) {
@@ -70,8 +76,10 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.imageSmoothingEnabled = false
 
+    // Calculate offsets
     const [cols, rows, blk, hblk] = getSizes()
     const qblk = Math.floor(blk/4) // half height (quarter width)
+    player.scale(hblk)
 
     var txoffs = Math.floor(Math.abs(x)/units)
     let xoffs = Math.round(Math.abs(x/units*blk)%blk)
@@ -80,7 +88,7 @@ function draw() {
     } else {
         txoffs = -txoffs
     }
-    txoffs = Math.round(txoffs + cols/2)
+    txoffs = Math.round(txoffs+cols/2)
     var tyoffs = Math.floor(Math.abs(y)/units)*2
     let yoffs = Math.round(Math.abs(y/units*hblk)%hblk)
     if (y < 0) {
@@ -90,6 +98,14 @@ function draw() {
     }
     tyoffs = Math.round(tyoffs+rows/2)
 
+    // Find the player's position
+    const offs = tyoffs%2 == 0 ? 0 : 0.5
+    player.move(
+        blk*(cols/2-offs),
+        qblk*rows/2
+    )
+
+    // Draw all the tiles
     for (let i = -3; i < rows+6; i++) {
         const offs = (i+tyoffs)%2 == 0 ? 0 : 0.5
         for (let j = -2; j < cols+3; j++) {
@@ -120,7 +136,12 @@ function tick() {
     if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
         resizeCanvas(true)
         if (!tiles.pixel) {
-            tiles.reloadAllTiles().then(()=>{ draw();tick() })
+            player.hide()
+            tiles.reloadAllTiles().then(()=>{
+                draw()
+                player.show()
+                tick()
+            })
             return
         }
         draw()
@@ -155,6 +176,7 @@ async function init() {
     drawLoading(0);
     await load()
     draw()
+    player.show()
     tick()
 }
 init()
