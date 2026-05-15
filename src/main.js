@@ -117,7 +117,7 @@ const keys = {}
 window.addEventListener('keydown', (e) => keys[e.key] = true)
 window.addEventListener('keyup', (e) => keys[e.key] = false)
 
-const speed = 0.2
+const speed = 0.25
 const speeddiag = Math.sqrt(5)*speed/2
 function tick() {
     if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
@@ -140,6 +140,7 @@ function tick() {
     if (keys['ArrowLeft'])  dx = -1
     if (keys['ArrowRight']) dx = 1
     if (dx != 0 || dy != 0) {
+        if (dx != 0) player.setdir(dx)
         let diag = (dx != 0 && dy != 0)
         x += (diag? speeddiag:speed)*dx
         y += (diag? speeddiag:speed*2)*dy*2

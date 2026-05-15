@@ -11,11 +11,13 @@ export async function load(nxt) {
     document.body.appendChild(elm)
 }
 
+var dir = 1
+export function setdir(d) { dir = d }
+
 const blkhei = 2.8
 export function scale(hblk) {
     const s = (hblk*blkhei) / height
-    const dir = -1
-    elm.style.transform = `translate(0, -${Math.round(height*s*0.45)}px) scale(${s*dir}, ${s})`
+    elm.style.transform = `translate(-${hblk*0.1}px, -${Math.round(height*s*0.5)}px) scale(${s*dir}, ${s})`
 }
 
 export function sze(hblk) {
