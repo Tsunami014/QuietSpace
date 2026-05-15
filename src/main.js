@@ -98,13 +98,6 @@ function draw() {
     }
     tyoffs = Math.round(tyoffs+rows/2)
 
-    // Find the player's position
-    const offs = tyoffs%2 == 0 ? 0 : 0.5
-    player.move(
-        blk*(cols/2-offs),
-        qblk*rows/2
-    )
-
     // Draw all the tiles
     for (let i = -3; i < rows+6; i++) {
         const offs = (i+tyoffs)%2 == 0 ? 0 : 0.5
