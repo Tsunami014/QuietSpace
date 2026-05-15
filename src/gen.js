@@ -75,6 +75,7 @@ const dirs = [
     [0, 0], [1, 0], [1, 1], [0, 1]
 ]
 export function getTile(x, y) {
+    if (x == 0 && y == 0) return "road_stripe_ENSW"
     const realx = x-Math.floor((y-1)/2)
     const realy = x+Math.floor(y/2)
 
