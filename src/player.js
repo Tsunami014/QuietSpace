@@ -17,7 +17,9 @@ export function setdir(d) { dir = d }
 const blkhei = 2.8
 export function scale(hblk) {
     const s = (hblk*blkhei) / height
-    elm.style.transform = `translate(-${hblk*0.1}px, -${Math.round(height*s*0.5)}px) scale(${s*dir}, ${s})`
+    elm.style.transform = `scale(${s*dir}, ${s})`
+    elm.style.left = `calc(50vw - ${width*s*0.5 - hblk}px)`
+    elm.style.top = `calc(50vh - ${height*s*0.5}px)`
 }
 
 export function sze(hblk) {

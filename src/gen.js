@@ -77,7 +77,9 @@ const dirs = [
 export function getTile(x, y) {
     const realx = x-Math.floor((y-1)/2)
     const realy = x+Math.floor(y/2)
-
+    return getRealTile(realx, realy)
+}
+export function getRealTile(realx, realy) {
     let dist = realx*realx*x_wonk + realy*realy*y_wonk
     if (dist > islandSze) {
         if (dist > islandSze+outerRingSze*3) {
