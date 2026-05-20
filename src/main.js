@@ -85,8 +85,9 @@ function tick() {
     if (keys['ArrowDown'])  dy = 1
     if (keys['ArrowLeft'])  dx = -1
     if (keys['ArrowRight']) dx = 1
-    if (dx != 0) player.setdir(dx)
+    let ox = phys.x
     if (phys.tick(dx, dy)) {
+        if (ox != phys.x) player.setdir(Math.sign(phys.x-ox))
         draw.draw()
     }
     requestAnimationFrame(tick)
