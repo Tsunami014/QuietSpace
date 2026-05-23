@@ -12,10 +12,11 @@ export function getUnder() {
     return gen.getUnderThis(x, y)
 }
 function collides(nx, ny) {
-    const tle = getUnderThis(nx, ny)
-    if (tle.includes("water")) return true
-    if (tle.includes("cone")) return true
-    return false
+    return getUnderThis(nx, ny).some(tle=>{
+        return tle.includes("water") ||
+                tle.includes("cone") ||
+                tle == "tree"
+    })
 }
 
 

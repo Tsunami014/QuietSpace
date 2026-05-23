@@ -56,18 +56,21 @@ function cachehash(...args) {
 
 function getTileInner(tlx, tly, loclx, locly, pltsze, sandy) {
     if (sandy > 2) {
-        return "sand"
+        return ["sand"]
     }
     if (sandy > 0) {
         if (sandy > 1 && cachehash(0, tlx, tly)%2 == 0) {
-            return "grass"
+            return ["grass"]
         }
-        return "sand"
+        return ["sand"]
     }
     if (cachehash(0, tlx, tly)%2 == 0) {
-        return "footpath"
+        return ["footpath"]
     } else {
-        return "grass"
+        if (cachehash(1, tlx, tly, loclx, locly)%10 == 0) {
+            return ["grass", "tree"]
+        }
+        return ["grass"]
     }
 }
 const plotSze = 10+5
@@ -83,15 +86,15 @@ export function getRealTile(realx, realy) {
     let dist = realx*realx*x_wonk + realy*realy*y_wonk
     if (dist > islandSze) {
         if (dist > islandSze+outerRingSze*3) {
-            return "water_deep"
+            return ["water_deep"]
         }
         if (dist > islandSze+outerRingSze*2) {
-            return "water_med"
+            return ["water_med"]
         }
         if (dist > islandSze+outerRingSze) {
-            return "water_light"
+            return ["water_light"]
         }
-        return "sand"
+        return ["sand"]
     }
 
     const loclx = ((realx%plotSze)+plotSze) % plotSze
@@ -108,48 +111,48 @@ export function getRealTile(realx, realy) {
     if (sandy > 1 && (
         loclx <= 2 || locly <= 2 || loclx >= plotSze-2 || locly >= plotSze-2
     )) {
-        if (loclx == 0 && locly == 0) return "footpath"
+        if (loclx == 0 && locly == 0) return ["footpath"]
         if ((loclx == 0 || locly == 0) && cachehash(-1, tlx, tly)%2 == 0) {
-            return "footpath"
+            return ["footpath"]
         }
-        return "sand"
+        return ["sand"]
     }
 
     if (loclx == 0 || locly == 0) {
         if (loclx == 0 && locly == 0) {
-            return "road_dash_ENSW"
+            return ["road_dash_ENSW"]
         }
         if (hash(-1, realx, realy)%200 == 0) {
-            return "road_cone"
+            return ["road_cone"]
         }
         if (locly == 0) {
-            return "road_dash_NS"
+            return ["road_dash_NS"]
         }
-        return "road_dash_EW"
+        return ["road_dash_EW"]
     }
     if (loclx == 1) {
         if (locly == 1) {
-            return "footpath_E"
+            return ["footpath_E"]
         }
         if (locly == plotSze-1) {
-            return "footpath_N"
+            return ["footpath_N"]
         }
-        return "footpath_EN"
+        return ["footpath_EN"]
     } else if (locly == 1) {
         if (loclx == plotSze-1) {
-            return "footpath_S"
+            return ["footpath_S"]
         }
-        return "footpath_ES"
+        return ["footpath_ES"]
     } else if (loclx == plotSze-1) {
         if (locly == plotSze-1) {
-            return "footpath_W"
+            return ["footpath_W"]
         }
-        return "footpath_SW"
+        return ["footpath_SW"]
     } else if (locly == plotSze-1) {
-        return "footpath_NW"
+        return ["footpath_NW"]
     }
     if (loclx == 2 || locly == 2 || loclx == plotSze-2 || locly == plotSze-2) {
-        return "footpath"
+        return ["footpath"]
     }
     return getTileInner(tlx, tly, loclx+3, locly+3, plotSze-5, sandy)
 }

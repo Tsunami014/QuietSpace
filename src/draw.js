@@ -25,7 +25,7 @@ export function draw() {
 
     const xtile = Math.floor(phys.x/units)
     const ytile = Math.floor(phys.y/units)
-    const txoffs = Math.floor(cols/2 - xtile)
+    const txoffs = Math.floor(cols/2 - xtile)-1
     const tyoffs = Math.floor(rows/2 - ytile)-1
     const xoffs = Math.abs(canvas.width - cols*blk)/2
         - (phys.x/units - xtile)*blk
@@ -35,21 +35,23 @@ export function draw() {
         - qblk + (qblk/2)*(rows%2)
 
     // Draw all the tiles
-    for (let i = -3; i < rows+6; i++) {
+    for (let i = -2; i < rows+15; i++) {
         const offs = (i+tyoffs)%2 == 0 ? 0 : 0.5
         for (let j = -2; j < cols+3; j++) {
             const tx = j-txoffs
             const ty = i-tyoffs
-            const source = tiles.getTile(gen.getTile(tx, ty), gen.hash(-1, tx, ty))
-            if (source) {
+            gen.getTile(tx, ty).forEach(tle=>{
+                const source = tiles.getTile(tle, gen.hash(-1, tx, ty))
+                if (!source) return;
+                if (i-source.hei > rows+5) return;
                 const xpos = blk*(j-offs) + xoffs
                 const ypos = qblk*i + yoffs
                 const wid = source.wid * blk
                 const hei = source.hei * hblk
                 ctx.drawImage(source.img,
-                    xpos-wid+hblk, ypos-hei+hblk,
+                    xpos-(wid-blk)/2+hblk, ypos-hei+hblk,
                     wid+(tiles.pixel?0:1), hei+(tiles.pixel?0:1))
-            }
+            })
         }
     }
 }

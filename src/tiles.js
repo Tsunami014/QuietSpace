@@ -143,9 +143,9 @@ export async function load(nxt) {
     nxt()
     for (const nam in js) {
         const img = new Image()
-        img.src = `assets/${nam}.svg`
+        img.src = `assets/${nam.replace(".", "_")}.svg`
         var spl = nam.split("x")
-        const dat = {img: img, w: 32*parseInt(spl[0], 10), h: 16*parseInt(spl[1], 10)}
+        const dat = {img: img, w: Math.round(32*parseFloat(spl[0], 10)), h: Math.round(16*parseFloat(spl[1], 10))}
         files.set(nam, [dat, js[nam]])
         await img.decode()
         nxt()

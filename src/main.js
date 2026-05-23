@@ -29,7 +29,7 @@ function drawLoading(progress) {
 }
 
 async function load() {
-    const max = 12;
+    const max = 14;
     var i = 0
     function nxt() {
         if (i <= max) {
