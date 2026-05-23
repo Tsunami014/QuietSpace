@@ -8,7 +8,7 @@ export async function load(nxt) {
     elm = svgDoc.documentElement
     width = elm.getAttribute("width"); height = elm.getAttribute("height")
     hide()
-    document.body.appendChild(elm)
+    document.getElementById("playerContainer").appendChild(elm)
 }
 
 var dir = 1

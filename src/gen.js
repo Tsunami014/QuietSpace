@@ -68,7 +68,7 @@ function getTileInner(tlx, tly, loclx, locly, pltsze, sandy) {
         return ["footpath"]
     } else {
         if (cachehash(1, tlx, tly, loclx, locly)%10 == 0) {
-            return ["grass", "tree"]
+            return ["grass_plain", "tree"]
         }
         return ["grass"]
     }

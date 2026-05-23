@@ -1,5 +1,7 @@
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+const canvas1 = document.getElementById('canvas1');
+const canvas2 = document.getElementById('canvas2');
+const ctx1 = canvas1.getContext('2d');
+const ctx2 = canvas2.getContext('2d');
 
 var tiles;
 var player;
@@ -11,21 +13,22 @@ const pbhei = 40
 const pbgap = 4
 function drawLoading(progress) {
     resizeCanvas();
-    const pbx = canvas.width / 6
-    const pby = (canvas.height - pbhei) / 2;
-    const pbwid = canvas.width - pbx*2;
-    ctx.clearRect(0, 0, canvas.width, canvas.height); 
-    ctx.font = "bold 32px sans serif";
-    ctx.fillStyle = "black";
-    ctx.fillText("Loading...", pbx, pby-32-2);
-    ctx.beginPath()
-    ctx.roundRect(pbx, pby, pbwid, pbhei, pbhei/3);
-    ctx.fill();
-    ctx.fillStyle = 'cornflowerblue';
+    const pbx = canvas1.width / 6
+    const pby = (canvas1.height - pbhei) / 2;
+    const pbwid = canvas1.width - pbx*2;
+    ctx2.clearRect(0, 0, canvas1.width, canvas1.height); 
+    ctx1.clearRect(0, 0, canvas1.width, canvas1.height); 
+    ctx1.font = "bold 32px sans serif";
+    ctx1.fillStyle = "black";
+    ctx1.fillText("Loading...", pbx, pby-32-2);
+    ctx1.beginPath()
+    ctx1.roundRect(pbx, pby, pbwid, pbhei, pbhei/3);
+    ctx1.fill();
+    ctx1.fillStyle = 'cornflowerblue';
     const nhei = pbhei - pbgap*2
-    ctx.beginPath()
-    ctx.roundRect(pbx+pbgap, pby+pbgap, (pbwid - pbgap*2)*progress, nhei, nhei/3);
-    ctx.fill();
+    ctx1.beginPath()
+    ctx1.roundRect(pbx+pbgap, pby+pbgap, (pbwid - pbgap*2)*progress, nhei, nhei/3);
+    ctx1.fill();
 }
 
 async function load() {
@@ -65,7 +68,7 @@ window.addEventListener('keydown', (e) => keys[e.key] = true)
 window.addEventListener('keyup', (e) => keys[e.key] = false)
 
 function tick() {
-    if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+    if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {
         resizeCanvas(true)
         if (!tiles.pixel) {
             player.hide()
@@ -95,8 +98,10 @@ function tick() {
 
 
 function resizeCanvas(setTles) {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas1.width = window.innerWidth;
+    canvas1.height = window.innerHeight;
+    canvas2.width = window.innerWidth;
+    canvas2.height = window.innerHeight;
     if (setTles) {
         const [cols, rows, blk, hblk, qblk] = draw.getSizes()
         tiles.setTleSzes(blk, hblk)

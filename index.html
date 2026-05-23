@@ -10,6 +10,7 @@ html, body {
 
 canvas {
     display: block;
+    position: absolute;
 }
 
 svg {
@@ -28,9 +29,11 @@ svg {
     </style>
 </head>
 <body>
-    <canvas id="canvas">
+    <canvas id="canvas1">
         If you can read this, you can't see the beautiful game I made! Sad.
     </canvas>
-    <script src="src/main.js"></script>
+    <div id="playerContainer"></div>
+    <canvas id="canvas2"></canvas>
     <!--div class="circle"></div-->
+    <script src="src/main.js"></script>
 </body>
