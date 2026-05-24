@@ -130,7 +130,7 @@ function _getRealTile(realx, realy) {
         loclx <= 2 || locly <= 2 || loclx >= plotSze-2 || locly >= plotSze-2
     )) {
         if (loclx == 0 && locly == 0) return ["footpath"]
-        if ((loclx == 0 || locly == 0) && cachehash(-1, tlx, tly)%2 == 0) {
+        if ((loclx == 0 || locly == 0) && cachehash(0, tlx, tly)%2 == 0) {
             return ["footpath"]
         }
         return ["sand"]
@@ -140,7 +140,7 @@ function _getRealTile(realx, realy) {
         if (loclx == 0 && locly == 0) {
             return ["road_dash_ENSW"]
         }
-        if (hash(-1, realx, realy)%200 == 0) {
+        if (hash(1, realx, realy)%200 == 0) {
             return ["road_cone"]
         }
         if (locly == 0) {

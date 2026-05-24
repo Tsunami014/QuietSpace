@@ -20,14 +20,23 @@ window.addEventListener('keydown', (event) => {
     }
 });
 
+export var select = null;
+var lastrx; var lastry
+var lastidx
 function click_left() {
     const [px, py] = getPos()
-    const tle = phys.getUnder(px, py)
-    console.log(tle, false)
+    const [realx, realy] = phys.realpos(px, py)
+    if (realx != lastrx || realy != lastry) {
+        lastrx = realx; lastry = realy
+        lastidx = 0
+    }
+    const tle = gen.getRealTile(realx, realy)
+    select = tle[(lastidx++)%tle.length]
 }
 function click_right() {
     const [px, py] = getPos()
-    const tle = phys.getUnder(px, py)
+    const [realx, realy] = phys.realpos(px, py)
+    const tle = gen.getRealTile(realx, realy)
     console.log(tle, true)
 }
 

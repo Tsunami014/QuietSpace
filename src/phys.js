@@ -1,13 +1,12 @@
 export var x = 0
 export var y = 0
 
-export function getUnder(nx, ny) {
-    const realx = nx-((ny-1)/2)
-    const realy = nx+(ny/2) + 0.5
-    return gen.getRealTile(Math.floor(realx), Math.floor(realy))
+export function realpos(nx, ny) {
+    return [Math.floor(nx-((ny-1)/2)), Math.floor(nx+(ny/2) + 0.5)]
 }
 function collides(nx, ny) {
-    return getUnder(nx/draw.units, ny/draw.units).some(tle=>{
+    const [rx, ry] = realpos(nx/draw.units, ny/draw.units)
+    return gen.getRealTile(rx, ry).some(tle=>{
         return tle.includes("water") ||
                 tle.includes("cone") ||
                 tle == "tree"

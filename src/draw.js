@@ -73,4 +73,36 @@ export function draw() {
             ((Math.round(my/2) - offs)*2 + tyoffs + offs*Math.abs(Math.floor(my+1)%2)*4)*qblk+qblk*0.5 + yoffs,
             blk*1.5, hblk*1.5)
     }
+    const scale = 1.4
+    const framex = canvas1.width-blk*1.5*scale - blk*0.25
+    const framey = hblk*0.5
+    ctx2.drawImage(tiles.UI, 0, 24, 48, 24,
+        framex, framey, blk*1.5*scale, hblk*1.5*scale)
+    if (mouse.select) {
+        const source = tiles.getTile(mouse.select, gen.hash(-2))
+        if (source) {
+            var wid = source.wid
+            var hei = source.hei
+            var xtraw = 0; var xtrah = 0
+            if (wid > hei) {
+                hei = hblk*hei/wid
+                wid = blk
+                if (source.wid > 2) {
+                    wid *= 2; hei *= 2
+                    xtraw = 0.5
+                }
+            } else {
+                wid = blk*wid/hei
+                hei = hblk
+                if (source.hei > 2) {
+                    hei *= 2; wid *= 2
+                    xtrah = 0.5
+                }
+            }
+            const xpos = -blk*0.75 + (wid-blk)/2+hblk - xtraw*blk
+            const ypos = -hblk*0.75 + (hei-hblk)/2+hblk - xtrah*blk
+            wid *= scale; hei *= scale
+            ctx2.drawImage(source.img, framex - xpos*scale, framey + ypos*scale, wid, hei)
+        }
+    }
 }
