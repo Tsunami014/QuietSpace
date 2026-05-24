@@ -31,7 +31,7 @@ function click_left() {
         lastidx = 0
     }
     const tle = gen.getRealTile(realx, realy)
-    select = tle[(lastidx++)%tle.length]
+    select = tiles.normalise(tle[(lastidx++)%tle.length])
 }
 function click_right() {
     const [px, py] = getPos()

@@ -55,9 +55,9 @@ async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
         const lns = t.options.map(opt=>opt[2]??1)
         let i = 0
         for (const opt of t.options) {
-            await loadTileType(sheet, `${realnam}_${i++}`, opt, t, fH, fV, r);
+            await loadTileType(sheet, `${realnam}_rnd${i++}`, opt, t, fH, fV, r);
         }
-        tiles.set(realnam, [t.options.map((_, idx)=>`${realnam}_${idx}`), lns, lns.reduce((i,tot)=>i+tot)])
+        tiles.set(realnam, [t.options.map((_, idx)=>`${realnam}_rnd${idx}`), lns, lns.reduce((i,tot)=>i+tot)])
     } else if (t.type == "edge") {
         await loadTileType(sheet, realnam, t["4"], fH, fV, r)
         var tle = t["1"].slice(1)
@@ -165,22 +165,37 @@ export async function load(nxt) {
     nxt()
 }
 
-export function getTile(tname, rand) {
+export function getTile(tname, rand, logOnFail=true) {
     const tle = tiles.get(tname)
     if (!tle) {
-        console.log("Unknown tile:", tname)
+        if (logOnFail) console.log("Unknown tile:", tname)
         return null
     } else {
         if (Array.isArray(tle)) {
+            if (rand == -1) return getTile(tle[0][(tle[0].length-2)%tle[0].length], -1, logOnFail)
             var num = rand%tle[2]
             const mx = tle[0].length
             for (let i = 0; i < mx; i++) {
                 num -= tle[1][i]
-                if (num < 0) return getTile(tle[0][i], rand*tle[2])
+                if (num < 0) return getTile(tle[0][i], rand*tle[2], logOnFail)
             }
             // Fallback
             return getTile(tle[0][rand%mx], rand*mx)
         }
         return tle
     }
+}
+
+export function normalise(tname) {
+    if (!tname) return ""
+    return tname.match(/(.+?)(?:_plain)?$/)[1]
+    //return tname.match(/(.+?)(?:_[NESW]+|_rnd[0-9]+|_plain)?$/)[1]
+}
+
+export function normalisedImg(tname) {
+    let source = getTile(mouse.select, -1, false)
+    if (source) return source;
+    source = getTile(mouse.select+"_ENSW", -1, false)
+    if (source) return source;
+    console.log("Unknown tile:", tname)
 }

@@ -79,7 +79,7 @@ export function draw() {
     ctx2.drawImage(tiles.UI, 0, 24, 48, 24,
         framex, framey, blk*1.5*scale, hblk*1.5*scale)
     if (mouse.select) {
-        const source = tiles.getTile(mouse.select, gen.hash(-2))
+        const source = tiles.normalisedImg(mouse.select)
         if (source) {
             var wid = source.wid
             var hei = source.hei
