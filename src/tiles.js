@@ -46,19 +46,24 @@ const nxtdirs = {
 }
 const straightflips = {"NS": "EW", "EW": "NS"}
 const straightturns = {"NW": "EN", "EN": "ES", "ES": "SW", "SW": "NW"}
-async function loadTileType(sheet, realnam, t) {
-    if (t.type == "rand") {
-        tiles.set(realnam, await Promise.all(
-            t.options.map(opt => makeTile(sheet, opt))
-        ))
+async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
+    if (Array.isArray(t)) {
+        tiles.set(realnam, await makeTile(sheet, t, fH, fV, r))
+    } else if (t.type == "rand") {
+        const lns = t.options.map(opt=>opt[2]??1)
+        let i = 0
+        for (const opt of t.options) {
+            await loadTileType(sheet, `${realnam}_${i++}`, opt, t, fH, fV, r);
+        }
+        tiles.set(realnam, [t.options.map((_, idx)=>`${realnam}_${idx}`), lns, lns.reduce((i,tot)=>i+tot)])
     } else if (t.type == "edge") {
-        tiles.set(realnam, await makeTile(sheet, t["4"]))
+        await loadTileType(sheet, realnam, t["4"], fH, fV, r)
         var tle = t["1"].slice(1)
         var tnam = t["1"][0]
         var flipH = false; var flipV = false;
         var rot
         async function pushTile() {
-            tiles.set(realnam+"_"+tnam, await makeTile(sheet, tle, flipH, flipV, rot))
+            await loadTileType(sheet, realnam+"_"+tnam, tle, flipH^fH, flipV^fV, rot+r)
         }
         for (rot = 0; rot < 4; rot++) {
             await pushTile()
@@ -77,7 +82,7 @@ async function loadTileType(sheet, realnam, t) {
         var tnam = t["1"][0]
         var flipH = false; var flipV = false;
         async function pushTile() {
-            tiles.set(realnam+"_"+tnam, await makeTile(sheet, tle, flipH, flipV))
+            await loadTileType(sheet, realnam+"_"+tnam, tle, flipH^fH, flipV^fV, r)
         }
         for (let i = 0; i < 4; i++) {
             await pushTile()
@@ -161,7 +166,14 @@ export function getTile(tname, rand) {
         return null
     } else {
         if (Array.isArray(tle)) {
-            return tle[rand%tle.length]
+            var num = rand%tle[2]
+            const mx = tle[0].length
+            for (let i = 0; i < mx; i++) {
+                num -= tle[1][i]
+                if (num < 0) return getTile(tle[0][i], rand*tle[2])
+            }
+            // Fallback
+            return getTile(tle[0][rand%mx], rand*mx)
         }
         return tle
     }
