@@ -33,6 +33,9 @@ export function tick(dx, dy) {
             if (d1 ^ d2) {
                 x += speeddiag*(d1? -1:1); y = ny
                 return true
+            } else if (!d1 && !d2) {
+                x += speeddiag*(Math.random()>0.5? -1:1); y = ny
+                return true
             }
         } else {
             let nx = x + speeddiag*dx
@@ -40,6 +43,9 @@ export function tick(dx, dy) {
             let d2 = collides(nx, y-speeddiag*2)
             if (d1 ^ d2) {
                 x = nx; y += speeddiag*(d1? -2:2)
+                return true
+            } else if (!d1 && !d2) {
+                x = nx; y += speeddiag*(Math.random()>0.5? -2:2)
                 return true
             }
         }
