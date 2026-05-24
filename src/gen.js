@@ -82,7 +82,25 @@ export function getTile(x, y) {
     const realy = x+Math.floor(y/2)
     return getRealTile(realx, realy)
 }
-export function getRealTile(realx, realy) {
+
+var tleCache = new Map();
+export function getRealTile(rx, ry) {
+    const key = rx + ',' + ry;
+    if (tleCache.has(key)) return tleCache.get(key);
+    const val = _getRealTile(rx, ry);
+    tleCache.set(key, val);
+    return val;
+}
+
+let lastClear = 0
+const clearEvery = 5
+export function cacheTick() {
+    if (++lastClear > clearEvery) {
+        tleCache = new Map()
+    }
+}
+
+function _getRealTile(realx, realy) {
     let dist = realx*realx*x_wonk + realy*realy*y_wonk
     if (dist > islandSze) {
         if (dist > islandSze+outerRingSze*3) {

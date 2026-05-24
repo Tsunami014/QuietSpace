@@ -81,6 +81,7 @@ function tick() {
         }
         draw.draw()
     }
+    gen.cacheTick()
     var dx = 0
     var dy = 0
     if (keys['p']) console.log(phys.getUnder())
