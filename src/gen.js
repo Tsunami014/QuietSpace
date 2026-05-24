@@ -83,13 +83,24 @@ export function getTile(x, y) {
     return getRealTile(realx, realy)
 }
 
+var placeds = new Map();
 var tleCache = new Map();
 export function getRealTile(rx, ry) {
     const key = rx + ',' + ry;
+    if (placeds.has(key)) return placeds.get(key);
     if (tleCache.has(key)) return tleCache.get(key);
     const val = _getRealTile(rx, ry);
     tleCache.set(key, val);
     return val;
+}
+
+export function placeTile(rx, ry, t, append) {
+    const key = rx + ',' + ry;
+    if (append) {
+        placeds.set(key, [...getRealTile(rx, ry), t])
+    } else {
+        placeds.set(key, [t])
+    }
 }
 
 let lastClear = 0

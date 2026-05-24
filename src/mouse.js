@@ -31,13 +31,14 @@ function click_left() {
         lastidx = 0
     }
     const tle = gen.getRealTile(realx, realy)
-    select = tiles.normalise(tle[(lastidx++)%tle.length])
+    lastidx = lastidx%tle.length
+    select = tiles.normalise(tle[lastidx++])
 }
 function click_right() {
+    if (lastidx == 0 || select === null) return
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
-    const tle = gen.getRealTile(realx, realy)
-    console.log(tle, true)
+    gen.placeTile(realx, realy, select, lastidx > 1)
 }
 
 export function hasMouse() {
