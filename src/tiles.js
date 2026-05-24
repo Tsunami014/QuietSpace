@@ -3,6 +3,8 @@ const tiles = new Map()
 
 export const pixel = false
 
+export var UI;
+
 var tleWid;
 var tleHei;
 export function setTleSzes(wid, hei) {
@@ -157,6 +159,10 @@ export async function load(nxt) {
         await loadTiles(dat, js[nam])
         nxt()
     }
+    UI = new Image()
+    UI.src = "assets/ui.svg"
+    await UI.decode()
+    nxt()
 }
 
 export function getTile(tname, rand) {

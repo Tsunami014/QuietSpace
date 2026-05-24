@@ -1,18 +1,13 @@
 export var x = 0
 export var y = 0
 
-export function getUnderThis(nx, ny) {
-    const tx = nx/draw.units
-    const ty = ny/draw.units
-    const realx = tx-((ty-1)/2)
-    const realy = tx+(ty/2) + 0.5
+export function getUnder(nx, ny) {
+    const realx = nx-((ny-1)/2)
+    const realy = nx+(ny/2) + 0.5
     return gen.getRealTile(Math.floor(realx), Math.floor(realy))
 }
-export function getUnder() {
-    return gen.getUnderThis(x, y)
-}
 function collides(nx, ny) {
-    return getUnderThis(nx, ny).some(tle=>{
+    return getUnder(nx/draw.units, ny/draw.units).some(tle=>{
         return tle.includes("water") ||
                 tle.includes("cone") ||
                 tle == "tree"

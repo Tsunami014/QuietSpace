@@ -55,11 +55,22 @@ export function draw() {
                 const basey = qblk*i+yoffs
                 const ypos = basey - hei+hblk
                 if (!tiles.pixel) { wid++; hei++ }
-                if (basey >= midp && idx != 0)
+                if (basey >= midp && idx != 0) {
                     ctx2.drawImage(source.img, xpos, ypos, wid, hei)
-                else
+                } else {
                     ctx1.drawImage(source.img, xpos, ypos, wid, hei)
+                }
             })
         }
+    }
+
+    // Draw the UI
+    if (mouse.hasMouse()) {
+        const [mx, my] = mouse.getPos()
+        var offs = Math.abs((Math.abs(mx)*2+1)%2-1) >= Math.abs(Math.abs(my)%2-1) ? 0.5:0
+        ctx2.drawImage(tiles.UI, 0, 0, 48, 24,
+            (Math.round(mx-offs) + offs + txoffs)*blk-qblk + xoffs,
+            ((Math.round(my/2) - offs)*2 + tyoffs + offs*Math.abs(Math.floor(my+1)%2)*4)*qblk+qblk*0.5 + yoffs,
+            blk*1.5, hblk*1.5)
     }
 }

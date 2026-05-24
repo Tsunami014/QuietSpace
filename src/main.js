@@ -8,6 +8,7 @@ var player;
 var gen;
 var draw;
 var phys;
+var mouse;
 
 const pbhei = 40
 const pbgap = 4
@@ -32,7 +33,7 @@ function drawLoading(progress) {
 }
 
 async function load() {
-    const max = 14;
+    const max = 16;
     var i = 0
     function nxt() {
         if (i <= max) {
@@ -53,6 +54,8 @@ async function load() {
     player = await import("/src/player.js")
     nxt()
     await player.load(nxt)
+    nxt()
+    mouse = await import("/src/mouse.js")
     nxt()
 
     if (i > max) {
@@ -81,19 +84,18 @@ function tick() {
         }
         draw.draw()
     }
-    gen.cacheTick()
     var dx = 0
     var dy = 0
-    if (keys['p']) console.log(phys.getUnder())
     if (keys['ArrowUp'])    dy = -1
     if (keys['ArrowDown'])  dy = 1
     if (keys['ArrowLeft'])  dx = -1
     if (keys['ArrowRight']) dx = 1
     let ox = phys.x
     if (phys.tick(dx, dy)) {
+        gen.cacheTick()
         if (ox != phys.x) player.setdir(Math.sign(phys.x-ox))
-        draw.draw()
     }
+    draw.draw()
     requestAnimationFrame(tick)
 }
 
