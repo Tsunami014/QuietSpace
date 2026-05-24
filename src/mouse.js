@@ -5,10 +5,31 @@ window.addEventListener('mousemove', (event) => {
 });
 window.addEventListener('click', (event) => {
     mx = event.clientX; my = event.clientY
+    click_left()
+});
+window.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+    mx = event.clientX; my = event.clientY
+    click_right()
+});
+window.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        click_right()
+    } else if (event.key === ' ') {
+        click_left()
+    }
+});
+
+function click_left() {
     const [px, py] = getPos()
     const tle = phys.getUnder(px, py)
-    console.log(tle)
-});
+    console.log(tle, false)
+}
+function click_right() {
+    const [px, py] = getPos()
+    const tle = phys.getUnder(px, py)
+    console.log(tle, true)
+}
 
 export function hasMouse() {
     return mx !== undefined
