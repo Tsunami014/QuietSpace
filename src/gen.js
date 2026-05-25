@@ -54,7 +54,7 @@ function cachehash(...args) {
 }
 
 
-function getTileInner(tlx, tly, loclx, locly, pltsze, sandy) {
+function getTileInner(tlx, tly, loclx, locly, pltsze, rx, ry, sandy) {
     if (sandy > 2) {
         return ["sand"]
     }
@@ -64,13 +64,17 @@ function getTileInner(tlx, tly, loclx, locly, pltsze, sandy) {
         }
         return ["sand"]
     }
-    if (cachehash(0, tlx, tly)%2 == 0) {
+    const blocktyp = cachehash(0, tlx, tly)%3
+    if (blocktyp == 0) {
         return ["footpath"]
+    } else if (blocktyp == 1) {
+        if (cachehash(2, rx, ry)%6 == 0) {
+            return ["grass_plain"]
+        } return ["grass"]
     } else {
-        if (cachehash(1, tlx, tly, loclx, locly)%10 == 0) {
+        if (cachehash(1, rx, ry)%10 == 0) {
             return ["grass_plain", "tree"]
-        }
-        return ["grass"]
+        } return ["grass"]
     }
 }
 const plotSze = 10+5
@@ -183,5 +187,5 @@ function _getRealTile(realx, realy) {
     if (loclx == 2 || locly == 2 || loclx == plotSze-2 || locly == plotSze-2) {
         return ["footpath"]
     }
-    return getTileInner(tlx, tly, loclx+3, locly+3, plotSze-5, sandy)
+    return getTileInner(tlx, tly, loclx+3, locly+3, plotSze-5, realx, realy, sandy)
 }
