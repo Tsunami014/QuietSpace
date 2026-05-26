@@ -15,7 +15,17 @@ export function load_all() {
     gen_nams()
 }
 
-var name = ""
+var name = "!Last world"
+export function world_idx() {
+    return world_nams.indexOf(name)
+}
+
+export function mknew() {
+    name = "!Last world"
+    gen.randSeed()
+    save()
+}
+
 export function load(nam) {
     name = nam
     if (world_nams.includes(nam)) {
@@ -27,9 +37,7 @@ export function load(nam) {
     }
 }
 export function save() {
-    if (name != "") {
-        worlds[name] = [gen.seed, []]
-        gen_nams()
-    }
+    worlds[name] = [gen.seed, []]
     localStorage.setItem('worlds', JSON.stringify(worlds));
+    gen_nams()
 }

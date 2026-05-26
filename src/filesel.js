@@ -57,13 +57,16 @@ export function toggle() {
     if (contnr.style.display == "") {
         contnr.style.display = "none"
         fselopen = false
-        if (pagenum > 1) {
-            worlds.load(worlds.world_nams[pagenum-2])
+        if (pagenum == 2) {
+            worlds.mknew()
+        } else if (pagenum > 2) {
+            worlds.load(worlds.world_nams[pagenum-3])
         }
     } else {
         contnr.style.display = ""
         if (fselopen !== undefined) {
             worlds.save()
+            pagenum = worlds.world_idx()+3
         }
         fselopen = true
         redraw()
@@ -94,13 +97,15 @@ function drawPage() {
             "Space/left click to pick block\n\n"+
             "Enter/right click to place block",
         8, 54)
+    } else if (pagenum == 2) {
+        addText("New world", 20, 4)
     } else {
-        addText(worlds.world_nams[pagenum-2], 20, 4)
+        addText(worlds.world_nams[pagenum-3], 20, 4)
     }
 }
 
 function maxPage() {
-    return worlds.world_nams.length+1
+    return worlds.world_nams.length+2
 }
 
 const mainfill = "#753127"
