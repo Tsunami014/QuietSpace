@@ -35,7 +35,7 @@ function drawLoading(progress) {
 }
 
 async function load() {
-    const max = 22;
+    const max = 23;
     var i = 0
     function nxt() {
         if (i <= max) {
@@ -45,7 +45,7 @@ async function load() {
     }
     worlds = await import("/src/worlds.js")
     nxt()
-    worlds.load()
+    worlds.load_all()
     nxt()
     fsel = await import("/src/filesel.js")
     nxt()
@@ -59,7 +59,9 @@ async function load() {
     phys = await import("/src/phys.js")
     nxt()
     await tiles.load(nxt)
+    nxt()
     gen = await import("/src/gen.js")
+    gen.randSeed()
     nxt()
     player = await import("/src/player.js")
     nxt()

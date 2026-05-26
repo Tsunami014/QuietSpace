@@ -1,4 +1,4 @@
-export var fselopen = true
+export var fselopen
 var contnr; var inncontnr;
 var page1; var page2; var pageconts
 var width; var height
@@ -57,9 +57,16 @@ export function toggle() {
     if (contnr.style.display == "") {
         contnr.style.display = "none"
         fselopen = false
+        if (pagenum > 1) {
+            worlds.load(worlds.world_nams[pagenum-2])
+        }
     } else {
         contnr.style.display = ""
+        if (fselopen !== undefined) {
+            worlds.save()
+        }
         fselopen = true
+        redraw()
     }
 }
 
@@ -88,12 +95,12 @@ function drawPage() {
             "Enter/right click to place block",
         8, 54)
     } else {
-        addText("World name", 20, 4)
+        addText(worlds.world_nams[pagenum-2], 20, 4)
     }
 }
 
 function maxPage() {
-    return worlds.worlds.length+1
+    return worlds.world_nams.length+1
 }
 
 const mainfill = "#753127"

@@ -1,4 +1,4 @@
-var seed
+export var seed
 
 // My custom randomness - an amalgamation of various algorithms
 const _hashStrs = [0x27D4EB2D, 0x9E3779B1, 0x165667B1, 0xC2B2AE35, 0x85EBCA6B]
@@ -23,7 +23,7 @@ var y_wonk
 var islandSze
 var outerRingSze
 var sandDist
-function setSeed(nseed) {
+export function setSeed(nseed) {
     seed = nseed
     x_wonk = (hash(-999, 0)%10) / 20 + 0.5
     y_wonk = (hash(-999, 1)%10) / 20 + 0.5
@@ -35,8 +35,13 @@ function setSeed(nseed) {
     outerRingSze *= outerRingSze
 
     sandDist = islandSze-outerRingSze*4
+
+    placeds = new Map();
+    tleCache = new Map();
 }
-setSeed(42)
+export function randSeed() {
+    setSeed(Math.round(Math.random()*(10**15)))
+}
 
 var _cache = []
 const mxCacheLen = 15+3

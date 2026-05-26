@@ -24,6 +24,7 @@ export var select = null;
 var lastrx; var lastry
 var lastidx
 function click_left() {
+    if (fsel.fselopen) return;
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
     if (realx != lastrx || realy != lastry) {
@@ -35,6 +36,7 @@ function click_left() {
     select = tiles.normalise(tle[lastidx++])
 }
 function click_right() {
+    if (fsel.fselopen) return;
     if (lastidx == 0 || select === null) return
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
