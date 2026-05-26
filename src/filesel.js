@@ -4,15 +4,16 @@ var page1; var page2; var pageconts
 var width; var height
 var pagenum = 0
 
+const extraPages = 2
 function maxPage() {
-    return worlds.world_nams.length+3
+    return worlds.world_nams.length+extraPages+2
 }
 
 var aftms; var befms; var nowms
 const marks = [
     [1, "c", null],
-    [2, "n", null],
-    [3, "l", null]
+    [extraPages+1, "n", null],
+    [extraPages+2, "l", null]
 ]
 
 const precache = [
@@ -95,13 +96,13 @@ export function toggle() {
         if (pagenum == 2) {
             worlds.mknew()
         } else if (pagenum > 2 && pagenum < maxPage()) {
-            worlds.load(worlds.world_nams[pagenum-3])
+            worlds.load(worlds.world_nams[pagenum-extraPages-2])
         }
     } else {
         contnr.style.display = ""
         if (fselopen !== undefined) {
             worlds.save()
-            pagenum = worlds.world_idx()+3
+            pagenum = worlds.world_idx()+extraPages+2
         }
         fselopen = true
         redraw()
@@ -112,7 +113,7 @@ var s;
 function addText(txt, sze, hei) {
     const t = document.createElement('p')
     t.className = "txt"
-    t.innerHTML = txt
+    t.innerText = txt
     t.style.fontSize = sze*s/10+"px"
     t.style.lineHeight = t.style.fontSize
     t.style.top = hei+"%"
@@ -125,40 +126,46 @@ function drawPage() {
             "Left/right arrows or double click to change page",
         10, 70)
     } else if (pagenum == 1) {
-        addText("Controls", 25, 0)
+        addText("Menu Controls", 25, 5)
         addText(
-            "Escape to toggle this menu.<br>If a world page is selected, will load that world.<br><br>"+
-            "- WSAD or arrow keys to move<br>"+
-            "<i>Mouse controls</i>:<br>"+
-            "- Space/left click to pick a block (shown in the top left corner)<br>"+
-            "- Enter/right click to place block",
-        8, 54)
+            "Escape to toggle this menu.\nIf a world page is selected (including last or new world), will load that world.\n\n"+
+            "Bookmarks have letters on them, press the letter to go to that page.",
+        8, 60)
     } else if (pagenum == 2) {
+        addText("Game controls", 25, 5)
+        addText(
+            "WSAD or arrow keys to move\n\n"+
+            "Mouse controls:\n"+
+            "Left click/Space to pick a block (shown in the top right corner)\n"+
+            "Right click/Enter to place block",
+        8, 60)
+    } else if (pagenum == extraPages+1) {
         addText("New world", 20, 4)
         addText(
-            "Pressing esc here will generate a new world!",
+            "This will generate a new world!",
         10, 48)
     } else if (pagenum < maxPage()) {
         const t = document.createElement('input')
         t.type = "text"
         t.className = "txt"
-        let last = worlds.world_nams[pagenum-3]
+        let last = worlds.world_nams[pagenum-extraPages-2]
         t.value = last.replace("\x01", '')
+        t.setAttribute("maxlength", 10)
         t.style.fontSize = 2*s+"px"
         t.style.lineHeight = t.style.fontSize
         t.onchange = function() {
             if (worlds.rename(last, t.value, true)) {
                 last = t.value
-                pagenum = worlds.world_idx()+3
+                pagenum = worlds.world_idx()+extraPages+2
                 redraw()
             } else {
                 t.value = last.replace("\x01", '')
             }
         }
         pageconts.appendChild(t)
-        if (pagenum == 3) {
+        if (pagenum == extraPages+2) {
             addText(
-                "This gets overridden all the time, do not hope to store something permanently here!<br><br>"+
+                "This gets overridden all the time, do not hope to store something permanently here!\n\n"+
                 "To permanently store the current world, rename this!",
             8, 54)
         } else {
@@ -169,7 +176,7 @@ function drawPage() {
             bin.style.width = "20%"
             bin.onclick = function() {
                 if (worlds.delworld(t.value)) {
-                    pagenum = 3
+                    pagenum = extraPages+2
                     redraw()
                 }
             }
@@ -177,8 +184,8 @@ function drawPage() {
         }
     } else {
         addText(
-            "Something chill will go here!<br><br>:)",
-        10, 45)
+            "Made with <3 by Tsunami014",
+        10, 50)
     }
 }
 
@@ -186,20 +193,19 @@ const mainfill = "#753127"
 const subfill = "#ECE4D5"
 export function redraw() {
     const mx = maxPage()
+    const startend = pagenum == 0 || pagenum == mx
     if (canvas1.width < canvas1.height) {
         s = canvas1.width/width * 0.7
     } else {
         s = canvas1.height/height * 0.7
     }
-    const transx = pagenum == 0 || pagenum == mx ? -50 : -70
-    inncontnr.style.transform = `rotate(-1deg) scale(${s}) translate(${transx}%, -50%)`
+    inncontnr.style.transform = `rotate(-1deg) scale(${s}) translate(${startend ? -50 : -70}%, -50%)`
     pageconts.setAttribute("width", width*s); pageconts.setAttribute("height", height*s)
     pageconts.setAttribute("transform", `scale(${1/s})`)
 
-    aftms.style.right = pagenum == mx ? "10%" : "55%"
-    befms.style.left = pagenum == 0 ? "0" : "50%"
+    aftms.style.right = pagenum == mx ? "15%" : "55%"
+    befms.style.left = pagenum == 0 ? "0" : "55%"
 
-    const startend = pagenum == 0 || pagenum == mx
     page1.style.fill = pagenum == 1 || pagenum == mx ? mainfill : subfill
     page1.style.display = startend ? "none" : ""
     page1.style.transform = startend ? "" : "translate(3%) scale(-1, 1)"
