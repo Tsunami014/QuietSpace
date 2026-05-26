@@ -2,19 +2,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuietSpace</title>
     <style>
+* { font-family: sans-serif; }
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
+    overflow: hidden;
 }
-
-canvas {
+canvas, #playerContainer > svg, #fselout {
     display: block;
     position: absolute;
 }
-
-svg {
+#fselout {
+    background-color: white;
+    width: 100vw;
+    height: 100vh;
+}
+#fsel {
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: left top;
+}
+#fsel svg { overflow: visible; }
+.txt {
+    position: absolute;
+    transform: translate(0, -50%);
+    padding: 5%;
+    width: 90%;
+    text-align: center;
+    font-weight: bold;
 }
 .circle {
     position: absolute;
@@ -36,4 +54,5 @@ svg {
     <canvas id="canvas2"></canvas>
     <!--div class="circle"></div-->
     <script src="src/main.js"></script>
+    <div id="fselout"><div id="fsel"></div></div>
 </body>

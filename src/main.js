@@ -9,11 +9,12 @@ var gen;
 var draw;
 var phys;
 var mouse;
+var fsel;
 
 const pbhei = 40
 const pbgap = 4
 function drawLoading(progress) {
-    resizeCanvas();
+    resizeCanvas(false);
     const pbx = canvas1.width / 6
     const pby = (canvas1.height - pbhei) / 2;
     const pbwid = canvas1.width - pbx*2;
@@ -33,7 +34,7 @@ function drawLoading(progress) {
 }
 
 async function load() {
-    const max = 16;
+    const max = 19;
     var i = 0
     function nxt() {
         if (i <= max) {
@@ -41,6 +42,10 @@ async function load() {
         }
         i++
     }
+    fsel = await import("/src/filesel.js")
+    nxt()
+    await fsel.init(nxt)
+    nxt()
     draw = await import("/src/draw.js")
     nxt()
     tiles = await import("/src/tiles.js")
@@ -70,7 +75,22 @@ const keys = {}
 window.addEventListener('keydown', (e) => keys[e.key] = true)
 window.addEventListener('keyup', (e) => keys[e.key] = false)
 
+var lastpress = 0
 function tick() {
+    var dx = 0
+    if (keys['ArrowLeft']) dx = -1
+    if (keys['a']) dx = -1
+    if (keys['ArrowRight']) dx = 1
+    if (keys['d']) dx = 1
+
+    if (fsel.fselopen) {
+        if (lastpress != dx && dx != 0) fsel.press(dx)
+        lastpress = dx
+
+        requestAnimationFrame(tick)
+        return
+    }
+    lastpress = dx
     if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {
         resizeCanvas(true)
         if (!tiles.pixel) {
@@ -84,16 +104,11 @@ function tick() {
         }
         draw.draw()
     }
-    var dx = 0
     var dy = 0
     if (keys['ArrowUp']) dy = -1
     if (keys['w']) dy = -1
     if (keys['ArrowDown']) dy = 1
     if (keys['s']) dy = 1
-    if (keys['ArrowLeft']) dx = -1
-    if (keys['a']) dx = -1
-    if (keys['ArrowRight']) dx = 1
-    if (keys['d']) dx = 1
     let ox = phys.x
     if (phys.tick(dx, dy)) {
         gen.cacheTick()
@@ -104,19 +119,20 @@ function tick() {
 }
 
 
-function resizeCanvas(setTles) {
+function resizeCanvas(loaded) {
     canvas1.width = window.innerWidth;
     canvas1.height = window.innerHeight;
     canvas2.width = window.innerWidth;
     canvas2.height = window.innerHeight;
-    if (setTles) {
+    if (loaded) {
+        fsel.redraw()
         const [cols, rows, blk, hblk, qblk] = draw.getSizes()
         tiles.setTleSzes(blk, hblk)
     }
 }
 
 async function init() {
-    resizeCanvas();
+    resizeCanvas(false);
     drawLoading(0);
     await load()
     draw.draw()
