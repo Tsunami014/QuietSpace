@@ -202,7 +202,13 @@ export function redraw() {
     }
     inncontnr.style.transform = `rotate(-1deg) scale(${s}) translate(${startend ? -50 : -70}%, -50%)`
     pageconts.setAttribute("width", width*s); pageconts.setAttribute("height", height*s)
-    pageconts.setAttribute("transform", `scale(${1/s})`)
+    if (pagenum == mx) {
+        pageconts.setAttribute("transform", `scale(${-1/s}, ${1/s})`)
+        pageconts.style.translate = "100%"
+    } else {
+        pageconts.setAttribute("transform", `scale(${1/s})`)
+        pageconts.style.translate = ""
+    }
 
     aftms.style.right = pagenum == mx ? "15%" : "55%"
     befms.style.left = pagenum == 0 ? "0" : "55%"
@@ -211,6 +217,7 @@ export function redraw() {
     page1.style.display = startend ? "none" : ""
     page1.style.transform = startend ? "" : "translate(3%) scale(-1, 1)"
     page2.style.fill = startend ? mainfill : subfill
+    page2.style.transform = pagenum == mx ? "scale(-1, 1)" : ""
 
     pageconts.replaceChildren()
     drawPage()
