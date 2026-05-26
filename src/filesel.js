@@ -19,6 +19,10 @@ const precache = [
   './assets/journal/bin.svg'
 ];
 
+function avaliable() {
+    return document.activeElement == document.body
+}
+
 
 export async function init(nxt) {
     // I ain't waiting for ts
@@ -58,20 +62,23 @@ export async function init(nxt) {
     befms.className = "marks"
     nowms = document.createElement("div")
     nowms.id = "nowmarks"
-    nowms.onclick = function() { press(-1, {}); }
+    nowms.ondblclick = function() { press(-1, {}); }
 
     const jrnlDoc = parser.parseFromString(jrnlstr, 'image/svg+xml')
     contnr = document.getElementById("fselout")
     inncontnr = document.getElementById("fsel")
 
     page1 = jrnlDoc.documentElement
-    page1.onclick = function() { press(-1, {}); }
+    page1.ondblclick = function() { press(-1, {}); }
     width = parseInt(page1.getAttribute("width")); height = parseInt(page1.getAttribute("height"))
 
     page2 = jrnlDoc.documentElement.cloneNode(true)
     pageconts = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject")
     pageconts.setAttribute("x", 0); pageconts.setAttribute("y", 0)
-    //pageconts.onclick = function() { press(1, {}); }
+    pageconts.ondblclick = function() {
+        if (!avaliable()) return;
+        press(1, {})
+    }
     page2.appendChild(pageconts)
 
     redraw()
@@ -105,7 +112,7 @@ var s;
 function addText(txt, sze, hei) {
     const t = document.createElement('p')
     t.className = "txt"
-    t.innerText = txt
+    t.innerHTML = txt
     t.style.fontSize = sze*s/10+"px"
     t.style.lineHeight = t.style.fontSize
     t.style.top = hei+"%"
@@ -115,15 +122,16 @@ function drawPage() {
     if (pagenum == 0) {
         addText("Quiet Space", 30, 5)
         addText(
-            "Left/right arrows or click to change page",
+            "Left/right arrows or double click to change page",
         10, 70)
     } else if (pagenum == 1) {
         addText("Controls", 25, 0)
         addText(
-            "Escape to toggle this menu.\nIf a world page is selected, will load that world\n\n"+
-            "WSAD to move\n\n"+
-            "Space/left click to pick block\n\n"+
-            "Enter/right click to place block",
+            "Escape to toggle this menu.<br>If a world page is selected, will load that world.<br><br>"+
+            "- WSAD or arrow keys to move<br>"+
+            "<i>Mouse controls</i>:<br>"+
+            "- Space/left click to pick a block (shown in the top left corner)<br>"+
+            "- Enter/right click to place block",
         8, 54)
     } else if (pagenum == 2) {
         addText("New world", 20, 4)
@@ -139,20 +147,26 @@ function drawPage() {
         t.style.fontSize = 2*s+"px"
         t.style.lineHeight = t.style.fontSize
         t.onchange = function() {
-            if (worlds.rename(last, t.value)) {
+            if (worlds.rename(last, t.value, true)) {
                 last = t.value
+                pagenum = worlds.world_idx()+3
                 redraw()
             } else {
                 t.value = last.replace("\x01", '')
             }
         }
         pageconts.appendChild(t)
-        if (pagenum > 3) {
+        if (pagenum == 3) {
+            addText(
+                "This gets overridden all the time, do not hope to store something permanently here!<br><br>"+
+                "To permanently store the current world, rename this!",
+            8, 54)
+        } else {
             const bin = document.createElement('img');
             bin.src = '/assets/journal/bin.svg';
+            bin.className = "imgbtn"
             bin.style.bottom = "5%"; bin.style.right = "5%"
-            bin.style.width = "20%"; bin.style.rotate = "3deg"
-            bin.style.cursor = "pointer"
+            bin.style.width = "20%"
             bin.onclick = function() {
                 if (worlds.delworld(t.value)) {
                     pagenum = 3
@@ -206,6 +220,7 @@ export function redraw() {
 }
 
 export function press(dx, keys) {
+    if (!avaliable()) return;
     var topage = marks.find(it=>{ return keys[it[1]] })
     if (topage !== undefined) {
         pagenum = topage[0]

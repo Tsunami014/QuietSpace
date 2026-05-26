@@ -16,13 +16,18 @@ export function load_all() {
 }
 
 var name = ""
+export var last = ""
 const lastName = "\x01Last world"
 export function world_idx() {
+    if (name == lastName && last != "" && last != lastName) {
+        return world_nams.indexOf(last)
+    }
     return world_nams.indexOf(name || lastName)
 }
 
 export function mknew() {
     name = ""
+    last = ""
     gen.randSeed()
     phys.teleport(0, 0)
     save()
@@ -30,6 +35,7 @@ export function mknew() {
 
 export function load(nam) {
     name = nam
+    if (nam != "" && nam != lastName) last = nam;
     if (world_nams.includes(nam)) {
         const [sd, x, y, placeds] = worlds[nam]
         gen.setSeed(sd)
@@ -48,13 +54,13 @@ export function save() {
     gen_nams()
 }
 
-export function rename(oldnam, newnam) {
+export function rename(oldnam, newnam, set) {
     if (!newnam) return false;
     if (world_nams.indexOf(newnam) === undefined &&
         !confirm(`A world with the name '${newnam}' already exists, are you sure you want to override it?`)) {
             return false;
     }
-    if (name == oldnam) {
+    if (set || name == oldnam) {
         name = newnam
     } else {
         worlds[newnam] = worlds[oldnam]
