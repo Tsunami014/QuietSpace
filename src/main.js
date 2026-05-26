@@ -10,6 +10,7 @@ var draw;
 var phys;
 var mouse;
 var fsel;
+var worlds;
 
 const pbhei = 40
 const pbgap = 4
@@ -34,7 +35,7 @@ function drawLoading(progress) {
 }
 
 async function load() {
-    const max = 20;
+    const max = 22;
     var i = 0
     function nxt() {
         if (i <= max) {
@@ -42,6 +43,10 @@ async function load() {
         }
         i++
     }
+    worlds = await import("/src/worlds.js")
+    nxt()
+    worlds.load()
+    nxt()
     fsel = await import("/src/filesel.js")
     nxt()
     await fsel.init(nxt)
@@ -68,6 +73,7 @@ async function load() {
     } else if (i < max) {
         console.warn("Went under maximum by "+(max-i)+" (should be "+i+")")
     }
+    fsel.toggle()
 }
 
 // Keep keys in a dict
@@ -75,8 +81,16 @@ const keys = {}
 window.addEventListener('keydown', (e) => keys[e.key] = true)
 window.addEventListener('keyup', (e) => keys[e.key] = false)
 
+var lastesc = false
 var lastpress = 0
 function tick() {
+    if (keys['Escape']) {
+        if (!lastesc) {
+            lastesc = true
+            fsel.toggle()
+        }
+    } else { lastesc = false }
+
     var dx = 0
     if (keys['ArrowLeft']) dx = -1
     if (keys['a']) dx = -1
