@@ -39,25 +39,27 @@ export async function init(nxt) {
     befms.className = "marks"
     nowms = document.createElement("div")
     nowms.id = "nowmarks"
+    nowms.onclick = function() { press(-1, {}); }
 
     const jrnlDoc = parser.parseFromString(jrnlstr, 'image/svg+xml')
     contnr = document.getElementById("fselout")
     inncontnr = document.getElementById("fsel")
 
     page1 = jrnlDoc.documentElement
+    page1.onclick = function() { press(-1, {}); }
     width = parseInt(page1.getAttribute("width")); height = parseInt(page1.getAttribute("height"))
 
     page2 = jrnlDoc.documentElement.cloneNode(true)
     pageconts = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject")
     pageconts.setAttribute("x", 0); pageconts.setAttribute("y", 0)
+    pageconts.onclick = function() { press(1, {}); }
     page2.appendChild(pageconts)
 
     redraw()
-    inncontnr.appendChild(aftms)
-    inncontnr.appendChild(befms)
-    inncontnr.appendChild(page1)
-    inncontnr.appendChild(page2)
-    inncontnr.appendChild(nowms)
+    inncontnr.append(
+        aftms, befms,
+        page1, page2,
+        nowms)
 }
 
 export function toggle() {
@@ -94,12 +96,12 @@ function drawPage() {
     if (pagenum == 0) {
         addText("Quiet Space", 30, 5)
         addText(
-            "Left/right arrows to change page",
+            "Left/right arrows or click to change page",
         10, 70)
     } else if (pagenum == 1) {
         addText("Controls", 25, 0)
         addText(
-            "Escape to show/hide this menu\n\n"+
+            "Escape to toggle this menu.\nIf a world page is selected, will load that world\n\n"+
             "WSAD to move\n\n"+
             "Space/left click to pick block\n\n"+
             "Enter/right click to place block",
