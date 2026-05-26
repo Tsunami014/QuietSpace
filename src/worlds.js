@@ -23,6 +23,7 @@ export function world_idx() {
 export function mknew() {
     name = "!Last world"
     gen.randSeed()
+    phys.teleport(0, 0)
     save()
 }
 
