@@ -109,7 +109,7 @@ export function toggle() {
     }
 }
 
-var s;
+var s; var startend;
 function addText(txt, sze, hei) {
     const t = document.createElement('p')
     t.className = "txt"
@@ -117,6 +117,7 @@ function addText(txt, sze, hei) {
     t.style.fontSize = sze*s/10+"px"
     t.style.lineHeight = t.style.fontSize
     t.style.top = hei+"%"
+    if (startend) t.style.color = "wheat";
     pageconts.appendChild(t)
 }
 function drawPage() {
@@ -193,7 +194,7 @@ const mainfill = "#753127"
 const subfill = "#ECE4D5"
 export function redraw() {
     const mx = maxPage()
-    const startend = pagenum == 0 || pagenum == mx
+    startend = pagenum == 0 || pagenum == mx
     if (canvas1.width < canvas1.height) {
         s = canvas1.width/width * 0.7
     } else {
