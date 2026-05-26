@@ -4,6 +4,10 @@ var page1; var page2; var pageconts
 var width; var height
 var pagenum = 0
 
+function maxPage() {
+    return worlds.world_nams.length+3
+}
+
 var aftms; var befms; var nowms
 const marks = [
     [1, "c", null],
@@ -34,7 +38,6 @@ export async function init(nxt) {
     })
     aftms = document.createElement("div")
     aftms.className = "marks"
-    aftms.style.right = "55%"
     befms = document.createElement("div")
     befms.className = "marks"
     nowms = document.createElement("div")
@@ -68,7 +71,7 @@ export function toggle() {
         fselopen = false
         if (pagenum == 2) {
             worlds.mknew()
-        } else if (pagenum > 2) {
+        } else if (pagenum > 2 && pagenum < maxPage()) {
             worlds.load(worlds.world_nams[pagenum-3])
         }
     } else {
@@ -111,7 +114,7 @@ function drawPage() {
         addText(
             "Pressing esc here will generate a new world!",
         10, 48)
-    } else {
+    } else if (pagenum < maxPage()) {
         const t = document.createElement('input')
         t.type = "text"
         t.className = "txt"
@@ -131,34 +134,32 @@ function drawPage() {
     }
 }
 
-function maxPage() {
-    return worlds.world_nams.length+2
-}
-
 const mainfill = "#753127"
 const subfill = "#ECE4D5"
 export function redraw() {
+    const mx = maxPage()
     if (canvas1.width < canvas1.height) {
         s = canvas1.width/width * 0.7
     } else {
         s = canvas1.height/height * 0.7
     }
-    const transx = pagenum == 0 ? -50 : -70
+    const transx = pagenum == 0 || pagenum == mx ? -50 : -70
     inncontnr.style.transform = `rotate(-1deg) scale(${s}) translate(${transx}%, -50%)`
     pageconts.setAttribute("width", width*s); pageconts.setAttribute("height", height*s)
     pageconts.setAttribute("transform", `scale(${1/s})`)
 
+    aftms.style.right = pagenum == mx ? "10%" : "55%"
     befms.style.left = pagenum == 0 ? "0" : "50%"
 
-    page1.style.fill = pagenum == 1 ? mainfill : subfill
+    page1.style.fill = pagenum == 1 || pagenum == mx ? mainfill : subfill
     page1.style.display = pagenum == 0 ? "none" : ""
     page1.style.transform = pagenum == 0 ? "" : "translate(3%) scale(-1, 1)"
     page2.style.fill = pagenum == 0 ? mainfill : subfill
+    page2.style.display = pagenum == mx ? "none" : ""
 
     pageconts.replaceChildren()
     drawPage()
 
-    const mx = maxPage()
     marks.forEach(m=>{
         if (m[0] > mx) {
             m[2].remove()
