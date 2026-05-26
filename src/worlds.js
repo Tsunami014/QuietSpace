@@ -63,3 +63,12 @@ export function rename(oldnam, newnam) {
     save()
     return true;
 }
+export function delworld(nam) {
+    if (!confirm(`Are you sure you want to delete '${nam}'? It will be gone forever! (A long time!)`)) {
+        return false;
+    }
+    if (name == nam) name = "";
+    delete worlds[nam]
+    save()
+    return true;
+}

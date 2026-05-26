@@ -94,16 +94,18 @@ function tick() {
     } else { lastesc = false }
 
     var dx = 0
-    if (keys['ArrowLeft']) dx = -1
-    if (keys['a']) dx = -1
-    if (keys['ArrowRight']) dx = 1
-    if (keys['d']) dx = 1
+    if (keys['ArrowLeft'] || keys['a']) dx = -1
+    if (keys['ArrowRight'] || keys['d']) dx = 1
 
     if (fsel.fselopen) {
         if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {
             resizeCanvas(true)
         }
-        fsel.press(lastpress == dx ? 0 : dx, keys)
+        var ddx = 0;
+        if (keys['PageDown'] || keys['Home']) ddx = -2;
+        if (keys['PageUp'] || keys['End']) ddx = 2;
+        if (ddx == 0 && lastpress != dx) ddx = dx;
+        fsel.press(ddx, keys)
         lastpress = dx
 
         requestAnimationFrame(tick)
@@ -124,10 +126,8 @@ function tick() {
         draw.draw()
     }
     var dy = 0
-    if (keys['ArrowUp']) dy = -1
-    if (keys['w']) dy = -1
-    if (keys['ArrowDown']) dy = 1
-    if (keys['s']) dy = 1
+    if (keys['ArrowUp'] || keys['w']) dy = -1
+    if (keys['ArrowDown'] || keys['s']) dy = 1
     let ox = phys.x
     if (phys.tick(dx, dy)) {
         gen.cacheTick()

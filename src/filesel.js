@@ -15,10 +15,26 @@ const marks = [
     [3, "l", null]
 ]
 
+const precache = [
+  './assets/journal/bin.svg'
+];
+
+
 export async function init(nxt) {
-    const jrnlstr = await (await fetch("./assets/journal.svg")).text()
+    // I ain't waiting for ts
+    Promise.all(precache.map((src) => {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = src;
+            img.onload = resolve;
+            img.onerror = reject;
+        });
+    }));
+
+
+    const jrnlstr = await (await fetch("./assets/journal/jrnl.svg")).text()
     nxt()
-    const markstr = await (await fetch("./assets/mark.svg")).text()
+    const markstr = await (await fetch("./assets/journal/mark.svg")).text()
     nxt()
     const parser = new DOMParser()
 
@@ -131,6 +147,20 @@ function drawPage() {
             }
         }
         pageconts.appendChild(t)
+        if (pagenum > 3) {
+            const bin = document.createElement('img');
+            bin.src = '/assets/journal/bin.svg';
+            bin.style.bottom = "5%"; bin.style.right = "5%"
+            bin.style.width = "20%"; bin.style.rotate = "3deg"
+            bin.style.cursor = "pointer"
+            bin.onclick = function() {
+                if (worlds.delworld(t.value)) {
+                    pagenum = 3
+                    redraw()
+                }
+            }
+            pageconts.appendChild(bin)
+        }
     }
 }
 
@@ -180,7 +210,9 @@ export function press(dx, keys) {
     if (topage !== undefined) {
         pagenum = topage[0]
     } else if (dx != 0) {
-        pagenum += dx
+        if (dx == -2) pagenum = 0;
+        else if (dx == 2) pagenum = maxPage();
+        else pagenum += dx;
     } else { return; }
     if (pagenum < 0) pagenum = 0
     const mx = maxPage()
