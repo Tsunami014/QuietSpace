@@ -34,6 +34,22 @@ canvas, #playerContainer > svg, #fselout {
     text-align: center;
     font-weight: bold;
 }
+.marks {
+    position: absolute;
+    translate: 0 -15%;
+    z-index: -1;
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+    margin-left: 3%;
+}
+.marks > * { cursor: pointer; }
+#nowmarks {
+    position: absolute;
+    transform: translate(20%);
+    right: 50%;
+    top: 5%;
+}
 .circle {
     position: absolute;
     left: calc(50vw - 5px);

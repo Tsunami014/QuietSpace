@@ -34,7 +34,7 @@ function drawLoading(progress) {
 }
 
 async function load() {
-    const max = 19;
+    const max = 20;
     var i = 0
     function nxt() {
         if (i <= max) {
@@ -84,6 +84,9 @@ function tick() {
     if (keys['d']) dx = 1
 
     if (fsel.fselopen) {
+        if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {
+            resizeCanvas(true)
+        }
         if (lastpress != dx && dx != 0) fsel.press(dx)
         lastpress = dx
 
