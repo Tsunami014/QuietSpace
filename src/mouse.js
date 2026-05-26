@@ -13,7 +13,7 @@ window.addEventListener('contextmenu', function(event) {
     click_right()
 });
 window.addEventListener('keydown', (event) => {
-    //if (event.repeat) return;
+    if (event.repeat) return;
     if (event.key === 'Enter') {
         click_right()
     } else if (event.key === ' ') {

@@ -52,7 +52,7 @@ export async function init(nxt) {
     page2 = jrnlDoc.documentElement.cloneNode(true)
     pageconts = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject")
     pageconts.setAttribute("x", 0); pageconts.setAttribute("y", 0)
-    pageconts.onclick = function() { press(1, {}); }
+    //pageconts.onclick = function() { press(1, {}); }
     page2.appendChild(pageconts)
 
     redraw()
@@ -112,7 +112,22 @@ function drawPage() {
             "Pressing esc here will generate a new world!",
         10, 48)
     } else {
-        addText(worlds.world_nams[pagenum-3], 20, 4)
+        const t = document.createElement('input')
+        t.type = "text"
+        t.className = "txt"
+        let last = worlds.world_nams[pagenum-3]
+        t.value = last.replace("\x01", '')
+        t.style.fontSize = 2*s+"px"
+        t.style.lineHeight = t.style.fontSize
+        t.onchange = function() {
+            if (worlds.rename(last, t.value)) {
+                last = t.value
+                redraw()
+            } else {
+                t.value = last.replace("\x01", '')
+            }
+        }
+        pageconts.appendChild(t)
     }
 }
 
