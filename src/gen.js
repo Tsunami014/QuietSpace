@@ -36,11 +36,11 @@ export function setSeed(nseed) {
 
     sandDist = islandSze-outerRingSze*4
 
-    placeds = new Map();
     tleCache = new Map();
 }
 export function randSeed() {
     setSeed(Math.round(Math.random()*(10**15)))
+    placeds = new Map();
 }
 
 var _cache = []
@@ -110,6 +110,13 @@ export function placeTile(rx, ry, t, append) {
     } else {
         placeds.set(key, [t])
     }
+    worlds.save()
+}
+export function getPlaced() {
+    return Object.fromEntries(placeds)
+}
+export function setPlaced(nps) {
+    placeds = new Map(Object.entries(nps))
 }
 
 let lastClear = 0

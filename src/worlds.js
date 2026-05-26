@@ -29,15 +29,17 @@ export function mknew() {
 export function load(nam) {
     name = nam
     if (world_nams.includes(nam)) {
-        const [sd, dat] = worlds[nam]
+        const [sd, x, y, placeds] = worlds[nam]
         gen.setSeed(sd)
+        phys.teleport(x, y)
+        gen.setPlaced(placeds)
     } else {
         gen.randSeed()
         save()
     }
 }
 export function save() {
-    worlds[name] = [gen.seed, []]
+    worlds[name] = [gen.seed, phys.x, phys.y, gen.getPlaced()]
     localStorage.setItem('worlds', JSON.stringify(worlds));
     gen_nams()
 }

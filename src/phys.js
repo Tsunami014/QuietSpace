@@ -1,6 +1,10 @@
 export var x = 0
 export var y = 0
 
+export function teleport(nx, ny) {
+    x = nx; y = ny
+}
+
 export function realpos(nx, ny) {
     return [Math.floor(nx-((ny-1)/2)), Math.floor(nx+(ny/2) + 0.5)]
 }
