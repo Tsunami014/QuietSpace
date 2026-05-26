@@ -103,7 +103,7 @@ function tick() {
         if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {
             resizeCanvas(true)
         }
-        if (lastpress != dx && dx != 0) fsel.press(dx)
+        fsel.press(lastpress == dx ? 0 : dx, keys)
         lastpress = dx
 
         requestAnimationFrame(tick)

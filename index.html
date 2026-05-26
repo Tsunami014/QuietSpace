@@ -43,7 +43,11 @@ canvas, #playerContainer > svg, #fselout {
     gap: 5%;
     margin-left: 3%;
 }
-.marks > * { cursor: pointer; }
+.marks > * {
+    cursor: pointer;
+    transition: translate 0.1s ease;
+}
+.marks > *:hover { translate: 0 -12%; }
 #nowmarks {
     position: absolute;
     transform: translate(20%);

@@ -6,8 +6,9 @@ var pagenum = 0
 
 var aftms; var befms; var nowms
 const marks = [
-    [1, null],
-    [2, null]
+    [1, "c", null],
+    [2, "n", null],
+    [3, "l", null]
 ]
 
 export async function init(nxt) {
@@ -19,11 +20,17 @@ export async function init(nxt) {
 
     const markDoc = parser.parseFromString(markstr, 'image/svg+xml')
     marks.forEach(m=>{
-        m[1] = markDoc.documentElement.cloneNode(true)
-        m[1].onclick = ()=>{
+        m[2] = markDoc.documentElement.cloneNode(true)
+        m[2].onclick = ()=>{
             pagenum = m[0]
             redraw()
         }
+        const t = document.createElementNS("http://www.w3.org/2000/svg", "text")
+        t.setAttribute("x", "40%"); t.setAttribute("y", "22.5%")
+        t.setAttribute("font-weight", "bold")
+        t.setAttribute("font-size", "1px")
+        t.innerHTML = m[1].toUpperCase()
+        m[2].appendChild(t)
     })
     aftms = document.createElement("div")
     aftms.className = "marks"
@@ -99,6 +106,9 @@ function drawPage() {
         8, 54)
     } else if (pagenum == 2) {
         addText("New world", 20, 4)
+        addText(
+            "Pressing esc here will generate a new world!",
+        10, 48)
     } else {
         addText(worlds.world_nams[pagenum-3], 20, 4)
     }
@@ -134,21 +144,26 @@ export function redraw() {
     const mx = maxPage()
     marks.forEach(m=>{
         if (m[0] > mx) {
-            m[1].remove()
+            m[2].remove()
             return;
         }
         if (m[0] == pagenum) {
-            nowms.appendChild(m[1])
+            nowms.appendChild(m[2])
         } else if (m[0] > pagenum) {
-            befms.appendChild(m[1])
+            befms.appendChild(m[2])
         } else {
-            aftms.appendChild(m[1])
+            aftms.appendChild(m[2])
         }
     })
 }
 
-export function press(dx) {
-    pagenum += dx
+export function press(dx, keys) {
+    var topage = marks.find(it=>{ return keys[it[1]] })
+    if (topage !== undefined) {
+        pagenum = topage[0]
+    } else if (dx != 0) {
+        pagenum += dx
+    } else { return; }
     if (pagenum < 0) pagenum = 0
     const mx = maxPage()
     if (pagenum > mx) pagenum = mx
