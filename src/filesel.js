@@ -175,6 +175,10 @@ function drawPage() {
             }
             pageconts.appendChild(bin)
         }
+    } else {
+        addText(
+            "Something chill will go here!<br><br>:)",
+        10, 45)
     }
 }
 
@@ -195,11 +199,11 @@ export function redraw() {
     aftms.style.right = pagenum == mx ? "10%" : "55%"
     befms.style.left = pagenum == 0 ? "0" : "50%"
 
+    const startend = pagenum == 0 || pagenum == mx
     page1.style.fill = pagenum == 1 || pagenum == mx ? mainfill : subfill
-    page1.style.display = pagenum == 0 ? "none" : ""
-    page1.style.transform = pagenum == 0 ? "" : "translate(3%) scale(-1, 1)"
-    page2.style.fill = pagenum == 0 ? mainfill : subfill
-    page2.style.display = pagenum == mx ? "none" : ""
+    page1.style.display = startend ? "none" : ""
+    page1.style.transform = startend ? "" : "translate(3%) scale(-1, 1)"
+    page2.style.fill = startend ? mainfill : subfill
 
     pageconts.replaceChildren()
     drawPage()
