@@ -35,7 +35,7 @@ function drawLoading(progress) {
 }
 
 async function load() {
-    const max = 23;
+    const max = 24;
     var i = 0
     function nxt() {
         if (i <= max) {

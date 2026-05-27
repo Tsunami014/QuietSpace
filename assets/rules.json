@@ -1,0 +1,23 @@
+{"rules": {
+
+    "road": [
+        {"edge": "footpath-road_"},
+        {"edge3": "road_dash_"},
+        "road"
+    ],
+    "footpath": "footpath",
+    "grass": [
+        {"decor": "grass_plain"},
+        "grass"
+    ],
+    "sand": "sand",
+    "water": [
+        {"edge": "water_light"},
+        {"edge2": "water_med"},
+        "water_dark"
+    ]
+
+}, "decor": [
+    "cone",
+    "tree"
+]}

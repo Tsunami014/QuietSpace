@@ -10,11 +10,10 @@ export function realpos(nx, ny) {
 }
 function collides(nx, ny) {
     const [rx, ry] = realpos(nx/draw.units, ny/draw.units)
-    return gen.getRealTile(rx, ry).some(tle=>{
-        return tle.includes("water") ||
-                tle.includes("cone") ||
-                tle == "tree"
-    })
+    const tles = gen.getRealTile(rx, ry)
+    return tles.includes("water") ||
+            tles.includes("cone") ||
+            tles.includes("tree")
 }
 
 

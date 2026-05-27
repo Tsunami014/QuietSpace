@@ -44,9 +44,14 @@ export function draw() {
         for (let j = -2; j < cols+3; j++) {
             const tx = j-txoffs
             const ty = i-tyoffs
-            gen.getTile(tx, ty).forEach((tle, idx)=>{
+            const [realx, realy] = gen.realPos(tx, ty)
+            const tles = gen.getRealTile(realx, realy)
+            tles.forEach((tle, idx)=>{
                 if (!tle) return;
-                const source = tiles.getTile(tle, gen.hash(-1, tx, ty))
+                const getfn = (x, y)=>{ return !gen.getRealTile(realx+x, realy+y).includes(tle); }
+                const rtle = tiles.getBaseTile(tle, tles, getfn)
+                if (!rtle) return;
+                const source = tiles.getTile(rtle, gen.hash(-1, tx, ty))
                 if (!source) return;
                 if (i-source.hei > rows+5) return;
                 var wid = source.wid * blk
