@@ -177,7 +177,7 @@ export async function reloadAllTiles() {
 }
 var rules; var decor;
 export async function load(nxt) {
-    const js1 = await (await fetch("/assets/tiles.json")).json()
+    const js1 = await (await fetch("./assets/tiles.json")).json()
     nxt()
     for (const nam in js1) {
         const img = new Image()
@@ -189,7 +189,7 @@ export async function load(nxt) {
         await loadTiles(dat, js1[nam])
         nxt()
     }
-    const dat = await (await fetch("/assets/rules.json")).json()
+    const dat = await (await fetch("./assets/rules.json")).json()
     rules = dat.rules
     decor = dat.decor
     nxt()
