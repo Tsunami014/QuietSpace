@@ -1,8 +1,7 @@
 {"rules": {
 
     "road": [
-        {"edge": "footpath-road_"},
-        {"edge3": "road_dash_"},
+        {"mid": "road_dash_"},
         "road"
     ],
     "footpath": "footpath",
@@ -14,9 +13,11 @@
     "water": [
         {"edge": "water_light"},
         {"edge2": "water_med"},
-        "water_dark"
+        "water_deep"
     ]
 
+}, "borders": {
+    "footpath": "footpath_edge_"
 }, "decor": [
     "cone",
     "tree"

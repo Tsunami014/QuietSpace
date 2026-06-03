@@ -6,7 +6,7 @@ export function teleport(nx, ny) {
 }
 
 export function realpos(nx, ny) {
-    return [Math.floor(nx-((ny-1)/2)), Math.floor(nx+(ny/2) + 0.5)]
+    return [Math.floor(nx-((ny-1)/2)), -Math.floor(nx+(ny/2) + 0.5)]
 }
 function collides(nx, ny) {
     const [rx, ry] = realpos(nx/draw.units, ny/draw.units)

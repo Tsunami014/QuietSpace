@@ -86,7 +86,7 @@ const dirs = [
 ]
 export function realPos(x, y) {
     return [x-Math.floor((y-1)/2),
-        x+Math.floor(y/2)]
+        -(x+Math.floor(y/2))]
 }
 export function getTile(x, y) {
     return getRealTile(...realPos(x, y))

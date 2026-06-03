@@ -40,15 +40,22 @@ async function makeTile(sheet, tle, flipH=false, flipV=false, rotate=0) {
 }
 
 
-// S on a diagonal = SW
+// 'S' = SE on canvas
 const dirs = ["E", "N", "S", "W"]
 const nxtdirs = {
-    "N": {nxt: "E", y: true}, "E": {nxt: "S", x: true},
-    "S": {nxt: "W", y: true}, "W": {nxt: "N", x: true}
+    "N": {nxt: "E", x: true}, "E": {nxt: "S", y: true},
+    "S": {nxt: "W", x: true}, "W": {nxt: "N", y: true}
 }
 const straightflips = {"NS": "EW", "EW": "NS"}
 const straightturns = {"NW": "EN", "EN": "ES", "ES": "SW", "SW": "NW"}
+const corners = {
+    "NW": {nxt: "ES", x: true}, "ES": {nxt: "NW", x: true},
+    "SW": {nxt: "EN", y: true}, "EN": {nxt: "SW", y: true}
+}
 async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
+    if ("#" in t) {
+        loadTileType(sheet, realnam+"_#", t["#"], fH, fV, r)
+    }
     if (Array.isArray(t)) {
         tiles.set(realnam, await makeTile(sheet, t, fH, fV, r))
     } else if (t.type == "use") {
@@ -66,44 +73,39 @@ async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
         var tnam = t["1"][0]
         var flipH = false; var flipV = false;
         var rot = 0
+        var txtranam = "smol"
         async function pushTile() {
-            await loadTileType(sheet, realnam+"_"+tnam, tle, flipH^fH, flipV^fV, rot+r)
+            await loadTileType(sheet, realnam+"_"+tnam+txtranam, tle, flipH^fH, flipV^fV, rot+r)
         }
-        for (rot = 0; rot < 4; rot++) {
-            await pushTile()
-            let nxt = nxtdirs[tnam]
-            tnam = nxt.nxt
-        }
-        tle = t["2"].slice(1)
-        tnam = t["2"][0]
         for (rot = 0; rot < 4; rot++) {
             await pushTile()
             tnam = straightturns[tnam]
         }
-        var thole = t["3"][0]
-        tle = t["3"].slice(1)
+        txtranam = ""
+        tle = t["2"].slice(1)
+        tnam = t["2"][0]
+        rot = 0
+        flipH = false; flipV = false;
         for (let i = 0; i < 4; i++) {
-            if (thole == dirs[0]) {
-                tnam = dirs.slice(1).join("")
-            } else {
-                tnam = dirs.reduce((prev,nxt)=>{
-                    if (nxt == thole) return prev ?? ""
-                    return prev+nxt
-                })
-            }
             await pushTile()
-            let nxt = nxtdirs[thole]
-            thole = nxt.nxt
+            var nxt = nxtdirs[tnam]
+            tnam = nxt.nxt
             if (nxt.x) flipH = !flipH
             if (nxt.y) flipV = !flipV
+        }
+        flipH = false; flipV = false;
+        tle = t["3"].slice(1)
+        tnam = t["3"][0]
+        for (rot = 0; rot < 4; rot++) {
+            await pushTile()
+            tnam = straightturns[tnam]
         }
     } else if (t.type == "line") {
         var tle = t["1"].slice(1)
         var tnam = t["1"][0]
         var flipH = false; var flipV = false;
-        var xtrar = 0
         async function pushTile() {
-            await loadTileType(sheet, realnam+"_"+tnam, tle, flipH^fH, flipV^fV, r+xtrar)
+            await loadTileType(sheet, realnam+"_"+tnam, tle, flipH^fH, flipV^fV, r)
         }
         for (let i = 0; i < 4; i++) {
             await pushTile()
@@ -119,15 +121,17 @@ async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
         tnam = straightflips[tnam]
         flipV = true
         await pushTile()
-        flipV = false
-        tle = t.corner.slice(1)
-        tnam = t.corner[0]
-        for (xtrar = 0; xtrar < 3; xtrar++) {
+        for (const cornr of [t.corner1, t.corner2]) {
+            flipV = false; flipH = false;
+            tle = cornr.slice(1)
+            tnam = cornr[0]
             await pushTile()
-            tnam = straightturns[tnam]
+            let nxt = corners[tnam]
+            tnam = nxt.nxt
+            if (nxt.x) flipH = !flipH
+            if (nxt.y) flipV = !flipV
+            await pushTile()
         }
-        await pushTile()
-        xtrar = 0
         flipH = false; flipV = false;
         var thole = t["3"][0]
         tle = t["3"].slice(1)
@@ -175,7 +179,7 @@ export async function reloadAllTiles() {
         await loadTiles(data[0], data[1])
     }
 }
-var rules; var decor;
+var rules; var borders; var decor;
 export async function load(nxt) {
     const js1 = await (await fetch("./assets/tiles.json")).json()
     nxt()
@@ -191,6 +195,7 @@ export async function load(nxt) {
     }
     const dat = await (await fetch("./assets/rules.json")).json()
     rules = dat.rules
+    borders = dat.borders
     decor = dat.decor
     nxt()
     UI = new Image()
@@ -250,7 +255,8 @@ function handleStrBaseT(gname, tilefn) {
     return gname
 }
 export function getBaseTile(gname, tles, tilefn) {
-    if (decor.includes(gname)) return gname
+    if (gname.startsWith("$")) return gname.slice(1);
+    if (decor.includes(gname)) return gname;
     const grp = rules[gname]
     if (!grp) {
         console.log("Unknown tile group:", gname)
@@ -263,14 +269,13 @@ export function getBaseTile(gname, tles, tilefn) {
         const v = it[k]
         switch (k) {
             case "decor":
-                if (tles.every(it=>{ return it === gname || decor.includes(it) })) {
+                if (!tles.every(it=>{ return it === gname || decor.includes(it) })) {
                     return handleStrBaseT(v, tilefn)
                 }
                 break;
             case k.startsWith("edge") && k:
                 var n = 1
                 if (k.endsWith("2")) { n = 2; }
-                if (k.endsWith("3")) { n = 3; }
                 const out = getAround(n, tilefn)
                 if (out.length != 0) {
                     if (v.endsWith("_")) {
@@ -288,17 +293,79 @@ export function getBaseTile(gname, tles, tilefn) {
     return null
 }
 
+const alldirs = ["NW", "N", "EN", "E", "ES", "S", "SW", "W"]
+export function addBorders(gname, fulltilefn) {
+    var outs = []
+    for (const k in borders) {
+        var dirs = []
+        if (gname === k) continue;
+        for (const [dx, dy, d] of [
+            [-1, 1,  0], // NW
+            [0, 1,   1], // N
+            [1, 1,   2], // EN
+            [1, 0,   3], // E
+            [1, -1,  4], // ES
+            [0, -1,  5], // S
+            [-1, -1, 6], // SW
+            [-1, 0,  7], // W
+        ]) {
+            if (fulltilefn(dx, dy, k)) {
+                dirs.push(d)
+            }
+        }
+        if (dirs.length > 0) {
+            const tle = borders[k]
+            dirs.push(99)
+            var last = dirs.shift()
+            var best = last
+            var first = null
+            for (const d of dirs) {
+                if (d-best > 1) {
+                    if (last == 0 && best != 7 && dirs[dirs.length-2] == 7) {
+                        first = best
+                        last = d; best = d
+                        continue // Come back to this at the end
+                    }
+                    if (best == 7 && first !== null) best = 8+first;
+                    if (last == best) {
+                        if (last%2 == 0) {
+                            outs.push("$"+tle+alldirs[last]+"smol")
+                        } else {
+                            outs.push("$"+tle+alldirs[last])
+                        }
+                    } else {
+                        const start = last+(1-last%2)
+                        const end = best-(1-best%2)
+                        if (start == end%8) {
+                            outs.push("$"+tle+alldirs[start])
+                        } else {
+                            for (let i = start; i < end; i += 2) {
+                                outs.push("$"+tle+[alldirs[i%8],alldirs[(i+2)%8]].sort().join(""))
+                            }
+                            if ((end+2)%8 == start) {
+                                outs.push("$"+tle+[alldirs[end],alldirs[start]].sort().join(""))
+                            }
+                        }
+                    }
+                    last = d; best = d
+                } else {
+                    best = d
+                }
+            }
+        }
+    }
+    return outs
+}
+
 export function normalise(tname) {
     if (!tname) return ""
     return tname.match(/(.+?)(?:_[NESW]+|_rnd[0-9]+|_plain)?$/)[1]
 }
 
 export function normalisedImg(tname) {
-    let source = getTile(mouse.select, -1, false)
+    let source = getTile(mouse.select+"_#", -1, false)
     if (source) return source;
-    source = getTile(mouse.select+"_NS", -1, false)
-    if (source) return source;
-    source = getTile(mouse.select+"_ENSW", -1, false)
+    source = getTile(mouse.select, -1, false)
     if (source) return source;
     console.log("Unknown tile:", tname)
 }

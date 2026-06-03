@@ -49,21 +49,26 @@ export function draw() {
             tles.forEach((tle, idx)=>{
                 if (!tle) return;
                 const getfn = (x, y)=>{ return !gen.getRealTile(realx+x, realy+y).includes(tle); }
-                const rtle = tiles.getBaseTile(tle, tles, getfn)
-                if (!rtle) return;
-                const source = tiles.getTile(rtle, gen.hash(-1, tx, ty))
-                if (!source) return;
-                if (i-source.hei > rows+5) return;
-                var wid = source.wid * blk
-                var hei = source.hei * hblk
-                const xpos = blk*(j-offs)+xoffs - (wid-blk)/2+hblk
-                const basey = qblk*i+yoffs
-                const ypos = basey - hei+hblk
-                if (!tiles.pixel) { wid++; hei++ }
-                if (basey >= midp && idx != 0) {
-                    ctx2.drawImage(source.img, xpos, ypos, wid, hei)
-                } else {
-                    ctx1.drawImage(source.img, xpos, ypos, wid, hei)
+                const fullgetfn = (x, y, t)=>{ return gen.getRealTile(realx+x, realy+y).find(it=>it.includes(t)); }
+                var g = [tle]
+                if (idx == 0) g = g.concat(tiles.addBorders(tle, fullgetfn))
+                for (const tle2 of g) {
+                    const rtle = tiles.getBaseTile(tle2, tles, getfn)
+                    if (!rtle) continue;
+                    const source = tiles.getTile(rtle, gen.hash(-1, tx, ty))
+                    if (!source) continue;
+                    if (i-source.hei > rows+5) continue;
+                    var wid = source.wid * blk
+                    var hei = source.hei * hblk
+                    const xpos = blk*(j-offs)+xoffs - (wid-blk)/2+hblk
+                    const basey = qblk*i+yoffs
+                    const ypos = basey - hei+hblk
+                    if (!tiles.pixel) { wid++; hei++ }
+                    if (basey >= midp && idx != 0) {
+                        ctx2.drawImage(source.img, xpos, ypos, wid, hei)
+                    } else {
+                        ctx1.drawImage(source.img, xpos, ypos, wid, hei)
+                    }
                 }
             })
         }
@@ -73,10 +78,12 @@ export function draw() {
     if (mouse.hasMouse()) {
         const [mx, my] = mouse.getPos()
         var offs = Math.abs((Math.abs(mx)*2+1)%2-1) >= Math.abs(Math.abs(my)%2-1) ? 0.5:0
-        ctx2.drawImage(tiles.UI, 0, 0, 48, 24,
-            (Math.round(mx-offs) + offs + txoffs)*blk-qblk + xoffs,
-            ((Math.round(my/2) - offs)*2 + tyoffs + offs*Math.abs(Math.floor(my+1)%2)*4)*qblk+qblk*0.5 + yoffs,
-            blk*1.5, hblk*1.5)
+        const wid = blk*(48/32)
+        const hei = hblk*(22/16)
+        ctx2.drawImage(tiles.UI, 0, 1, 48, 22,
+            (Math.round(mx-offs) + offs + txoffs - 1)*blk + wid/2 + xoffs,
+            ((Math.round(my/2) - offs)*2 + tyoffs + offs*Math.abs(Math.floor(my+1)%2)*4 - 0.75)*qblk + hei/2 + yoffs,
+            wid, hei)
     }
     const scale = 1.4
     const framex = canvas1.width-blk*1.5*scale - blk*0.25
