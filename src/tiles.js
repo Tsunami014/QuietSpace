@@ -227,7 +227,7 @@ export function getTile(tname, rand, logOnFail=true) {
         return tle
     }
 }
-function getAround(n, tilefn) {
+function getAround(n, edge, tilefn) {
     const out = []
     for (let x = -n; x <= n; x++) {
         const y = n - Math.abs(x)
@@ -238,7 +238,7 @@ function getAround(n, tilefn) {
             const needX = dx && !out.includes(dx)
             const needY = dy && !out.includes(dy)
 
-            if ((needX || needY) && tilefn(cx, cy)) {
+            if ((needX || needY) && edge^tilefn(cx, cy)) {
                 if (needX) out.push(dx)
                 if (needY) out.push(dy)
             }
@@ -246,9 +246,9 @@ function getAround(n, tilefn) {
     }
     return out.sort().join("")
 }
-function handleStrBaseT(gname, tilefn) {
+function handleStrBaseT(gname, edge, tilefn) {
     if (gname.endsWith("_")) {
-        const out = getAround(1, tilefn)
+        const out = getAround(1, edge, tilefn)
         if (!out) return gname.slice(0, -1);
         return gname+out
     }
@@ -262,26 +262,28 @@ export function getBaseTile(gname, tles, tilefn) {
         console.log("Unknown tile group:", gname)
         return null
     }
-    if (typeof grp === "string") return handleStrBaseT(grp, tilefn);
+    if (typeof grp === "string") return grp;
     for (const it of grp) {
-        if (typeof it === "string") return handleStrBaseT(it, tilefn);
+        if (typeof it === "string") return it;
         const k = Object.keys(it)[0]
         const v = it[k]
         switch (k) {
             case "decor":
                 if (!tles.every(it=>{ return it === gname || decor.includes(it) })) {
-                    return handleStrBaseT(v, tilefn)
+                    return v
                 }
                 break;
             case k.startsWith("edge") && k:
+            case k.startsWith("connect") && k:
+                const edge = k.startsWith("edge")
                 var n = 1
                 if (k.endsWith("2")) { n = 2; }
-                const out = getAround(n, tilefn)
+                const out = getAround(n, edge, tilefn)
                 if (out.length != 0) {
                     if (v.endsWith("_")) {
-                        return handleStrBaseT(v+out, tilefn)
+                        return handleStrBaseT(v+out, edge, tilefn)
                     } else {
-                        return handleStrBaseT(v, tilefn)
+                        return handleStrBaseT(v, edge, tilefn)
                     }
                 }
                 break;

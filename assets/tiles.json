@@ -6,7 +6,7 @@
             "#": { "type": "use", "name": "road_dash_NS" },
             "type": "line",
             "1": ["W", 1, 0],
-            "straight": ["WE", 2, 0],
+            "straight": ["EW", 2, 0],
             "corner1": ["SW", 3, 0],
             "corner2": ["NW", 4, 0],
             "3": ["E", 5, 0],

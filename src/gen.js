@@ -159,10 +159,14 @@ function _getRealTile(realx, realy) {
     }
 
     if (loclx <= 1 || locly <= 1 || loclx == plotSze-1 || locly == plotSze-1) {
+        var decor = []
         if (loclx != 0 && locly != 0 && hash(1, realx, realy)%200 == 0) {
-            return ["road", "cone"]
+            decor.push("cone")
         }
-        return ["road"]
+        if (loclx == 0 || locly == 0) {
+            return ["road_dash", ...decor]
+        }
+        return ["road", ...decor]
     }
     if (loclx == 2 || locly == 2 || loclx >= plotSze-2 || locly >= plotSze-2) {
         return ["footpath"]

@@ -48,7 +48,7 @@ export function draw() {
             const tles = gen.getRealTile(realx, realy)
             tles.forEach((tle, idx)=>{
                 if (!tle) return;
-                const getfn = (x, y)=>{ return !gen.getRealTile(realx+x, realy+y).includes(tle); }
+                const getfn = (x, y)=>{ return gen.getRealTile(realx+x, realy+y).includes(tle); }
                 const fullgetfn = (x, y, t)=>{ return gen.getRealTile(realx+x, realy+y).find(it=>it.includes(t)); }
                 var g = [tle]
                 if (idx == 0) g = g.concat(tiles.addBorders(tle, fullgetfn))

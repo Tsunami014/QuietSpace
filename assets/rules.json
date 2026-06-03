@@ -1,9 +1,10 @@
 {"rules": {
 
-    "road": [
-        {"mid": "road_dash_"},
+    "road_dash": [
+        {"connect": "road_dash_"},
         "road"
     ],
+    "road": "road",
     "footpath": "footpath",
     "grass": [
         {"decor": "grass_plain"},
