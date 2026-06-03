@@ -2,7 +2,7 @@
 
     "road_dash": [
         {"connect": "road_dash_"},
-        "road"
+        "road_dash_ENSW"
     ],
     "road": "road",
     "footpath": "footpath",

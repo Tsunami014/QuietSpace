@@ -278,6 +278,7 @@ export function getBaseTile(gname, tles, tilefn) {
                 const edge = k.startsWith("edge")
                 var n = 1
                 if (k.endsWith("2")) { n = 2; }
+                else if (k.endsWith("3")) { n = 3; }
                 const out = getAround(n, edge, tilefn)
                 if (out.length != 0) {
                     if (v.endsWith("_")) {

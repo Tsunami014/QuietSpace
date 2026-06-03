@@ -135,10 +135,10 @@ function drawPage() {
     } else if (pagenum == 2) {
         addText("Game controls", 25, 5)
         addText(
-            "WSAD or arrow keys to move\n\n"+
-            "Mouse controls:\n"+
-            "Left click/Space to pick a block (shown in the top right corner)\n"+
-            "Right click/Enter to place block",
+            "WSAD or arrow keys to move\n"+
+            "Mouse to highlight a block\n\n"+
+            "Left click/Q to pick a block (shown in the top right corner), keep clicking on the same block to cycle\n\n"+
+            "Right click/E to place block",
         8, 60)
     } else if (pagenum == extraPages+1) {
         addText("New world", 20, 4)

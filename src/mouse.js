@@ -1,23 +1,39 @@
 var mx; var my;
 
+window.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+});
+var dragL; var dragR;
+document.addEventListener('mousedown', (e) => {
+    if (e.button === 0) {
+        dragL = true
+        click_left()
+    } else if (e.button === 2) {
+        dragR = true
+        click_right()
+    }
+});
 window.addEventListener('mousemove', (event) => {
     mx = event.clientX; my = event.clientY
+    if (dragL) click_left()
+    if (dragR) click_right()
+});
+document.addEventListener('mouseup', (e) => {
+    if (e.button === 0) {
+        dragL = false
+    } else if (e.button === 2) {
+        dragR = false
+    }
 });
 window.addEventListener('click', (event) => {
     mx = event.clientX; my = event.clientY
     click_left()
 });
-window.addEventListener('contextmenu', function(event) {
-    event.preventDefault();
-    mx = event.clientX; my = event.clientY
-    click_right()
-});
 window.addEventListener('keydown', (event) => {
-    if (event.repeat) return;
-    if (event.key === 'Enter') {
-        click_right()
-    } else if (event.key === ' ') {
+    if (event.key === 'q') {
         click_left()
+    } else if (event.key === 'e') {
+        click_right()
     }
 });
 
