@@ -4,6 +4,10 @@ var page1; var page2; var pageconts
 var width; var height
 var pagenum = 0
 
+export function goCurWorld(nam) {
+    pagenum = worlds.world_idx()+extraPages+2
+}
+
 const extraPages = 2
 function maxPage() {
     return worlds.world_nams.length+extraPages+2
@@ -93,16 +97,16 @@ export function toggle() {
     if (contnr.style.display == "") {
         contnr.style.display = "none"
         fselopen = false
-        if (pagenum == 2) {
+        if (pagenum == extraPages+1) {
             worlds.mknew()
-        } else if (pagenum > 2 && pagenum < maxPage()) {
+        } else if (pagenum > extraPages+1 && pagenum < maxPage()) {
             worlds.load(worlds.world_nams[pagenum-extraPages-2])
         }
     } else {
         contnr.style.display = ""
         if (fselopen !== undefined) {
             worlds.save()
-            pagenum = worlds.world_idx()+extraPages+2
+            goCurWorld()
         }
         fselopen = true
         redraw()
@@ -130,6 +134,7 @@ function drawPage() {
         addText("Menu Controls", 25, 5)
         addText(
             "Escape to toggle this menu.\nIf a world page is selected (including last or new world), will load that world.\n\n"+
+            "E to export, I to import when selecting a world\n\n"+
             "Bookmarks have letters on them, press the letter to go to that page.",
         8, 60)
     } else if (pagenum == 2) {
@@ -157,7 +162,7 @@ function drawPage() {
         t.onchange = function() {
             if (worlds.rename(last, t.value, true)) {
                 last = t.value
-                pagenum = worlds.world_idx()+extraPages+2
+                goCurWorld()
                 redraw()
             } else {
                 t.value = last.replace("\x01", '')
@@ -166,7 +171,7 @@ function drawPage() {
         pageconts.appendChild(t)
         if (pagenum == extraPages+2) {
             addText(
-                "This gets overridden all the time, do not hope to store something permanently here!\n\n"+
+                "Warning: this gets overridden when another world is loaded!\n\n"+
                 "To permanently store the current world, rename this!",
             8, 54)
         } else {
@@ -237,9 +242,19 @@ export function redraw() {
     })
 }
 
-export function press(dx, keys) {
+export function press(dx, keys, lastks) {
     if (!avaliable()) return;
-    var topage = marks.find(it=>{ return keys[it[1]] })
+    if (keys['e'] && !lastks['e']) {
+        if (pagenum <= extraPages+1 || pagenum == maxPage()) return;
+        const nam = worlds.world_nams[pagenum-extraPages-2]
+        worlds.expor(nam)
+        return;
+    }
+    if (keys['i'] && !lastks['i']) {
+        worlds.impor()
+        return;
+    }
+    var topage = marks.find(it=>{ return keys[it[1]] && !lastks[it[1]] })
     if (topage !== undefined) {
         pagenum = topage[0]
     } else if (dx != 0) {

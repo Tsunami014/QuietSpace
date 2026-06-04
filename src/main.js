@@ -83,15 +83,14 @@ const keys = {}
 window.addEventListener('keydown', (e) => keys[e.key] = true)
 window.addEventListener('keyup', (e) => keys[e.key] = false)
 
-var lastesc = false
+var lastks = {}
 var lastpress = 0
 function tick() {
-    if (keys['Escape']) {
-        if (!lastesc) {
-            lastesc = true
+    if (keys['Escape'] && !lastks['Escape']) {
+        if (!worlds.eximporting) {
             fsel.toggle()
         }
-    } else { lastesc = false }
+    }
 
     var dx = 0
     if (keys['ArrowLeft'] || keys['a']) dx = -1
@@ -105,13 +104,15 @@ function tick() {
         if (keys['PageDown'] || keys['Home']) ddx = -2;
         if (keys['PageUp'] || keys['End']) ddx = 2;
         if (ddx == 0 && lastpress != dx) ddx = dx;
-        fsel.press(ddx, keys)
+        fsel.press(ddx, keys, lastks)
         lastpress = dx
+        lastks = { ...keys }
 
         requestAnimationFrame(tick)
         return
     }
     lastpress = dx
+    lastks = { ...keys }
     if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {
         resizeCanvas(true)
         if (!tiles.pixel) {

@@ -56,7 +56,7 @@ export function save() {
 
 export function rename(oldnam, newnam, set) {
     if (!newnam) return false;
-    if (world_nams.indexOf(newnam) === undefined &&
+    if (world_nams.indexOf(newnam) != -1 &&
         !confirm(`A world with the name '${newnam}' already exists, are you sure you want to override it?`)) {
             return false;
     }
@@ -73,8 +73,80 @@ export function delworld(nam) {
     if (!confirm(`Are you sure you want to delete '${nam}'? It will be gone forever! (A long time!)`)) {
         return false;
     }
-    if (name == nam) name = "";
+    if (name == nam) {
+        name = ""
+        last = ""
+    }
     delete worlds[nam]
     save()
     return true;
+}
+
+export var eximporting = false
+export function expor(nam) {
+    if (eximporting) return;
+    eximporting = true
+
+    const blob = new Blob([JSON.stringify(worlds[nam])], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.className = "hidden"
+    a.href = url;
+    a.download = nam.replace("\x01", "")+".world";
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    eximporting = false
+}
+export function impor(nam) {
+    if (eximporting) return;
+    eximporting = true
+
+    const input = document.createElement('input')
+    input.className = "hidden"
+    input.type = 'file'
+    input.multiple = true
+    input.accept = '.world'
+    document.body.appendChild(input);
+    input.addEventListener('change', async (e) => {
+        const contents = await Promise.all(
+            [...input.files].map(async (file) => {
+                try {
+                    const txt = await file.text()
+                    return [JSON.parse(txt), file.name]
+                } catch (err) {
+                    console.error(`Failed to read/parse file '${file.name}': ${err}`);
+                    return null
+                }
+            })
+        );
+        if (contents.map(it=>{
+            if (it === null) return false;
+            var [dat, newnam] = it
+            if (newnam.endsWith(".world")) newnam = newnam.slice(0, -6)
+            newnam = newnam.replace("\x01", "").slice(0, 10)
+            if (world_nams.indexOf(newnam) != -1 &&
+                !confirm(`A world with the name '${newnam}' already exists, are you sure you want to override it?`)) {
+                    return false;
+            }
+            worlds[newnam] = dat
+            name = newnam
+            return true
+        }).indexOf(true) != -1) {
+            world_nams.push(name)
+            load(name)
+            save()
+            fsel.goCurWorld()
+            fsel.redraw()
+        }
+        document.body.removeChild(input);
+        eximporting = false
+    });
+    input.addEventListener('cancel', () => {
+        document.body.removeChild(input);
+        eximporting = false
+    });
+    input.click();
 }
