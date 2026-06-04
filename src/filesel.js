@@ -15,9 +15,9 @@ function maxPage() {
 
 var aftms; var befms; var nowms
 const marks = [
-    [1, "c", null],
-    [extraPages+1, "n", null],
-    [extraPages+2, "l", null]
+    [1, "c", "#8C5848"],
+    [extraPages+1, "n", "#8C6F48"],
+    [extraPages+2, "l", "#8C484F"]
 ]
 
 const precache = [
@@ -45,29 +45,38 @@ export async function init(nxt) {
     nxt()
     const markstr = await (await fetch("./assets/journal/mark.svg")).text()
     nxt()
-    const parser = new DOMParser()
 
-    const markDoc = parser.parseFromString(markstr, 'image/svg+xml')
-    marks.forEach(m=>{
-        m[2] = markDoc.documentElement.cloneNode(true)
-        m[2].onclick = ()=>{
-            pagenum = m[0]
-            redraw()
-        }
-        const t = document.createElementNS("http://www.w3.org/2000/svg", "text")
-        t.setAttribute("x", "40%"); t.setAttribute("y", "22.5%")
-        t.setAttribute("font-weight", "bold")
-        t.setAttribute("font-size", "1px")
-        t.innerHTML = m[1].toUpperCase()
-        m[2].appendChild(t)
-    })
     aftms = document.createElement("div")
     aftms.className = "marks"
+    aftms.style.flexDirection = "row-reverse"
     befms = document.createElement("div")
     befms.className = "marks"
     nowms = document.createElement("div")
     nowms.id = "nowmarks"
     nowms.ondblclick = function() { press(-1, {}); }
+
+    const parser = new DOMParser()
+    const markDoc = parser.parseFromString(markstr, 'image/svg+xml')
+    marks.forEach(m=>{
+        const mn = markDoc.documentElement.cloneNode(true)
+        mn.setAttribute("fill", m[2])
+        mn.onclick = ()=>{
+            pagenum = m[0]
+            redraw()
+        }
+        m.push(mn)
+        const ms = document.createElement("div")
+        ms.style.marginRight = mn.getAttribute("width")
+        m.push(ms)
+        befms.appendChild(ms)
+        const t = document.createElementNS("http://www.w3.org/2000/svg", "text")
+        t.setAttribute("x", "40%"); t.setAttribute("y", "22.5%")
+        t.setAttribute("font-weight", "bold")
+        t.setAttribute("font-size", "1px")
+        t.setAttribute("fill", mn.getAttribute("stroke"))
+        t.innerHTML = m[1].toUpperCase()
+        mn.appendChild(t)
+    })
 
     const jrnlDoc = parser.parseFromString(jrnlstr, 'image/svg+xml')
     contnr = document.getElementById("fselout")
@@ -215,8 +224,8 @@ export function redraw() {
         pageconts.style.translate = ""
     }
 
-    aftms.style.right = pagenum == mx ? "15%" : "55%"
-    befms.style.left = pagenum == 0 ? "0" : "55%"
+    aftms.style.right = pagenum == mx ? "5%" : "55%"
+    befms.style.left = pagenum == 0 ? "0" : "50%"
 
     page1.style.fill = pagenum == 1 || pagenum == mx ? mainfill : subfill
     page1.style.display = startend ? "none" : ""
@@ -228,16 +237,23 @@ export function redraw() {
     drawPage()
 
     marks.forEach(m=>{
+        const mn = m[3]
+        const ms = m[4]
         if (m[0] > mx) {
-            m[2].remove()
+            ms.style.display = "none"
+            mn.remove()
             return;
         }
-        if (m[0] == pagenum) {
-            nowms.appendChild(m[2])
-        } else if (m[0] > pagenum) {
-            befms.appendChild(m[2])
+        if (m[0] > pagenum) {
+            ms.style.display = "none"
+            befms.appendChild(mn)
         } else {
-            aftms.appendChild(m[2])
+            ms.style.display = ""
+            if (m[0] == pagenum) {
+                nowms.appendChild(mn)
+            } else {
+                aftms.appendChild(mn)
+            }
         }
     })
 }
