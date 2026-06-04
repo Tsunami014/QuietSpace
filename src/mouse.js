@@ -54,7 +54,7 @@ function click_left() {
 }
 function click_right() {
     if (fsel.fselopen) return;
-    if (lastidx == 0 || select === null) return
+    if (lastidx == 0 || select === null) return;
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
     gen.placeTile(realx, realy, select, lastidx > 1)

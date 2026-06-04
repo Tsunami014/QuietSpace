@@ -179,7 +179,8 @@ export async function reloadAllTiles() {
         await loadTiles(data[0], data[1])
     }
 }
-var rules; var borders; var decor;
+var rules = {}; var borders; var decor;
+export var nodecor = []
 export async function load(nxt) {
     const js1 = await (await fetch("./assets/tiles.json")).json()
     nxt()
@@ -194,7 +195,15 @@ export async function load(nxt) {
         nxt()
     }
     const dat = await (await fetch("./assets/rules.json")).json()
-    rules = dat.rules
+    for (const r in dat.rules) {
+        if (r[0] == "!") {
+            const n = r.slice(1)
+            rules[n] = dat.rules[r]
+            nodecor.push(n)
+        } else {
+            rules[r] = dat.rules[r]
+        }
+    }
     borders = dat.borders
     decor = dat.decor
     nxt()

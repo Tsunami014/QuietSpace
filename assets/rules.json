@@ -11,7 +11,7 @@
         "grass"
     ],
     "sand": "sand",
-    "water": [
+    "!water": [
         {"edge": "water_light"},
         {"edge2": "water_med"},
         "water_deep"

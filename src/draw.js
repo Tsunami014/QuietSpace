@@ -51,7 +51,9 @@ export function draw() {
                 const getfn = (x, y)=>{ return gen.getRealTile(realx+x, realy+y).includes(tle); }
                 const fullgetfn = (x, y, t)=>{ return gen.getRealTile(realx+x, realy+y).find(it=>it.includes(t)); }
                 var g = [tle]
-                if (idx == 0) g = g.concat(tiles.addBorders(tle, fullgetfn))
+                if (idx == 0 && !tiles.nodecor.includes(tle)) {
+                    g = g.concat(tiles.addBorders(tle, fullgetfn))
+                }
                 for (const tle2 of g) {
                     const rtle = tiles.getBaseTile(tle2, tles, getfn)
                     if (!rtle) continue;
