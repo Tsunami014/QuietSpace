@@ -14,7 +14,7 @@ canvas, #playerContainer > svg, #fselout, img, .popwrap {
     position: absolute;
 }
 #fselout {
-    background-color: white;
+    background-color: #CCC8;
     width: 100vw;
     height: 100vh;
 }
@@ -105,7 +105,10 @@ input {
     opacity: 0;
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.popwrap:hover .popcont {
+.popcont, .popcont + * {
+    user-select: none;
+}
+.popcont:has(+ *:hover) {
     opacity: 1;
     transform: translateX(-50%) translateY(-4px);
 }

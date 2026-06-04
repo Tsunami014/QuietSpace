@@ -69,6 +69,7 @@ async function load() {
     nxt()
     mouse = await import("./mouse.js")
     nxt()
+    worlds.loadLast()
 
     if (i > max) {
         console.warn("Went over maximum by "+(i-max)+" (should be "+i+")")
@@ -85,8 +86,10 @@ window.addEventListener('keyup', (e) => keys[e.key] = false)
 
 var lastks = {}
 var lastpress = 0
+var nxttog = false // So the menu can vanish at the same time as world load
 function tick() {
-    if (keys['Escape'] && !lastks['Escape']) {
+    if (nxttog || (keys['Escape'] && !lastks['Escape'])) {
+        nxttog = false
         if (!worlds.eximporting) {
             fsel.toggle()
         }

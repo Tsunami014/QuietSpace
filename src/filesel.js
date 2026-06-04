@@ -21,9 +21,10 @@ const marks = [
 ]
 
 const precache = [
+  './assets/journal/play.svg',
+  './assets/journal/copy.svg',
   './assets/journal/bin.svg',
   './assets/journal/xport.svg',
-  './assets/journal/copy.svg',
 ];
 
 function avaliable() {
@@ -108,11 +109,6 @@ export function toggle() {
     if (contnr.style.display == "") {
         contnr.style.display = "none"
         fselopen = false
-        if (pagenum == extraPages+1) {
-            worlds.mknew()
-        } else if (pagenum > extraPages+1 && pagenum < maxPage()) {
-            worlds.load(worlds.world_nams[pagenum-extraPages-2])
-        }
     } else {
         contnr.style.display = ""
         if (fselopen !== undefined) {
@@ -161,9 +157,9 @@ function drawPage() {
     } else if (pagenum == 1) {
         addText("Menu Controls", 25, 5)
         addText(
-            "Escape to toggle this menu.\nIf a world page is selected (including last or new world), will load that world.\n\n"+
-            "I to import a world from a file\n\n"+
-            "Bookmarks have letters on them, press the letter to go to that page.",
+            "Escape to toggle this menu.\n\n"+
+            "I to import a world\nBookmarks jump to their page\n\n"+
+            "Buttons (including bookmarks) have keybinds on them",
         8, 60)
     } else if (pagenum == 2) {
         addText("Game controls", 25, 5)
@@ -178,6 +174,17 @@ function drawPage() {
             "Made with <3 by Tsunami014",
         10, 50)
     } else {
+        const wnam = worlds.world_nams[pagenum-extraPages-2]
+        mkButton('/assets/journal/play.svg', 5,
+            "Play world\nEnter",
+        ()=>{
+            if (wnam === undefined) {
+                worlds.mknew()
+            } else {
+                worlds.load(wnam)
+            }
+            nxttog = true
+        })
         if (pagenum == extraPages+1) {
             addText("New world", 20, 4)
             addText(
@@ -185,43 +192,41 @@ function drawPage() {
             10, 48)
             return;
         }
-        mkButton('/assets/journal/xport.svg', 5,
+        mkButton('/assets/journal/xport.svg', 25,
             "Export world\nE",
-        ()=>{ worlds.expor(t.value); })
-        mkButton('/assets/journal/copy.svg', 25,
+        ()=>{ worlds.expor(wnam); })
+        mkButton('/assets/journal/copy.svg', 50,
             "Copy world\n+",
         ()=>{
-            worlds.copyworld(t.value)
+            worlds.copyworld(wnam)
             goCurWorld()
             redraw()
         })
         if (pagenum == extraPages+2) {
             addText("Last world", 20, 4)
             addText(
-                "Warning: this gets overridden when another world is loaded!"+
-                "To permanently store the current world, rename this!",
+                "Warning: this gets overridden when another world is loaded!\n\n"+
+                "To permanently store this, copy it!",
             8, 45)
         } else {
             const t = document.createElement('input')
             t.type = "text"
             t.className = "txt"
-            let last = worlds.world_nams[pagenum-extraPages-2]
-            t.value = last.replace("\x01", '')
+            t.value = wnam.replace("\x01", '')
             t.setAttribute("maxlength", 10)
             t.style.fontSize = 2*s+"px"
             t.style.lineHeight = t.style.fontSize
             t.onchange = function() {
                 if (worlds.rename(last, t.value, true)) {
-                    last = t.value
                     goCurWorld()
                     redraw()
                 } else {
-                    t.value = last.replace("\x01", '')
+                    t.value = wnam.replace("\x01", '')
                 }
             }
             pageconts.appendChild(t)
-            mkButton('/assets/journal/bin.svg', 50,
-                "Delete world\nDelete",
+            mkButton('/assets/journal/bin.svg', 70,
+                "Delete world\nBackspace",
             ()=>{
                 if (worlds.delworld(t.value)) {
                     pagenum = extraPages+2
@@ -288,7 +293,18 @@ export function redraw() {
 
 export function press(dx, keys, lastks) {
     if (!avaliable()) return;
-    if (keys['Delete'] && !lastks['Delete']) {
+    if (keys['Enter'] && !lastks['Enter']) {
+        if (pagenum == extraPages+1) {
+            worlds.mknew()
+        } else if (pagenum == extraPages+2) {
+            worlds.load("")
+        } else if (pagenum > extraPages+2 && pagenum != maxPage()) {
+            const nam = worlds.world_nams[pagenum-extraPages-2]
+            worlds.load(nam)
+        } else return;
+        nxttog = true
+    }
+    if (keys['Backspace'] && !lastks['Backspace']) {
         if (pagenum <= extraPages+2 || pagenum == maxPage()) return;
         const nam = worlds.world_nams[pagenum-extraPages-2]
         if (worlds.delworld(nam)) {

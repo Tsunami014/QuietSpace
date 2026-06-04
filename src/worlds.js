@@ -33,9 +33,19 @@ export function mknew() {
     save()
 }
 
+function remember(setlast) {
+    const good = name != "" && name != lastName
+    if (good) {
+        if (setlast) last = name;
+        localStorage.setItem('last', name)
+    } else {
+        localStorage.setItem('last', "")
+    }
+}
+
 export function load(nam) {
     name = nam
-    if (nam != "" && nam != lastName) last = nam;
+    remember(true)
     if (world_nams.includes(nam)) {
         const [sd, x, y, placeds] = worlds[nam]
         gen.setSeed(sd)
@@ -46,11 +56,15 @@ export function load(nam) {
         save()
     }
 }
+export function loadLast() {
+    load(localStorage.getItem('last') || lastName)
+}
 export function save() {
     const out = [gen.seed, phys.x, phys.y, gen.getPlaced()]
     worlds[lastName] = out
     if (name) worlds[name] = out
     localStorage.setItem('worlds', JSON.stringify(worlds));
+    remember(false)
     gen_nams()
 }
 
@@ -82,6 +96,7 @@ export function rename(oldnam, newnam, set) {
     }
     if (set || name == oldnam) {
         name = newnam
+        remember(true)
     } else {
         worlds[newnam] = worlds[oldnam]
     }
@@ -96,6 +111,7 @@ export function delworld(nam) {
     if (name == nam) {
         name = ""
         last = ""
+        remember(false)
     }
     delete worlds[nam]
     save()
@@ -107,6 +123,7 @@ export function copyworld(nam) {
         nnam = genName(true)
     } while (world_nams.indexOf(nnam) != -1);
     name = nnam
+    remember(true)
     save()
 }
 
@@ -114,14 +131,14 @@ export function copyworld(nam) {
 const getKey = (pw) => window.crypto.subtle.importKey("raw", new TextEncoder().encode(pw.padEnd(32)), "AES-GCM", false, ["encrypt", "decrypt"]);
 
 async function encrypt(text) {
-    const key = await getKey(prompt("Encrypt with a password:"));
+    const key = await getKey(prompt("Encrypt with a password:")??"");
     const iv = window.crypto.getRandomValues(new Uint8Array(12));
     const cipher = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, new TextEncoder().encode(text));
     return btoa(String.fromCharCode(...iv, ...new Uint8Array(cipher)));
 }
 
 async function decrypt(base64) {
-    const key = await getKey(prompt("Password:"));
+    const key = await getKey(prompt("Password:")??"");
     const buf = new Uint8Array(atob(base64).split("").map(c => c.charCodeAt(0)));
     const plain = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv: buf.slice(0, 12) }, key, buf.slice(12));
     return new TextDecoder().decode(plain);
@@ -135,14 +152,14 @@ export async function expor(nam) {
     eximporting = true
 
     //!Usage encryption
-    const txt = await encrypt(JSON.stringify(worlds[nam]))
+    const txt = await encrypt(JSON.stringify(worlds[nam || lastName]))
     const blob = new Blob([txt], { type: "application/octet-stream" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.className = "hidden"
     a.href = url;
     if (nam == lastName) {
-        a.download = genName()+".world"
+        a.download = genName().padEnd(10)+"[LastWorld].world"
     } else {
         a.download = nam+".world";
     }
