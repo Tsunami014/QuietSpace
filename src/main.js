@@ -111,6 +111,7 @@ function tick() {
         lastpress = dx
         lastks = { ...keys }
 
+        draw.draw()
         requestAnimationFrame(tick)
         return
     }

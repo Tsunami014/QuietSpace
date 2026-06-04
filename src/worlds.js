@@ -30,6 +30,7 @@ export function mknew() {
     last = ""
     gen.randSeed()
     phys.teleport(0, 0)
+    mouse.resetsel()
     save()
 }
 
@@ -59,6 +60,7 @@ export function load(nam) {
         phys.teleport(0, 0)
         save()
     }
+    mouse.resetsel()
 }
 export function loadLast() {
     const stored = localStorage.getItem('last') || ''
@@ -119,6 +121,7 @@ export function delworld(nam) {
         name = ""
         remember(false)
     }
+    mouse.resetsel()
     delete worlds[nam]
     save()
     return true;

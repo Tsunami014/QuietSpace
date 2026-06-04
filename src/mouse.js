@@ -35,6 +35,7 @@ window.addEventListener('keydown', (event) => {
 });
 
 export var select = null;
+export function resetsel() { select = null; }
 var lastrx; var lastry
 var lastidx
 function click_left(drag) {
