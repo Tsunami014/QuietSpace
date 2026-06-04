@@ -112,6 +112,17 @@ input {
     opacity: 1;
     transform: translateX(-50%) translateY(-4px);
 }
+#savt {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    margin: 0;
+    font-weight: bold;
+    color: white;
+    background: #666;
+    padding: 5px;
+    border-radius: 8px;
+}
     </style>
 </head>
 <body>
@@ -122,5 +133,8 @@ input {
     <canvas id="canvas2"></canvas>
     <!--div class="circle"></div-->
     <script src="src/main.js"></script>
-    <div id="fselout" style="display: none"><div id="fsel"></div></div>
+    <div id="fselout" style="display: none">
+        <p id="savt">Saved!</p>
+        <div id="fsel"></div>
+    </div>
 </body>

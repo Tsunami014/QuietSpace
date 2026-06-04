@@ -19,7 +19,7 @@ var name = ""
 export var last = ""
 const lastName = "\x01Last world"
 export function world_idx() {
-    if (name == lastName && last != "" && last != lastName) {
+    if (name == lastName && last != "" && last != lastName && world_nams.includes(last)) {
         return world_nams.indexOf(last)
     }
     return world_nams.indexOf(name || lastName)
@@ -44,20 +44,25 @@ function remember(setlast) {
 }
 
 export function load(nam) {
-    name = nam
+    name = nam || lastName
     remember(true)
-    if (world_nams.includes(nam)) {
-        const [sd, x, y, placeds] = worlds[nam]
+    if (world_nams.includes(name)) {
+        const [sd, x, y, placeds] = worlds[name]
         gen.setSeed(sd)
         phys.teleport(x, y)
         gen.setPlaced(placeds)
+    } else if (name == "" || name == lastName) {
+        gen.defltSeed()
+        phys.teleport(0, 0)
     } else {
         gen.randSeed()
+        phys.teleport(0, 0)
         save()
     }
 }
 export function loadLast() {
-    load(localStorage.getItem('last') || lastName)
+    const stored = localStorage.getItem('last') || ''
+    load(stored && world_nams.includes(stored) ? stored : lastName)
 }
 export function save() {
     const out = [gen.seed, phys.x, phys.y, gen.getPlaced()]
@@ -100,6 +105,7 @@ export function rename(oldnam, newnam, set) {
     } else {
         worlds[newnam] = worlds[oldnam]
     }
+    if (last == oldnam) last = newnam;
     delete worlds[oldnam]
     save()
     return true;
@@ -108,9 +114,9 @@ export function delworld(nam) {
     if (!confirm(`Are you sure you want to delete '${nam}'? It will be gone forever! (A long time!)`)) {
         return false;
     }
+    last = ""
     if (name == nam) {
         name = ""
-        last = ""
         remember(false)
     }
     delete worlds[nam]
@@ -122,9 +128,11 @@ export function copyworld(nam) {
     do {
         nnam = genName(true)
     } while (world_nams.indexOf(nnam) != -1);
+    worlds[nnam] = worlds[nam || lastName]
+    localStorage.setItem('worlds', JSON.stringify(worlds))
+    gen_nams()
     name = nnam
     remember(true)
-    save()
 }
 
 //!Begin encryption

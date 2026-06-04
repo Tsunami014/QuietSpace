@@ -4,7 +4,7 @@ var page1; var page2; var pageconts
 var width; var height
 var pagenum = 0
 
-export function goCurWorld(nam) {
+export function goCurWorld() {
     pagenum = worlds.world_idx()+extraPages+2
 }
 
@@ -56,7 +56,7 @@ export async function init(nxt) {
     befms.className = "marks"
     nowms = document.createElement("div")
     nowms.id = "nowmarks"
-    nowms.ondblclick = function() { press(-1, {}); }
+    nowms.ondblclick = function() { press(-1); }
 
     const parser = new DOMParser()
     const markDoc = parser.parseFromString(markstr, 'image/svg+xml')
@@ -86,7 +86,7 @@ export async function init(nxt) {
     inncontnr = document.getElementById("fsel")
 
     page1 = jrnlDoc.documentElement
-    page1.ondblclick = function() { press(-1, {}); }
+    page1.ondblclick = function() { press(-1); }
     width = parseInt(page1.getAttribute("width")); height = parseInt(page1.getAttribute("height"))
 
     page2 = jrnlDoc.documentElement.cloneNode(true)
@@ -94,7 +94,7 @@ export async function init(nxt) {
     pageconts.setAttribute("x", 0); pageconts.setAttribute("y", 0)
     pageconts.ondblclick = function() {
         if (!avaliable()) return;
-        press(1, {})
+        press(1)
     }
     page2.appendChild(pageconts)
 
@@ -108,11 +108,12 @@ export async function init(nxt) {
 export function toggle() {
     if (contnr.style.display == "") {
         contnr.style.display = "none"
+        worlds.save()
         fselopen = false
     } else {
         contnr.style.display = ""
+        worlds.save()
         if (fselopen !== undefined) {
-            worlds.save()
             goCurWorld()
         }
         fselopen = true
@@ -157,7 +158,7 @@ function drawPage() {
     } else if (pagenum == 1) {
         addText("Menu Controls", 25, 5)
         addText(
-            "Escape to toggle this menu.\n\n"+
+            "Escape to toggle this menu\nOpen this menu to save!\n\n"+
             "I to import a world\nBookmarks jump to their page\n\n"+
             "Buttons (including bookmarks) have keybinds on them",
         8, 60)
@@ -196,7 +197,7 @@ function drawPage() {
             "Export world\nE",
         ()=>{ worlds.expor(wnam); })
         mkButton('/assets/journal/copy.svg', 50,
-            "Copy world\n+",
+            "Copy world\n=",
         ()=>{
             worlds.copyworld(wnam)
             goCurWorld()
@@ -206,7 +207,7 @@ function drawPage() {
             addText("Last world", 20, 4)
             addText(
                 "Warning: this gets overridden when another world is loaded!\n\n"+
-                "To permanently store this, copy it!",
+                "To permanently store this world, copy it!",
             8, 45)
         } else {
             const t = document.createElement('input')
@@ -217,7 +218,7 @@ function drawPage() {
             t.style.fontSize = 2*s+"px"
             t.style.lineHeight = t.style.fontSize
             t.onchange = function() {
-                if (worlds.rename(last, t.value, true)) {
+                if (worlds.rename(wnam, t.value, true)) {
                     goCurWorld()
                     redraw()
                 } else {
@@ -228,7 +229,7 @@ function drawPage() {
             mkButton('/assets/journal/bin.svg', 70,
                 "Delete world\nBackspace",
             ()=>{
-                if (worlds.delworld(t.value)) {
+                if (worlds.delworld(wnam)) {
                     pagenum = extraPages+2
                     redraw()
                 }
@@ -291,7 +292,7 @@ export function redraw() {
     })
 }
 
-export function press(dx, keys, lastks) {
+export function press(dx, keys = {}, lastks = {}) {
     if (!avaliable()) return;
     if (keys['Enter'] && !lastks['Enter']) {
         if (pagenum == extraPages+1) {
@@ -312,7 +313,7 @@ export function press(dx, keys, lastks) {
             redraw()
         }
     }
-    if (keys['+'] && !lastks['+']) {
+    if (keys['='] && !lastks['=']) {
         if (pagenum <= extraPages+1 || pagenum == maxPage()) return;
         const nam = worlds.world_nams[pagenum-extraPages-2]
         worlds.copyworld(nam)

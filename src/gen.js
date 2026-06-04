@@ -42,6 +42,10 @@ export function randSeed() {
     setSeed(Math.round(Math.random()*(10**15)))
     placeds = new Map();
 }
+export function defltSeed() {
+    setSeed(42) // Has a good array of stuff around the start
+    placeds = new Map();
+}
 
 var _cache = []
 const mxCacheLen = 15+3
@@ -113,7 +117,6 @@ export function placeTile(rx, ry, t, append) {
         placeds.set(key, [t])
     }
     tleCache = new Map()
-    worlds.save()
 }
 export function getPlaced() {
     return Object.fromEntries(placeds)
