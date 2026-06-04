@@ -176,7 +176,7 @@ function drawPage() {
         10, 50)
     } else {
         const wnam = worlds.world_nams[pagenum-extraPages-2]
-        mkButton('/assets/journal/play.svg', 5,
+        mkButton('./assets/journal/play.svg', 5,
             "Play world\nSpace",
         ()=>{
             if (wnam === undefined) {
@@ -193,10 +193,10 @@ function drawPage() {
             10, 48)
             return;
         }
-        mkButton('/assets/journal/xport.svg', 25,
+        mkButton('./assets/journal/xport.svg', 25,
             "Export world\nE",
         ()=>{ worlds.expor(wnam); })
-        mkButton('/assets/journal/copy.svg', 50,
+        mkButton('./assets/journal/copy.svg', 50,
             "Copy world\n=",
         ()=>{
             worlds.copyworld(wnam)
@@ -230,7 +230,7 @@ function drawPage() {
             addText(
                 "Type in the box above and press enter or click off it to rename",
             8, 45)
-            mkButton('/assets/journal/bin.svg', 70,
+            mkButton('./assets/journal/bin.svg', 70,
                 "Delete world\nBackspace",
             ()=>{
                 if (worlds.delworld(wnam)) {
