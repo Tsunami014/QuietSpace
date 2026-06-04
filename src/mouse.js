@@ -5,9 +5,10 @@ window.addEventListener('contextmenu', function(event) {
 });
 var dragL; var dragR;
 document.addEventListener('mousedown', (e) => {
+    mx = event.clientX; my = event.clientY
     if (e.button === 0) {
         dragL = true
-        click_left()
+        click_left(false)
     } else if (e.button === 2) {
         dragR = true
         click_right()
@@ -15,7 +16,7 @@ document.addEventListener('mousedown', (e) => {
 });
 window.addEventListener('mousemove', (event) => {
     mx = event.clientX; my = event.clientY
-    if (dragL) click_left()
+    if (dragL) click_left(true)
     if (dragR) click_right()
 });
 document.addEventListener('mouseup', (e) => {
@@ -25,13 +26,9 @@ document.addEventListener('mouseup', (e) => {
         dragR = false
     }
 });
-window.addEventListener('click', (event) => {
-    mx = event.clientX; my = event.clientY
-    click_left()
-});
 window.addEventListener('keydown', (event) => {
     if (event.key === 'q') {
-        click_left()
+        click_left(event.repeat)
     } else if (event.key === 'e') {
         click_right()
     }
@@ -40,14 +37,14 @@ window.addEventListener('keydown', (event) => {
 export var select = null;
 var lastrx; var lastry
 var lastidx
-function click_left() {
+function click_left(drag) {
     if (fsel.fselopen) return;
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
     if (realx != lastrx || realy != lastry) {
         lastrx = realx; lastry = realy
         lastidx = 0
-    }
+    } else if (drag) return;
     const tle = gen.getRealTile(realx, realy)
     lastidx = lastidx%tle.length
     select = tiles.normalise(tle[lastidx++])
