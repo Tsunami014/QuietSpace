@@ -82,12 +82,33 @@ export function delworld(nam) {
     return true;
 }
 
+//!Begin encryption
+const getKey = (pw) => window.crypto.subtle.importKey("raw", new TextEncoder().encode(pw.padEnd(32)), "AES-GCM", false, ["encrypt", "decrypt"]);
+
+async function encrypt(text) {
+    const key = await getKey(prompt("Encrypt with a password:"));
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    const cipher = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, new TextEncoder().encode(text));
+    return btoa(String.fromCharCode(...iv, ...new Uint8Array(cipher)));
+}
+
+async function decrypt(base64) {
+    const key = await getKey(prompt("Password:"));
+    const buf = new Uint8Array(atob(base64).split("").map(c => c.charCodeAt(0)));
+    const plain = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv: buf.slice(0, 12) }, key, buf.slice(12));
+    return new TextDecoder().decode(plain);
+}
+//!End encryption
+
 export var eximporting = false
-export function expor(nam) {
+//!Usage encryption (async only required for it)
+export async function expor(nam) {
     if (eximporting) return;
     eximporting = true
 
-    const blob = new Blob([JSON.stringify(worlds[nam])], { type: "application/json" });
+    //!Usage encryption
+    const txt = await encrypt(JSON.stringify(worlds[nam]))
+    const blob = new Blob([txt], { type: "application/octet-stream" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.className = "hidden"
@@ -114,10 +135,12 @@ export function impor(nam) {
         const contents = await Promise.all(
             [...input.files].map(async (file) => {
                 try {
-                    const txt = await file.text()
+                    //!Usage encryption
+                    const txt = await decrypt(await file.text())
                     return [JSON.parse(txt), file.name]
                 } catch (err) {
-                    console.error(`Failed to read/parse file '${file.name}': ${err}`);
+                    //!Usage encryption (text)
+                    alert(`Failed to read/parse file '${file.name}'! Did you get the wrong password?`);
                     return null
                 }
             })
