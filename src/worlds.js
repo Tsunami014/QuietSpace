@@ -54,6 +54,26 @@ export function save() {
     gen_nams()
 }
 
+export function genName(check) {
+    const firsts = [
+        "Mossy", "Fern", "Misty", "Dew", "Amber", "Hazel", "Ember",
+        "Cedar", "Maple", "Coral", "Peach", "Stone", "Ivory", "Brook",
+        "Sandy", "Ashen", "Oaken", "Vale", "Sunny", "Wispy",
+    ];
+    const fl = firsts.length
+    const lasts = [
+        "Nook", "Cove", "Glen", "Vale", "Glade", "Haven", "Bloom",
+        "Mead", "Creek", "Ridge", "Heath", "Shore", "Knoll", "Wood",
+        "Ford", "Mere", "Wick", "Weald", "Moor",
+    ];
+    const ll = lasts.length
+    if (check && world_nams.length >= fl*ll) {
+        throw new Error("Too many worlds to guarantee a unique name!");
+    }
+    return firsts[Math.floor(Math.random() * fl)] +
+        lasts[Math.floor(Math.random() * ll)]
+}
+
 export function rename(oldnam, newnam, set) {
     if (!newnam) return false;
     if (world_nams.indexOf(newnam) != -1 &&
@@ -80,6 +100,14 @@ export function delworld(nam) {
     delete worlds[nam]
     save()
     return true;
+}
+export function copyworld(nam) {
+    var nnam
+    do {
+        nnam = genName(true)
+    } while (world_nams.indexOf(nnam) != -1);
+    name = nnam
+    save()
 }
 
 //!Begin encryption
@@ -113,7 +141,11 @@ export async function expor(nam) {
     const a = document.createElement('a');
     a.className = "hidden"
     a.href = url;
-    a.download = nam.replace("\x01", "")+".world";
+    if (nam == lastName) {
+        a.download = genName()+".world"
+    } else {
+        a.download = nam+".world";
+    }
     document.body.appendChild(a);
     a.click();
 

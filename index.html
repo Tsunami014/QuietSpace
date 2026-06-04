@@ -9,7 +9,7 @@ html, body {
     height: 100%;
     overflow: hidden;
 }
-canvas, #playerContainer > svg, #fselout, img {
+canvas, #playerContainer > svg, #fselout, img, .popwrap {
     display: block;
     position: absolute;
 }
@@ -50,6 +50,7 @@ input {
     transition: rotate 0.3s ease;
     rotate: 3deg;
     cursor: pointer;
+    width: 100%;
 }
 .marks {
     position: absolute;
@@ -69,7 +70,7 @@ input {
 #nowmarks {
     position: absolute;
     transform: translate(50%);
-    right: 52%;
+    right: 53%;
     top: -15%;
     user-select: none;
 }
@@ -88,6 +89,25 @@ input {
     position: absolute;
     width: 0;
     height: 0;
+}
+.popwrap .popcont {
+    position: absolute;
+    bottom: 125%;
+    left: 45%;
+    text-align: center;
+    width: 120%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.popwrap:hover .popcont {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
 }
     </style>
 </head>

@@ -21,7 +21,9 @@ const marks = [
 ]
 
 const precache = [
-  './assets/journal/bin.svg'
+  './assets/journal/bin.svg',
+  './assets/journal/xport.svg',
+  './assets/journal/copy.svg',
 ];
 
 function avaliable() {
@@ -133,6 +135,23 @@ function addText(txt, sze, hei) {
     if (startend) t.style.color = "wheat";
     pageconts.appendChild(t)
 }
+function mkButton(src, right, cont, onclick) {
+    const wrap = document.createElement('div');
+    wrap.className = "popwrap"
+    wrap.style.bottom = "25%"; wrap.style.right = right+"%"
+    wrap.style.width = "20%"
+    const hover = document.createElement('div');
+    hover.className = "popcont"
+    hover.innerText = cont
+    wrap.appendChild(hover)
+    const btn = document.createElement('img');
+    btn.className = "imgbtn"
+    btn.src = src
+    btn.onclick = onclick
+    wrap.appendChild(btn)
+    pageconts.appendChild(wrap)
+    return btn
+}
 function drawPage() {
     if (pagenum == 0) {
         addText("Quiet Space", 30, 5)
@@ -143,7 +162,7 @@ function drawPage() {
         addText("Menu Controls", 25, 5)
         addText(
             "Escape to toggle this menu.\nIf a world page is selected (including last or new world), will load that world.\n\n"+
-            "E to export, I to import when selecting a world\n\n"+
+            "I to import a world from a file\n\n"+
             "Bookmarks have letters on them, press the letter to go to that page.",
         8, 60)
     } else if (pagenum == 2) {
@@ -154,53 +173,62 @@ function drawPage() {
             "Left click/Q to pick a block (shown in the top right corner), keep clicking on the same block to cycle\n\n"+
             "Right click/E to place block",
         8, 60)
-    } else if (pagenum == extraPages+1) {
-        addText("New world", 20, 4)
+    } else if (pagenum == maxPage()) {
         addText(
-            "This will generate a new world!",
-        10, 48)
-    } else if (pagenum < maxPage()) {
-        const t = document.createElement('input')
-        t.type = "text"
-        t.className = "txt"
-        let last = worlds.world_nams[pagenum-extraPages-2]
-        t.value = last.replace("\x01", '')
-        t.setAttribute("maxlength", 10)
-        t.style.fontSize = 2*s+"px"
-        t.style.lineHeight = t.style.fontSize
-        t.onchange = function() {
-            if (worlds.rename(last, t.value, true)) {
-                last = t.value
-                goCurWorld()
-                redraw()
-            } else {
-                t.value = last.replace("\x01", '')
-            }
-        }
-        pageconts.appendChild(t)
-        if (pagenum == extraPages+2) {
+            "Made with <3 by Tsunami014",
+        10, 50)
+    } else {
+        if (pagenum == extraPages+1) {
+            addText("New world", 20, 4)
             addText(
-                "Warning: this gets overridden when another world is loaded!\n\n"+
+                "This will generate a new world!",
+            10, 48)
+            return;
+        }
+        mkButton('/assets/journal/xport.svg', 5,
+            "Export world\nE",
+        ()=>{ worlds.expor(t.value); })
+        mkButton('/assets/journal/copy.svg', 25,
+            "Copy world\n+",
+        ()=>{
+            worlds.copyworld(t.value)
+            goCurWorld()
+            redraw()
+        })
+        if (pagenum == extraPages+2) {
+            addText("Last world", 20, 4)
+            addText(
+                "Warning: this gets overridden when another world is loaded!"+
                 "To permanently store the current world, rename this!",
-            8, 54)
+            8, 45)
         } else {
-            const bin = document.createElement('img');
-            bin.src = '/assets/journal/bin.svg';
-            bin.className = "imgbtn"
-            bin.style.bottom = "5%"; bin.style.right = "5%"
-            bin.style.width = "20%"
-            bin.onclick = function() {
+            const t = document.createElement('input')
+            t.type = "text"
+            t.className = "txt"
+            let last = worlds.world_nams[pagenum-extraPages-2]
+            t.value = last.replace("\x01", '')
+            t.setAttribute("maxlength", 10)
+            t.style.fontSize = 2*s+"px"
+            t.style.lineHeight = t.style.fontSize
+            t.onchange = function() {
+                if (worlds.rename(last, t.value, true)) {
+                    last = t.value
+                    goCurWorld()
+                    redraw()
+                } else {
+                    t.value = last.replace("\x01", '')
+                }
+            }
+            pageconts.appendChild(t)
+            mkButton('/assets/journal/bin.svg', 50,
+                "Delete world\nDelete",
+            ()=>{
                 if (worlds.delworld(t.value)) {
                     pagenum = extraPages+2
                     redraw()
                 }
-            }
-            pageconts.appendChild(bin)
+            })
         }
-    } else {
-        addText(
-            "Made with <3 by Tsunami014",
-        10, 50)
     }
 }
 
@@ -260,6 +288,22 @@ export function redraw() {
 
 export function press(dx, keys, lastks) {
     if (!avaliable()) return;
+    if (keys['Delete'] && !lastks['Delete']) {
+        if (pagenum <= extraPages+2 || pagenum == maxPage()) return;
+        const nam = worlds.world_nams[pagenum-extraPages-2]
+        if (worlds.delworld(nam)) {
+            pagenum = extraPages+2
+            redraw()
+        }
+    }
+    if (keys['+'] && !lastks['+']) {
+        if (pagenum <= extraPages+1 || pagenum == maxPage()) return;
+        const nam = worlds.world_nams[pagenum-extraPages-2]
+        worlds.copyworld(nam)
+        goCurWorld()
+        redraw()
+        return;
+    }
     if (keys['e'] && !lastks['e']) {
         if (pagenum <= extraPages+1 || pagenum == maxPage()) return;
         const nam = worlds.world_nams[pagenum-extraPages-2]
