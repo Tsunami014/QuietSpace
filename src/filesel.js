@@ -177,7 +177,7 @@ function drawPage() {
     } else {
         const wnam = worlds.world_nams[pagenum-extraPages-2]
         mkButton('/assets/journal/play.svg', 5,
-            "Play world\nEnter",
+            "Play world\nSpace",
         ()=>{
             if (wnam === undefined) {
                 worlds.mknew()
@@ -223,9 +223,13 @@ function drawPage() {
                     redraw()
                 } else {
                     t.value = wnam.replace("\x01", '')
+                    t.blur()
                 }
             }
             pageconts.appendChild(t)
+            addText(
+                "Type in the box above and press enter or click off it to rename",
+            8, 45)
             mkButton('/assets/journal/bin.svg', 70,
                 "Delete world\nBackspace",
             ()=>{
@@ -294,7 +298,7 @@ export function redraw() {
 
 export function press(dx, keys = {}, lastks = {}) {
     if (!avaliable()) return;
-    if (keys['Enter'] && !lastks['Enter']) {
+    if (keys['Space'] && !lastks['Space']) {
         if (pagenum == extraPages+1) {
             worlds.mknew()
         } else if (pagenum == extraPages+2) {
