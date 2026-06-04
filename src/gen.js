@@ -108,7 +108,7 @@ export function placeTile(rx, ry, t, append) {
     if (append) {
         const ot = getRealTile(rx, ry)
         if (ot.find(it=>tiles.nodecor.includes(it))) return;
-        placeds.set(key, [...ot, t])
+        placeds.set(key, [...ot.filter(it=>it!==t), t])
     } else {
         placeds.set(key, [t])
     }
