@@ -24,6 +24,7 @@ export function draw() {
     // Calculate offsets
     const [cols, rows, blk, hblk, qblk] = getSizes()
     player.scale(hblk)
+    bkpk.size(blk)
 
     const xtile = Math.floor(phys.x/units)
     const ytile = Math.floor(phys.y/units)

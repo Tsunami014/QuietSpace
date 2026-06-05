@@ -375,9 +375,9 @@ export function normalise(tname) {
 }
 
 export function normalisedImg(tname) {
-    let source = getTile(mouse.select+"_#", -1, false)
+    let source = getTile(tname+"_#", -1, false)
     if (source) return source;
-    source = getTile(mouse.select, -1, false)
+    source = getTile(tname, -1, false)
     if (source) return source;
     console.log("Unknown tile:", tname)
 }

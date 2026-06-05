@@ -9,7 +9,7 @@ html, body {
     height: 100%;
     overflow: hidden;
 }
-canvas, #playerContainer > svg, #fselout, img, .popwrap {
+canvas, #playerContainer > svg, #fselout, img, .popwrap, #news {
     display: block;
     position: absolute;
 }
@@ -124,6 +124,28 @@ input {
     padding: 5px;
     border-radius: 8px;
 }
+#news {
+    padding-top: 25px;
+}
+#news > div {
+    background: #7F8079;
+    padding: 15px;
+    margin-top: 20px;
+    margin-left: 50px;
+    border-radius: 20px;
+    border: #555 5px solid;
+    width: fit-content;
+    display: grid;
+    place-items: center;
+    transition: opacity 1.0s ease, transform 1.0s ease;
+}
+#news span {
+    text-align: center;
+    display: block;
+}
+#news canvas {
+    position: static !important;
+}
     </style>
 </head>
 <body>
@@ -134,6 +156,7 @@ input {
     <canvas id="canvas2"></canvas>
     <!--div class="circle"></div-->
     <script src="src/main.js"></script>
+    <div id="news"></div>
     <div id="fselout" style="display: none">
         <p id="savt">Saved!</p>
         <div id="fsel"></div>

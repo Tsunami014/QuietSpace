@@ -30,6 +30,7 @@ export function mknew() {
     last = ""
     gen.randSeed()
     phys.teleport(0, 0)
+    bkpk.loadFounds()
     mouse.resetsel()
     save()
 }
@@ -48,16 +49,19 @@ export function load(nam) {
     name = nam || lastName
     remember(true)
     if (world_nams.includes(name)) {
-        const [sd, x, y, placeds] = worlds[name]
+        const [sd, x, y, placeds, founds] = worlds[name]
         gen.setSeed(sd)
         phys.teleport(x, y)
+        bkpk.loadFounds(founds)
         gen.setPlaced(placeds)
     } else if (name == "" || name == lastName) {
         gen.defltSeed()
         phys.teleport(0, 0)
+        bkpk.loadFounds()
     } else {
         gen.randSeed()
         phys.teleport(0, 0)
+        bkpk.loadFounds()
         save()
     }
     mouse.resetsel()
@@ -67,7 +71,7 @@ export function loadLast() {
     load(stored && world_nams.includes(stored) ? stored : lastName)
 }
 export function save() {
-    const out = [gen.seed, phys.x, phys.y, gen.getPlaced()]
+    const out = [gen.seed, phys.x, phys.y, gen.getPlaced(), bkpk.founds]
     worlds[lastName] = out
     if (name) worlds[name] = out
     localStorage.setItem('worlds', JSON.stringify(worlds));

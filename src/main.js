@@ -11,6 +11,7 @@ var phys;
 var mouse;
 var fsel;
 var worlds;
+var bkpk;
 
 const pbhei = 40
 const pbgap = 4
@@ -35,7 +36,7 @@ function drawLoading(progress) {
 }
 
 async function load() {
-    const max = 21;
+    const max = 22;
     var i = 0
     function nxt() {
         if (i <= max) {
@@ -46,6 +47,9 @@ async function load() {
     worlds = await import("./worlds.js")
     nxt()
     worlds.load_all()
+    nxt()
+    bkpk = await import("./bkpk.js")
+    bkpk.init()
     nxt()
     fsel = await import("./filesel.js")
     nxt()

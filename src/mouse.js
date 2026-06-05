@@ -37,26 +37,20 @@ export function press(keys, lastkeys) {
 
 export var select = null;
 export function resetsel() { select = null; }
-var lastrx; var lastry
-var lastidx
 function click_left(drag) {
     if (fsel.fselopen) return;
-    if (lastidx == 0 || select === null) return;
+    if (select === null) return;
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
-    gen.placeTile(realx, realy, select, lastidx > 1)
+    gen.placeTile(realx, realy, select)
 }
 function click_right(drag) {
-    if (fsel.fselopen) return;
+    if (fsel.fselopen || drag) return;
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
-    if (realx != lastrx || realy != lastry) {
-        lastrx = realx; lastry = realy
-        lastidx = 0
-    } else if (drag) return;
     const tle = gen.getRealTile(realx, realy)
-    lastidx = lastidx%tle.length
-    select = tiles.normalise(tle[lastidx++])
+    bkpk.found(tle)
+    select = tiles.normalise(tle[0])
 }
 
 export function hasMouse() {
