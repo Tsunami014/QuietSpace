@@ -115,6 +115,7 @@ function tick() {
         requestAnimationFrame(tick)
         return
     }
+    mouse.press(keys, lastks)
     lastpress = dx
     lastks = { ...keys }
     if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {

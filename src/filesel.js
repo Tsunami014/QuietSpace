@@ -8,14 +8,14 @@ export function goCurWorld() {
     pagenum = worlds.world_idx()+extraPages+2
 }
 
-const extraPages = 2
+const extraPages = 3
 function maxPage() {
     return worlds.world_nams.length+extraPages+2
 }
 
 var aftms; var befms; var nowms
 const marks = [
-    [1, "c", "#8C5848"],
+    [2, "c", "#8C5848"],
     [extraPages+1, "n", "#8C6F48"],
     [extraPages+2, "l", "#8C484F"]
 ]
@@ -156,19 +156,27 @@ function drawPage() {
             "Left/right arrows or double click to change page",
         10, 70)
     } else if (pagenum == 1) {
+        addText("TODOs", 25, 5)
+        addText(
+            "- Discover a traffic cone\n"+
+            "- Walk around a tree\n"+
+            "- Find the beach and ocean\n"+
+            "- Encase yourself in trees\n"+
+            "- Build your own road",
+        8, 55)
+    } else if (pagenum == 2) {
         addText("Menu Controls", 25, 5)
         addText(
-            "Escape to toggle this menu\nOpen this menu to save!\n\n"+
-            "I to import a world\nBookmarks jump to their page\n\n"+
-            "Buttons (including bookmarks) have keybinds on them",
+            "Escape to toggle this menu.\nOpen this menu to save!\n\n"+
+            "I to import a world.\nBookmarks jump to their page.",
         8, 60)
-    } else if (pagenum == 2) {
+    } else if (pagenum == 3) {
         addText("Game controls", 25, 5)
         addText(
-            "WSAD or arrow keys to move\n"+
-            "Mouse to highlight a block\n\n"+
-            "Left click/Q to pick a block (shown in the top right corner), keep clicking on the same block to cycle\n\n"+
-            "Right click/E to place block",
+            "WSAD or arrow keys to move.\n"+
+            "Mouse to highlight a block.\n\n"+
+            "Left click/Q to place block."+
+            "Right click/E to select/discover blocks!\n\n",
         8, 60)
     } else if (pagenum == maxPage()) {
         addText(
@@ -228,7 +236,7 @@ function drawPage() {
             }
             pageconts.appendChild(t)
             addText(
-                "Type in the box above and press enter or click off it to rename",
+                "Type in the box above and press enter to rename",
             8, 45)
             mkButton('./assets/journal/bin.svg', 70,
                 "Delete world\nBackspace",

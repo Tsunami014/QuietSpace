@@ -11,13 +11,13 @@ document.addEventListener('mousedown', (e) => {
         click_left(false)
     } else if (e.button === 2) {
         dragR = true
-        click_right()
+        click_right(false)
     }
 });
 window.addEventListener('mousemove', (event) => {
     mx = event.clientX; my = event.clientY
     if (dragL) click_left(true)
-    if (dragR) click_right()
+    if (dragR) click_right(true)
 });
 document.addEventListener('mouseup', (e) => {
     if (e.button === 0) {
@@ -26,19 +26,27 @@ document.addEventListener('mouseup', (e) => {
         dragR = false
     }
 });
-window.addEventListener('keydown', (event) => {
-    if (event.key === 'q') {
-        click_left(event.repeat)
-    } else if (event.key === 'e') {
-        click_right()
+export function press(keys, lastkeys) {
+    if (keys['q']) {
+        click_left(lastkeys['q'])
     }
-});
+    if (keys['e']) {
+        click_right(lastkeys['e'])
+    }
+}
 
 export var select = null;
 export function resetsel() { select = null; }
 var lastrx; var lastry
 var lastidx
 function click_left(drag) {
+    if (fsel.fselopen) return;
+    if (lastidx == 0 || select === null) return;
+    const [px, py] = getPos()
+    const [realx, realy] = phys.realpos(px, py)
+    gen.placeTile(realx, realy, select, lastidx > 1)
+}
+function click_right(drag) {
     if (fsel.fselopen) return;
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
@@ -49,13 +57,6 @@ function click_left(drag) {
     const tle = gen.getRealTile(realx, realy)
     lastidx = lastidx%tle.length
     select = tiles.normalise(tle[lastidx++])
-}
-function click_right() {
-    if (fsel.fselopen) return;
-    if (lastidx == 0 || select === null) return;
-    const [px, py] = getPos()
-    const [realx, realy] = phys.realpos(px, py)
-    gen.placeTile(realx, realy, select, lastidx > 1)
 }
 
 export function hasMouse() {
