@@ -298,7 +298,7 @@ export function redraw() {
 
 export function press(dx, keys = {}, lastks = {}) {
     if (!avaliable()) return;
-    if (keys['Space'] && !lastks['Space']) {
+    if (keys[' '] && !lastks[' ']) {
         if (pagenum == extraPages+1) {
             worlds.mknew()
         } else if (pagenum == extraPages+2) {
