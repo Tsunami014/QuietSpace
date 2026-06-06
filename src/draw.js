@@ -46,15 +46,14 @@ export function draw() {
             const ty = i-tyoffs
             const [realx, realy] = gen.realPos(tx, ty)
             const tles = gen.getRealTile(realx, realy)
-            tles.forEach((tle, iidx)=>{
+            tles.forEach((tle, idx)=>{
                 if (!tle) return;
                 const getfn = (x, y)=>{ return gen.getRealTile(realx+x, realy+y).includes(tle); }
                 const fullgetfn = (x, y, t)=>{ return gen.getRealTile(realx+x, realy+y).find(it=>it.includes(t)); }
                 var g = [tle]
-                if (iidx == 0 && !tiles.nodecor.includes(tle)) {
+                if (idx == 0 && !tiles.nodecor.includes(tle)) {
                     g = g.concat(tiles.addBorders(tle, fullgetfn))
                 }
-                var idx = iidx
                 for (const tle2 of g) {
                     idx++
                     const rtle = tiles.getBaseTile(tle2, tles, getfn)
@@ -68,7 +67,7 @@ export function draw() {
                     const basey = qblk*i+yoffs
                     const ypos = basey - hei+hblk - (idx==1? 1:2)
                     if (!tiles.pixel) { wid+=(idx==1? 4:8); hei+=(idx==1? 2:4); }
-                    if (basey >= midp && iidx != 0) {
+                    if (basey >= midp && tiles.decor.includes(rtle)) {
                         ctx2.drawImage(source.img, xpos, ypos, wid, hei)
                     } else {
                         ctx1.drawImage(source.img, xpos, ypos, wid, hei)
