@@ -166,6 +166,7 @@ function drawPage() {
             "- Walk around a tree\n"+
             "- Find the beach and ocean\n"+
             "- Encase yourself in trees\n"+
+            "- Make some fun shapes with footpaths\n"+
             "- Build your own road",
         8, 55)
     } else if (pagenum == 2) {

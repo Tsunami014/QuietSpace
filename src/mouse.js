@@ -45,14 +45,13 @@ export function press(keys, lastkeys) {
 export var select = null;
 export function setsel(val = null) { select = val; }
 function click_left(drag) {
-    if (fsel.fselopen || bkpk.open) return;
-    if (select === null) return;
+    if (fsel.fselopen || bkpk.open || select === null || mx === undefined) return;
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
     gen.placeTile(realx, realy, select)
 }
 function click_right(drag) {
-    if (fsel.fselopen || bkpk.open) return;
+    if (fsel.fselopen || bkpk.open || mx === undefined) return;
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
     const tle = gen.getRealTile(realx, realy)

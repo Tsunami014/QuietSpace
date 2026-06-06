@@ -8,12 +8,16 @@ export function teleport(nx, ny) {
 export function realpos(nx, ny) {
     return [Math.floor(nx-((ny-1)/2)), -Math.floor(nx+(ny/2) + 0.5)]
 }
+export function isCollider(t) {
+    return t == "water" || t == "cone" || t == "tree"
+}
 function collides(nx, ny) {
     const [rx, ry] = realpos(nx/draw.units, ny/draw.units)
     const tles = gen.getRealTile(rx, ry)
-    return tles.includes("water") ||
-            tles.includes("cone") ||
-            tles.includes("tree")
+    return tles.find(isCollider) !== undefined
+}
+export function realPlayerPos() {
+    return realpos(x/draw.units, y/draw.units)
 }
 
 

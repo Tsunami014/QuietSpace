@@ -108,6 +108,11 @@ export function getRealTile(rx, ry) {
 }
 
 export function placeTile(rx, ry, t) {
+    // Don't place a collision block under the player
+    if (phys.isCollider(t)) {
+        const [rpx, rpy] = phys.realPlayerPos()
+        if (rx == rpx && ry == rpy) return;
+    }
     const key = rx + ',' + ry;
     if (tiles.decor.includes(t)) {
         const ot = getRealTile(rx, ry)[0]
