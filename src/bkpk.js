@@ -26,7 +26,6 @@ function drawTile(nam) {
     if (!source) return null;
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
-    ctx.imageSmoothingEnabled = false
     const scale = aimw/32
 
     var wid = source.wid
@@ -48,6 +47,7 @@ function drawTile(nam) {
         }
     }
     canvas.width = canvw*scale; canvas.height = canvh*scale
+    ctx.imageSmoothingEnabled = false
     ctx.drawImage(source.img,
         Math.ceil((canvw-wid)/2 * scale), Math.ceil((canvh-hei)/2 * scale),
         Math.floor(wid*scale), Math.floor(hei*scale))

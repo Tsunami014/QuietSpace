@@ -65,7 +65,7 @@ export function draw() {
                     const xpos = blk*(j-offs)+xoffs - (wid-blk)/2+hblk
                     const basey = qblk*i+yoffs
                     const ypos = basey - hei+hblk
-                    if (!tiles.pixel) { wid++; hei++ }
+                    if (!tiles.pixel) { wid++; hei++; }
                     if (basey >= midp && idx != 0) {
                         ctx2.drawImage(source.img, xpos, ypos, wid, hei)
                     } else {

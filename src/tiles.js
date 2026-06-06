@@ -11,32 +11,30 @@ export function setTleSzes(wid, hei) {
     tleWid = wid*2
     tleHei = hei*2
 }
-async function makeTile(sheet, tle, flipH=false, flipV=false, rotate=0) {
-    var w; var h;
-    if (pixel) {
-        w = sheet.w
-        h = sheet.h
-    } else {
-        w = (tleWid + 4) * (sheet.w/32)
-        h = (tleHei + 2) * (sheet.h/16)
-    }
+async function makeTile(sheet, tle, flipH = false, flipV = false, rotate = 0) {
     const r = (rotate+4) % 4
-    const yscale = (r%2) + 1
-    const xscale = 1 / yscale
 
-    const c = new OffscreenCanvas(w, h);
-    const ctx = c.getContext('2d');
+    const w = pixel? sheet.w :
+        tleWid * (sheet.w / 32)
+    const h = pixel? sheet.h :
+        tleHei * (sheet.h / 16)
+    const outW = (r % 2) ? h : w
+    const outH = (r % 2) ? w : h
+
+    const c = new OffscreenCanvas(outW, outH)
+    const ctx = c.getContext("2d")
     ctx.imageSmoothingEnabled = false
-    ctx.save();
-    ctx.translate(w / 2, h / 2);
-    ctx.rotate(r * Math.PI / 2);
-    ctx.scale(xscale, yscale);
-    ctx.translate((flipH ? w : 0) - w/2, (flipV ? h : 0) - h/2);
-    ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
-    ctx.drawImage(sheet.img, tle[0]*sheet.w, tle[1]*sheet.h, sheet.w, sheet.h, 0, 0, w, h);
-    ctx.restore();
 
-    return {img: await createImageBitmap(c), wid: (sheet.w/32), hei: (sheet.h/16)};
+    ctx.translate(outW / 2, outH / 2)
+    ctx.rotate(r * Math.PI / 2)
+    ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1)
+    ctx.drawImage(
+        sheet.img,
+        tle[0] * sheet.w, tle[1] * sheet.h, sheet.w, sheet.h,
+        -w / 2, -h / 2, w, h
+    )
+    return {img: await createImageBitmap(c),
+        wid: sheet.w/32, hei: sheet.h/16}
 }
 
 
