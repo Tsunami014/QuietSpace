@@ -161,14 +161,16 @@ function drawPage() {
         10, 70)
     } else if (pagenum == 1) {
         addText("Todos", 25, 5)
-        addText(
-            "- Discover a traffic cone\n"+
-            "- Walk around a tree\n"+
-            "- Find the beach and ocean\n"+
-            "- Encase yourself in trees\n"+
-            "- Make some fun shapes with footpaths\n"+
+        addText([
+            "- Walk around a tree",
+            "- Find the beach and ocean",
+            "- Discover some tiles",
+            "- Make some fun shapes with footpaths",
+            "- Encase yourself in trees",
             "- Build your own road",
-        8, 55)
+            "- Copy your world and give it a cool name",
+            "- Discover a traffic cone",
+        ].join("\n"), 8, 55)
     } else if (pagenum == 2) {
         addText("Menu Controls", 25, 5)
         addText(
@@ -177,14 +179,14 @@ function drawPage() {
         8, 60)
     } else if (pagenum == 3) {
         addText("Game controls", 25, 5)
-        addText(
+        addText([
             "WSAD or arrow keys to move.\n"+
-            "Mouse to highlight a tiles.\n\n"+
+            "Mouse to highlight a tiles.",
             "Left click/Q to place tiles.\n"+
-            "Right click/E to select & discover tiles!\n\n"+
+            "Right click/E to select & discover tiles!",
             "R to open/close backpack of discovered tiles.\n"+
             "Click/F on a backpack item to select it.",
-        7, 60)
+        ].join("\n\n"), 7, 60)
     } else if (pagenum == maxPage()) {
         addText(
             "Made with <3 by Tsunami014",
@@ -220,10 +222,10 @@ function drawPage() {
         })
         if (pagenum == extraPages+2) {
             addText("Last world", 20, 4)
-            addText(
-                "Warning: this gets overridden when another world is loaded!\n\n"+
+            addText([
+                "Warning: this gets overridden when another world is loaded!",
                 "To permanently store this world, copy it!",
-            8, 45)
+            ].join("\n\n"), 8, 45)
         } else {
             const t = document.createElement('input')
             t.type = "text"

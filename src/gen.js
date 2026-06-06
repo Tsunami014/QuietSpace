@@ -116,6 +116,7 @@ export function placeTile(rx, ry, t) {
     const key = rx + ',' + ry;
     if (tiles.decor.includes(t)) {
         const ot = getRealTile(rx, ry)[0]
+        if (tiles.nodecor.includes(ot)) return;
         if (ot) placeds.set(key, [ot, t])
         else placeds.set(key, [t])
     } else {
