@@ -153,6 +153,7 @@ function tick() {
     if (keys['ArrowDown'] || keys['s']) dy = 1
     let ox = phys.x
     if (phys.tick(dx, dy)) {
+        mouse.move()
         gen.cacheTick()
         if (ox != phys.x) player.setdir(Math.sign(phys.x-ox))
     }

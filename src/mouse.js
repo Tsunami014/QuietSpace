@@ -16,9 +16,12 @@ document.addEventListener('mousedown', (e) => {
 });
 window.addEventListener('mousemove', (event) => {
     mx = event.clientX; my = event.clientY
+    move()
+});
+export function move() {
     if (dragL) click_left(true)
     if (dragR) click_right(true)
-});
+}
 document.addEventListener('mouseup', (e) => {
     if (e.button === 0) {
         dragL = false
