@@ -55,6 +55,7 @@ export function draw() {
                     g = g.concat(tiles.addBorders(tle, fullgetfn))
                 }
                 for (const tle2 of g) {
+                    idx++
                     const rtle = tiles.getBaseTile(tle2, tles, getfn)
                     if (!rtle) continue;
                     const source = tiles.getTile(rtle, gen.hash(-1, tx, ty))
@@ -62,11 +63,11 @@ export function draw() {
                     if (i-source.hei > rows+5) continue;
                     var wid = source.wid * blk
                     var hei = source.hei * hblk
-                    const xpos = blk*(j-offs)+xoffs - (wid-blk)/2+hblk
+                    const xpos = blk*(j-offs)+xoffs - (wid-blk)/2+hblk - (idx==1? 2:4)
                     const basey = qblk*i+yoffs
-                    const ypos = basey - hei+hblk
-                    if (!tiles.pixel) { wid++; hei++; }
-                    if (basey >= midp && idx != 0) {
+                    const ypos = basey - hei+hblk - (idx==1? 1:2)
+                    if (!tiles.pixel) { wid+=(idx==1? 4:8); hei+=(idx==1? 2:4); }
+                    if (basey >= midp && idx != 1) {
                         ctx2.drawImage(source.img, xpos, ypos, wid, hei)
                     } else {
                         ctx1.drawImage(source.img, xpos, ypos, wid, hei)

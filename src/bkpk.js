@@ -77,7 +77,7 @@ function newfound(nam) {
 
     newcont.appendChild(n)
     setTimeout(()=>{ n.style.opacity = 0; }, 2000)
-    setTimeout(()=> n.remove(), 3000)
+    setTimeout(()=> n.remove(), 2600)
     redraw = true
 }
 export function found(blks) {
