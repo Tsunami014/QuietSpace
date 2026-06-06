@@ -1,4 +1,8 @@
 var mx; var my;
+export function elmAtMouse() {
+    if (mx === undefined) return null;
+    return document.elementFromPoint(mx, my)
+}
 
 window.addEventListener('contextmenu', function(event) {
     event.preventDefault();
@@ -39,16 +43,16 @@ export function press(keys, lastkeys) {
 }
 
 export var select = null;
-export function resetsel() { select = null; }
+export function setsel(val = null) { select = val; }
 function click_left(drag) {
-    if (fsel.fselopen) return;
+    if (fsel.fselopen || bkpk.open) return;
     if (select === null) return;
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
     gen.placeTile(realx, realy, select)
 }
 function click_right(drag) {
-    if (fsel.fselopen || drag) return;
+    if (fsel.fselopen || bkpk.open || drag) return;
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
     const tle = gen.getRealTile(realx, realy)

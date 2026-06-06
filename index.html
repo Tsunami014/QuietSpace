@@ -128,17 +128,18 @@ input {
     border-radius: 8px;
 }
 #news {
-    padding-top: 25px;
+    padding-top: 2vh;
 }
 #news > div, #bpconts {
-    position: fixed;
     background: #6A5A5B;
     padding: 15px;
-    left: 5%;
-    top: 5%;
     border-radius: 20px;
     border: #4F3C3B 10px solid;
-    box-shadow: 8px 8px 0 #3E313069;
+    box-shadow: 5px 5px 0 #3E313069;
+}
+#news > div {
+    margin-left: 5vw;
+    margin-top: 3vh;
     width: fit-content;
     display: grid;
     place-items: center;
@@ -157,15 +158,39 @@ input {
     width: 20%;
 }
 #bpconts {
-    width: calc(60% - 10px);
+    top: 5%;
+    left: 5%;
+    width: calc(65% - 50px);
     height: calc(90% - 50px);
-    place-items: normal;
     border-radius: 50px;
-    overflow: hidden;
+    box-shadow: 8px 8px 0 #3E313069;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3%;
+    justify-content: center;
+    align-items: center;
+    align-content: flex-start;
+    overflow-y: scroll;
 }
-#bpconts > canvas {
-    width: 100%;
-    height: 100%;
+#bpconts > div {
+    text-align: center;
+    flex-grow: 1;
+    display: grid;
+    padding: 1% 0;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    border-radius: 20px;
+}
+#bpconts > div:hover {
+    background-color: #846859E5;
+}
+#bpconts span {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+#bpconts canvas {
+    position: static;
+    display: block;
+    margin: 0 auto;
 }
     </style>
 </head>

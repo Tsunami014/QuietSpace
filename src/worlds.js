@@ -31,7 +31,7 @@ export function mknew() {
     gen.randSeed()
     phys.teleport(0, 0)
     bkpk.loadFounds()
-    mouse.resetsel()
+    mouse.setsel()
     save()
 }
 
@@ -64,7 +64,7 @@ export function load(nam) {
         bkpk.loadFounds()
         save()
     }
-    mouse.resetsel()
+    mouse.setsel()
 }
 export function loadLast() {
     const stored = localStorage.getItem('last') || ''
@@ -125,7 +125,7 @@ export function delworld(nam) {
         name = ""
         remember(false)
     }
-    mouse.resetsel()
+    mouse.setsel()
     delete worlds[nam]
     save()
     return true;

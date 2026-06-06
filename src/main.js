@@ -129,6 +129,7 @@ function tick() {
         if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {
             resizeCanvas(true)
         }
+        bkpk.draw()
         lastks = { ...keys }
         draw.draw()
         requestAnimationFrame(tick)
@@ -168,8 +169,9 @@ function resizeCanvas(loaded) {
     canvas2.width = window.innerWidth;
     canvas2.height = window.innerHeight;
     if (loaded) {
-        fsel.redraw()
         const [cols, rows, blk, hblk, qblk] = draw.getSizes()
+        bkpk.resized(blk)
+        fsel.redraw()
         tiles.setTleSzes(blk, hblk)
     }
 }
