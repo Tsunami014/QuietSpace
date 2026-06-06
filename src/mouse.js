@@ -52,7 +52,7 @@ function click_left(drag) {
     gen.placeTile(realx, realy, select)
 }
 function click_right(drag) {
-    if (fsel.fselopen || bkpk.open || drag) return;
+    if (fsel.fselopen || bkpk.open) return;
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
     const tle = gen.getRealTile(realx, realy)

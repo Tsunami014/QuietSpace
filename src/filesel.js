@@ -15,9 +15,10 @@ function maxPage() {
 
 var aftms; var befms; var nowms
 const marks = [
+    [1, "t", "#7D5557"],
     [2, "c", "#8C5848"],
-    [extraPages+1, "n", "#8C6F48"],
-    [extraPages+2, "l", "#8C484F"]
+    [extraPages+1, "n", "#8C5048"],
+    [extraPages+2, "l", "#8C6348"]
 ]
 
 const precache = [
@@ -32,6 +33,7 @@ function avaliable() {
 }
 
 
+var bmwid; var bmhei
 export async function init(nxt) {
     // I ain't waiting for ts
     Promise.all(precache.map((src) => {
@@ -60,6 +62,7 @@ export async function init(nxt) {
 
     const parser = new DOMParser()
     const markDoc = parser.parseFromString(markstr, 'image/svg+xml')
+    bmwid = parseInt(markDoc.documentElement.getAttribute("width")); bmhei = parseInt(markDoc.documentElement.getAttribute("height"))
     marks.forEach(m=>{
         const mn = markDoc.documentElement.cloneNode(true)
         mn.setAttribute("fill", m[2])
@@ -85,11 +88,12 @@ export async function init(nxt) {
     contnr = document.getElementById("overl")
     inncontnr = document.getElementById("fsel")
 
-    page1 = jrnlDoc.documentElement
+    page1 = jrnlDoc.documentElement.cloneNode(true)
     page1.ondblclick = function() { press(-1); }
     width = parseInt(page1.getAttribute("width")); height = parseInt(page1.getAttribute("height"))
+    page1.style.position = "absolute"
 
-    page2 = jrnlDoc.documentElement.cloneNode(true)
+    page2 = jrnlDoc.documentElement
     pageconts = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject")
     pageconts.setAttribute("x", 0); pageconts.setAttribute("y", 0)
     pageconts.ondblclick = function() {
@@ -156,7 +160,7 @@ function drawPage() {
             "Left/right arrows or double click to change page",
         10, 70)
     } else if (pagenum == 1) {
-        addText("TODOs", 25, 5)
+        addText("Todos", 25, 5)
         addText(
             "- Discover a traffic cone\n"+
             "- Walk around a tree\n"+
@@ -176,9 +180,10 @@ function drawPage() {
             "WSAD or arrow keys to move.\n"+
             "Mouse to highlight a tiles.\n\n"+
             "Left click/Q to place tiles.\n"+
-            "Right click/E to select/discover tiles!\n"+
-            "R to open backpack of discovered tiles.\n",
-        8, 60)
+            "Right click/E to select & discover tiles!\n\n"+
+            "R to open/close backpack of discovered tiles.\n"+
+            "Click/F on a backpack item to select it.",
+        7, 60)
     } else if (pagenum == maxPage()) {
         addText(
             "Made with <3 by Tsunami014",
@@ -261,7 +266,7 @@ export function redraw() {
     } else {
         s = canvas1.height/height * 0.7
     }
-    inncontnr.style.transform = `rotate(-1deg) scale(${s}) translate(${startend ? -50 : -70}%, -50%)`
+    inncontnr.style.transform = `rotate(-1deg) translate(${startend ? -50 : -30}%, -50%)`
     pageconts.setAttribute("width", width*s); pageconts.setAttribute("height", height*s)
     if (pagenum == mx) {
         pageconts.setAttribute("transform", `scale(${-1/s}, ${1/s})`)
@@ -271,21 +276,22 @@ export function redraw() {
         pageconts.style.translate = ""
     }
 
-    aftms.style.right = pagenum == mx ? "5%" : "55%"
-    befms.style.left = pagenum == 0 ? "0" : "50%"
-
     page1.style.fill = pagenum == 1 || pagenum == mx ? mainfill : subfill
     page1.style.display = startend ? "none" : ""
-    page1.style.transform = startend ? "" : "translate(3%) scale(-1, 1)"
+    page1.setAttribute("width", width*s); page1.setAttribute("height", height*s)
+    page1.style.transform = startend ? "" : `translate(-95%) scale(-1, 1)`
     page2.style.fill = startend ? mainfill : subfill
-    page2.style.transform = pagenum == mx ? "scale(-1, 1)" : ""
+    page2.style.transform = pagenum == mx ? `scale(-1, 1)` : ""
+    page2.setAttribute("width", width*s); page2.setAttribute("height", height*s)
 
     pageconts.replaceChildren()
     drawPage()
 
+    aftms.style.right = pagenum == mx ? "3%" : "100%"
     marks.forEach(m=>{
         const mn = m[3]
         const ms = m[4]
+        mn.setAttribute("width", bmwid*s); mn.setAttribute("height", bmhei*s)
         if (m[0] > mx) {
             ms.style.display = "none"
             mn.remove()

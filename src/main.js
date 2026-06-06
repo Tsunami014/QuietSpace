@@ -125,6 +125,7 @@ function tick() {
 
     mouse.press(keys, lastks)
     if (keys['r'] && !lastks['r']) bkpk.toggle()
+    if (bkpk.open && keys['f'] && !lastks['f']) bkpk.select()
     if (bkpk.open) {
         if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {
             resizeCanvas(true)

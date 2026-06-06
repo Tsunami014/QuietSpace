@@ -8,14 +8,16 @@ export function init() {
 
 export function toggle() {
     if (contnr.classList.contains('bkpk')) {
-        const e = mouse.elmAtMouse()
-        if (conts.contains(e)) e.click();
         contnr.classList.remove("bkpk")
         open = false
     } else {
         contnr.classList.add("bkpk")
         open = true
     }
+}
+export function select() {
+    const e = mouse.elmAtMouse()
+    if (conts.contains(e)) e.click();
 }
 
 var aimw = 0
