@@ -94,7 +94,9 @@ var nxttog = false // So the menu can vanish at the same time as world load
 function tick() {
     if (nxttog || (keys['Escape'] && !lastks['Escape'])) {
         nxttog = false
-        if (!worlds.eximporting) {
+        if (bkpk.open) {
+            bkpk.toggle()
+        } else if (!worlds.eximporting) {
             fsel.toggle()
         }
     }
@@ -119,8 +121,19 @@ function tick() {
         requestAnimationFrame(tick)
         return
     }
-    mouse.press(keys, lastks)
     lastpress = dx
+
+    mouse.press(keys, lastks)
+    if (keys['r'] && !lastks['r']) bkpk.toggle()
+    if (bkpk.open) {
+        if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {
+            resizeCanvas(true)
+        }
+        lastks = { ...keys }
+        draw.draw()
+        requestAnimationFrame(tick)
+        return
+    }
     lastks = { ...keys }
     if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {
         resizeCanvas(true)

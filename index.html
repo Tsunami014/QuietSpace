@@ -9,14 +9,22 @@ html, body {
     height: 100%;
     overflow: hidden;
 }
-canvas, #playerContainer > svg, #fselout, img, .popwrap, #news {
-    display: block;
+canvas, #playerContainer > svg, #overl, img, .popwrap, #news, #bpconts {
     position: absolute;
 }
-#fselout {
+.popcont, .popcont + *, .marks > *, #nowmarks, #news *, #bpimg {
+    user-select: none;
+}
+#overl {
     background-color: #CCC8;
     width: 100vw;
     height: 100vh;
+}
+#overl:not([class]), #overl[class=""],
+#overl:not(.bkpk) > #bkpk,
+#overl:not(.fsel) > #fsel,
+#overl:not(.fsel) > #savt {
+    display: none;
 }
 #fsel {
     position: absolute;
@@ -64,7 +72,6 @@ input {
 .marks > * {
     cursor: pointer;
     transition: translate 0.1s ease;
-    user-select: none;
 }
 .marks > *:hover { translate: 0 -12%; }
 #nowmarks {
@@ -72,7 +79,6 @@ input {
     transform: translate(50%);
     right: 53%;
     top: -15%;
-    user-select: none;
 }
 .circle {
     position: absolute;
@@ -105,9 +111,6 @@ input {
     opacity: 0;
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.popcont, .popcont + * {
-    user-select: none;
-}
 .popcont:has(+ *:hover) {
     opacity: 1;
     transform: translateX(-50%) translateY(-4px);
@@ -127,13 +130,15 @@ input {
 #news {
     padding-top: 25px;
 }
-#news > div {
-    background: #7F8079;
+#news > div, #bpconts {
+    position: fixed;
+    background: #6A5A5B;
     padding: 15px;
-    margin-top: 20px;
-    margin-left: 50px;
+    left: 5%;
+    top: 5%;
     border-radius: 20px;
-    border: #555 5px solid;
+    border: #4F3C3B 10px solid;
+    box-shadow: 8px 8px 0 #3E313069;
     width: fit-content;
     display: grid;
     place-items: center;
@@ -146,6 +151,22 @@ input {
 #news canvas {
     position: static !important;
 }
+#bpimg {
+    right: 5%;
+    bottom: 5%;
+    width: 20%;
+}
+#bpconts {
+    width: calc(60% - 10px);
+    height: calc(90% - 50px);
+    place-items: normal;
+    border-radius: 50px;
+    overflow: hidden;
+}
+#bpconts > canvas {
+    width: 100%;
+    height: 100%;
+}
     </style>
 </head>
 <body>
@@ -157,7 +178,11 @@ input {
     <!--div class="circle"></div-->
     <script src="src/main.js"></script>
     <div id="news"></div>
-    <div id="fselout" style="display: none">
+    <div id="overl">
+        <div id="bkpk">
+            <div id="bpconts"></div>
+            <img id="bpimg" src="./assets/bkpk/bkpk.svg">
+        </div>
         <p id="savt">Saved!</p>
         <div id="fsel"></div>
     </div>

@@ -82,7 +82,7 @@ export async function init(nxt) {
     })
 
     const jrnlDoc = parser.parseFromString(jrnlstr, 'image/svg+xml')
-    contnr = document.getElementById("fselout")
+    contnr = document.getElementById("overl")
     inncontnr = document.getElementById("fsel")
 
     page1 = jrnlDoc.documentElement
@@ -106,12 +106,12 @@ export async function init(nxt) {
 }
 
 export function toggle() {
-    if (contnr.style.display == "") {
-        contnr.style.display = "none"
+    if (contnr.classList.contains('fsel')) {
+        contnr.classList.remove("fsel")
         worlds.save()
         fselopen = false
     } else {
-        contnr.style.display = ""
+        contnr.classList.add("fsel")
         worlds.save()
         if (fselopen !== undefined) {
             goCurWorld()
@@ -174,9 +174,10 @@ function drawPage() {
         addText("Game controls", 25, 5)
         addText(
             "WSAD or arrow keys to move.\n"+
-            "Mouse to highlight a block.\n\n"+
-            "Left click/Q to place block."+
-            "Right click/E to select/discover blocks!\n\n",
+            "Mouse to highlight a tiles.\n\n"+
+            "Left click/Q to place tiles.\n"+
+            "Right click/E to select/discover tiles!\n"+
+            "R to open backpack of discovered tiles.\n",
         8, 60)
     } else if (pagenum == maxPage()) {
         addText(

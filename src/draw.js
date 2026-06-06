@@ -78,7 +78,7 @@ export function draw() {
     }
 
     // Draw the UI
-    if (mouse.hasMouse() && !fsel.fselopen) {
+    if (mouse.hasMouse() && !fsel.fselopen && !bkpk.open) {
         const [mx, my] = mouse.getPos()
         var offs = Math.abs((Math.abs(mx)*2+1)%2-1) >= Math.abs(Math.abs(my)%2-1) ? 0.5:0
         const wid = blk*(48/32)
