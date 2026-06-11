@@ -48,6 +48,8 @@ function click_left(drag) {
     if (fsel.fselopen || bkpk.open || select === null || mx === undefined) return;
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
+    const tle = gen.getRealTile(realx, realy)
+    bkpk.found(tle)
     gen.placeTile(realx, realy, select)
 }
 function click_right(drag) {
