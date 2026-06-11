@@ -4,6 +4,7 @@ export function init() {
     newcont = document.getElementById("news")
     contnr = document.getElementById("overl")
     conts = document.getElementById("bpconts")
+    document.getElementById("bpimg").onclick = ()=>{ bkpk.toggle(); }
 }
 
 export function toggle() {

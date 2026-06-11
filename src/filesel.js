@@ -126,13 +126,14 @@ export function toggle() {
 }
 
 var s; var startend;
-function addText(txt, sze, hei) {
+function addText(txt, sze, hei, bold=false) {
     const t = document.createElement('p')
     t.className = "txt"
-    t.innerText = txt
+    t.innerHTML = txt.replaceAll("\n", "<br>")
     t.style.fontSize = sze*s/10+"px"
     t.style.lineHeight = t.style.fontSize
     t.style.top = hei+"%"
+    if (!bold) t.style.fontWeight = "normal";
     if (startend) t.style.color = "wheat";
     pageconts.appendChild(t)
 }
@@ -155,12 +156,12 @@ function mkButton(src, right, cont, onclick) {
 }
 function drawPage() {
     if (pagenum == 0) {
-        addText("Quiet Space", 30, 5)
+        addText("Quiet Space", 30, 6, true)
         addText(
             "Left/right arrows or double click to change page",
-        10, 70)
+        10, 65)
     } else if (pagenum == 1) {
-        addText("Todos", 25, 5)
+        addText("Todos", 25, 5, true)
         addText([
             "- Walk around a tree",
             "- Find the beach and ocean",
@@ -172,25 +173,25 @@ function drawPage() {
             "- Discover a traffic cone",
         ].join("\n"), 8, 55)
     } else if (pagenum == 2) {
-        addText("Menu Controls", 25, 5)
+        addText("Menu Controls", 25, 5, true)
         addText(
-            "Escape to toggle this menu.\nOpen this menu to save!\n\n"+
-            "I to import a world.\nBookmarks jump to their page.",
+            "<i>Escape</i> to toggle this menu.\nOpen this menu to save!\n\n"+
+            "<i>I</i> to import a world.\nBookmarks jump to their page.",
         8, 60)
     } else if (pagenum == 3) {
-        addText("Game controls", 25, 5)
+        addText("Game controls", 25, 5, true)
         addText([
-            "WSAD or arrow keys to move.\n"+
-            "Mouse to highlight a tiles.",
-            "Left click/Q to place tiles.\n"+
-            "Right click/E to select & discover tiles!",
-            "R to open/close backpack of discovered tiles.\n"+
-            "Click/F on a backpack item to select it.",
+            "<i>WSAD</i> or <i>arrow keys</i> to move.\n"+
+            "<i>Mouse</i> to highlight tiles.",
+            "<i>Left click (Q)</i> to place tiles.\n"+
+            "<i>Right click (E)</i> to select & discover tiles!",
+            "<i>Click on selected tile/backpack (R)</i> to open/close backpack of discovered tiles.\n"+
+            "<i>Click on an item (F)</i> on a backpack item to select it.",
         ].join("\n\n"), 7, 60)
     } else if (pagenum == maxPage()) {
         addText(
             "Made with <3 by Tsunami014",
-        10, 50)
+        10, 50, true)
     } else {
         const wnam = worlds.world_nams[pagenum-extraPages-2]
         mkButton('./assets/journal/play.svg', 5,
@@ -204,7 +205,7 @@ function drawPage() {
             nxttog = true
         })
         if (pagenum == extraPages+1) {
-            addText("New world", 20, 4)
+            addText("New world", 20, 4, true)
             addText(
                 "This will generate a new world!",
             10, 48)
@@ -221,7 +222,7 @@ function drawPage() {
             redraw()
         })
         if (pagenum == extraPages+2) {
-            addText("Last world", 20, 4)
+            addText("Last world", 20, 4, true)
             addText([
                 "Warning: this gets overridden when another world is loaded!",
                 "To permanently store this world, copy it!",

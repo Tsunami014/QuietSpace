@@ -14,6 +14,15 @@ export function getSizes() {
     return [cols, rows, blk, hblk, qblk]
 }
 
+const framescale = 1.4
+export function framePos() {
+    const [cols, rows, blk, hblk, qblk] = getSizes()
+    return [
+        canvas1.width-blk*1.5*framescale - blk*0.25, hblk*0.5,
+        blk*1.5*framescale, hblk*1.5*framescale
+    ]
+}
+
 
 export function draw() {
     ctx1.clearRect(0, 0, canvas1.width, canvas1.height)
@@ -78,7 +87,9 @@ export function draw() {
     }
 
     // Draw the UI
-    if (mouse.hasMouse() && !fsel.fselopen && !bkpk.open) {
+    const opens = fsel.fselopen || bkpk.open
+    const mtf = !opens && mouse.touchFrame()
+    if (!opens && !mtf && mouse.hasMouse()) {
         const [mx, my] = mouse.getPos()
         var offs = Math.abs((Math.abs(mx)*2+1)%2-1) >= Math.abs(Math.abs(my)%2-1) ? 0.5:0
         const wid = blk*(48/32)
@@ -88,11 +99,9 @@ export function draw() {
             ((Math.round(my/2) - offs)*2 + tyoffs + offs*Math.abs(Math.floor(my+1)%2)*4 - 0.75)*qblk + hei/2 + yoffs,
             wid, hei)
     }
-    const scale = 1.4
-    const framex = canvas1.width-blk*1.5*scale - blk*0.25
-    const framey = hblk*0.5
-    ctx2.drawImage(tiles.UI, 0, 24, 48, 24,
-        framex, framey, blk*1.5*scale, hblk*1.5*scale)
+    const [framex, framey, framew, frameh] = framePos()
+    ctx2.drawImage(tiles.UI, 0, 24+(mtf? 24:0), 48, 24,
+        framex, framey, framew, frameh)
     if (mouse.select) {
         const source = tiles.normalisedImg(mouse.select)
         if (source) {
@@ -116,8 +125,8 @@ export function draw() {
             }
             const xpos = -blk*0.75 + (wid-blk)/2+hblk - xtraw*blk
             const ypos = -hblk*0.75 + (hei-hblk)/2+hblk - xtrah*blk
-            wid *= scale; hei *= scale
-            ctx2.drawImage(source.img, framex - xpos*scale, framey + ypos*scale, wid, hei)
+            wid *= framescale; hei *= framescale
+            ctx2.drawImage(source.img, framex - xpos*framescale, framey + ypos*framescale, wid, hei)
         }
     }
 }

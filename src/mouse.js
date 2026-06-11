@@ -45,7 +45,12 @@ export function press(keys, lastkeys) {
 export var select = null;
 export function setsel(val = null) { select = val; }
 function click_left(drag) {
-    if (fsel.fselopen || bkpk.open || select === null || mx === undefined) return;
+    if (fsel.fselopen || bkpk.open || mx === undefined) return;
+    if (touchFrame()) {
+        bkpk.toggle()
+        return;
+    }
+    if (select === null) return;
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
     const tle = gen.getRealTile(realx, realy)
@@ -54,6 +59,10 @@ function click_left(drag) {
 }
 function click_right(drag) {
     if (fsel.fselopen || bkpk.open || mx === undefined) return;
+    if (touchFrame()) {
+        bkpk.toggle()
+        return;
+    }
     const [px, py] = getPos()
     const [realx, realy] = phys.realpos(px, py)
     const tle = gen.getRealTile(realx, realy)
@@ -70,4 +79,10 @@ export function getPos() {
     return [
         (mx - Math.round(canvas1.width/2))/blk + phys.x/draw.units,
         (my - Math.round(canvas1.height/2))/qblk + phys.y/draw.units]
+}
+
+export function touchFrame() {
+    const [framex, framey, framew, frameh] = draw.framePos()
+    if (mx < framex || mx > framex+framew || my < framey || my > framey+frameh) return false;
+    return Math.abs(2*(my-framey)/frameh - 1) <= 1-Math.abs(2*(mx-framex)/framew - 1)
 }
