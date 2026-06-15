@@ -15,7 +15,6 @@
 
 
 \maketitle
-\todo[Grammar check (including colloquial language)]
 \tableofcontents
 \pagebreak
 
@@ -26,30 +25,29 @@
 % Outline the problem or opportunity that the project addresses. Consider who is affected by this issue.
 % Explain why this problem or opportunity is significant.
 % Justify the development of a software solution as an appropriate response.
-People have busy, bustling lives, and in the time between actions; when people are waiting for public transport, or for friends to arrive, or are bored, or in many other scenarioes - digital platforms have been optimised for grabbing our attention and increasing stress and anxiety on the internet. For example, many apps (especially ones paying to show above search results and on the home screen of app stores) are optimised for microtransactions through lootboxes and mindless repetition and constantly make users come back with streaks and limited time events. Additionally, the internet is a source for a lot of potentially stressful news and FOMO-inducing social media, among many other things.
-This is significant as these increases of stress in an already busy life can lead to negative consequences such as burnout, anxiety and other mental health issues. Developing a space designed to be consistently interesting (through curiosity) yet still relaxing can help solve this problem. Instead of spending free moments playing high-intensity mobile games or scrolling social media, people can play this game which decreases stress while still being rewarding enough that they will play again next time and allow the game to spread to a larger audience. Ultimately, this leads to an increased mental health of users and a positive impact on society.
+People have increasingly busy lifestyles, and during periods of downtime such as when waiting for public transport, when people are bored, or in many other scenarios - digital platforms have been optimised for user engagement and can increase stress and anxiety. For example, many apps (especially ones paying to show above search results and on the home screen of app stores to be more frequently downloaded) utilise lootboxes, repetitive gameplay loops and constantly make users come back with streaks and limited time events. These features are often created to increase user engagement to provide opportunity for microtransactions and company profit, even though it detriments users. Additionally, the internet is a source for a lot of potentially stressful news and FOMO-inducing social media, among many other things.
+
+This is significant as these increases of stress in an already busy life can lead to negative consequences such as burnout, anxiety and other mental health issues. Developing a space designed to be consistently interesting (through curiosity) yet still relaxing can help solve this problem. Instead of spending free moments playing high-intensity mobile games or scrolling social media, people can instead play this game which decreases stress while remaining rewarding enough to encourage continued engagement. This is practical because it can be used in the same moments of downtime that would be filled with more stressful activities. Ultimately, this may contribute to an increased wellbeing in users by replacing more stressful digital games.
 
 \subsection{Project Purpose and Boundaries}
 % Outline what the project is trying to achieve.
-The project will be a space on the internet for people to come to relax. It will be a game where you can move around in a world, and will be randomly generated so the world is different each time, incentivising exploration and revisiting; while containing relaxing ambience to decrease stress.
+The project will provide a relaxing digital space on the internet users can explore and build within. The game will consist of a procedurally generated world that varies in each new world, while utilising relaxing scenery to decrease stress. Exploration and discovery will encourage revisiting without the need for high-pressure limited time or competitive mechanics. Additionally, players will be able to build structures with resources they discover, allowing for freedom of expression. This will be a single-player game focussed on exploration, creativity and relaxation to be played in downtime as opposed to including multiplayer elements requiring having friends available.
 
 \subsection{Stakeholder Requirements}
 % Identify stakeholders (client, users, teacher, peers). 
 % Describe their needs, expectations, and how these influenced the project direction.
-The stakeholders are the general public. Their needs are a way to fill in time or to relax that is not stress-inducing, but additionally expect the app to be engaging enough to encourage the users to replay it again. This influenced the project direction as the project couldn't just be someplace relaxing, it had to also include enough interesting features otherwise the stakeholders won't continue using the app and it will have failed.
+The project stakeholders are the users of the game, which are the general public. The game should be easily accessible during short periods of downtime and provide a relaxing experience. It must also remain engaging to encourage revisiting, which influenced the inclusion of the procedural generation, exploration and building mechanics. Additionally, users require a low-stress environment. The need for a low-stress and potentially brief experience influenced the decision to make it single-player, without competitive or limited time elements.
 
 \subsection{Functional Requirements}
 % List and describe what the system must do.
 The system must do the following:
 \begin{itemize}
-  \item The game must provide a calm environment
+  \item The game must provide aesthetic visuals intended to create a relaxing atmosphere
   \item Users must be able to make a new world, load an external world or load a world they have played before
-  \begin{itemize}
-    \item Users must be able to export and share their worlds in a secure and private way
-  \end{itemize}
+  \item Users must be able to export and share their worlds in a secure and private way
   \item Users must be able to walk around in the world
   \item Users must be able to add or remove blocks from the world
-  \item Users must be able to guided on how to interact with the game
+  \item Users must be guided on how to interact with the game
   \item The game must be able to save the world the user is in
 \end{itemize}
 
@@ -62,11 +60,11 @@ The system must have the following qualities:
   \begin{itemize}
     \item Worlds must load within 2 seconds
     \item The game must start up within 2 seconds
-    \item Throughout the game the loading of the world should be quick enough to be invisible to the user
+    \item Throughout the game chunk loading should not be visible to the user (happening offscreen)
   \end{itemize}
-  \item The system must be avaliable 99.9\% of the time, ensuring avaliability
-  \item The system must run reliably, logging bugs in the background to not interrupt the gameplay if possible
-  \item The UI must be designed to work on various sized screens
+  \item The system must not run into game-breaking bugs or crashes during normal gameplay, ensuring availability
+  \item The system must run reliably, handling unexpected errors without interrupting user experience
+  \item The UI must be designed to work on various sized screens including both phone and desktop
   \item The website must be playable in any modern browser
   \item The game must store data in a secure location, protected from other users
 \end{itemize}
@@ -76,9 +74,9 @@ The system must have the following qualities:
     % Time, Technical knowledge, Hardware/software access
 The limitations on this project are:
 \begin{itemize}
-    \item I have not created HTML games before and have limited JS experience
-    \item Procedural generation is difficult and time-consuming to get accurate
-    \item I will need to curate a set of assets to ensure the game looks nice
+    \item I have not created HTML games before and have limited Javascript experience, which may increase development time.
+    \item Procedural generation is difficult and time-consuming to get accurate as it may require significant testing and trial-and-error to get right.
+    \item I will need to curate a set of assets to ensure the game looks nice, coherent and unique, which will increase development time.
 \end{itemize}
 
 \subsection{Requirements Analysis and Prioritisation}
@@ -86,8 +84,11 @@ The limitations on this project are:
     % - Which requirements were prioritised and why
     % - Trade-offs made due to constraints
     % - How requirements align with the identified problem or opportunity
-The functional and non-functional requirements were made to match the criteria outlined in the project purpose section. The requirements prioritise the usability of the app over the functionality or aesthetic, as the project is constrained by my limited knowledge of JS or procedural generation. This allows the app to be usable even if not perfect.
-Other features I could have added are for example music and aesthetic. I have not made much art before and even less music, so learning art or music would most likely take longer than the time I have avaliable, and therefore I have prioritised the core functionality instead.
+The functional and non-functional requirements were made to match the criteria outlined in the project purpose section. Requirements such as world generation, exploration and building were prioritised over additional features, visual variety or aesthetic polish as the project is constrained by my limited Javascript experience, complexity of procedural generation and need to make custom assets.
+
+Other features I could have added are for example music and increased variety of tiles and structures. I have not made much art before and even less music, so creating either of these will take a long time and therefore I have prioritised the core functionality instead. While art is required for the game to work, music is not and I have therefore decided not to include it unless I have time.
+
+Overall, prioritising the core functionality allows the app to fit the criteria and still be successful even if not perfect. Although it won't provide as much of a visually distinct experience as I won't be adding many tiles, the world generation and exploration allow for significant replayability while building and world management such as saving and loading allow users to expand creations across multiple sessions. These priorities additionally focus on exploration and creativity rather than competitive or high-pressure mechanics.
 
 
 \section{Research and Planning}
@@ -364,15 +365,30 @@ A UML Class Diagram is not required in this case, as the code will not use OOP o
 % Describe how the solution was built and implemented.
 % Justify the engineering techniques used, such as:
     % Modular design, Object-oriented principles, Reuse of code, Validation and error handling
+The solution was built with a modular design, where each feature was built in a separate file. OOP was not utilised as there was no need for reuse - every function handles a different part of the gameplay, nothing needed to be extended upon. Validation and error handling were implemented through inbuilt js prompts which are simple and cross-platform, and as errors should be rare (apart from loading external worlds) it should not impact user experience.
 
 
 \subsection{Key Features Developed}
 % Describe the core features of the system.
 % Justify their inclusion.
+The system contains the following key features:
+\begin{itemize}
+  \item The core system (in \verb|main.js|) which loads all the other features and handles the core gameplay loop.
+  \item The world display (in \verb|draw.js|) which handles the drawing to the screen each tick.
+  \item The tile loader (in \verb|tiles.js|) which is used by the world display which loads the tileset so the display has something to draw with.
+  \item The player (in \verb|player.js|) which loads the player image and handles drawing that to the screen
+  \item The player physics (in \verb|phys.js|) which handles player movement and collision
+  \item The mouse user interaction (in \verb|mouse.js|), and while I could've added this in the \verb|main.js| it was large enough that I wanted to make it a separate file.
+  \item The terrain generation (in \verb|gen.js|) as that was a core part of the design
+  \item The menu/file select sequence (in \verb|filesel.js|) because I needed some method for changing between different worlds and displaying controls so I put them all in one place for user convenience.
+  \item The loading/saving of worlds (in \verb|worlds.js|) was a core part of the functionality
+  \item The backpack (in \verb|bkpk.js|) was a feature I added to aid user experience and allow ease of building as everything the user has found is in one spot. It also assists with an issue I had before implementing it where to select a decoration a block needed to be clicked multiple times, and explaining that feature was confusing.
+\end{itemize}
 
 \subsection{Back-End Engineering Contribution}
 % Explain how back-end engineering contributed to the success and ease of use of the software, including:
     % Data processing, Validation and logic, Storage and retrieval, Authentication (if applicable)
+The back-end engineering in storage and retrieval of the worlds allows users to explore many different worlds and find different things one world may not have. It creates ease of use through accepting mistakes (allowing users to make backups of worlds where needed) and share worlds with others (making others want to use the game too, leading to its success).
 
 \subsection{Screenshots of Interface}
 % Include annotated screenshots explaining how the user interacts with the system.
@@ -398,6 +414,7 @@ A UML Class Diagram is not required in this case, as the code will not use OOP o
 \subsection{Improvements and Future Development}
 % Outline your project’s limitations. 
 % Explain realistic future enhancements.
+The project was limited as procedural generation requires a lot of variety to look good, and while I have some it can get a bit boring over time. Easy future improvements would be better procedural generative algorithms and more tiles and decorations.
 
 \subsection{Evaluation of Social, Ethical and Communication Issues}
 % Evaluate your project in terms of
@@ -424,6 +441,9 @@ A UML Class Diagram is not required in this case, as the code will not use OOP o
 % Reflect on what you learned during the project, including
     % Software engineering skills developed
     % Challenges encountered and how they were overcome
+During the project I improved my skills in web dev and maths. I hadn't done much web dev before, so I was constantly researching how to do simple things in JS or HTML or CSS and from that I learnt many common features of the languages and now can make future projects faster.
+
+Most struggles I had during the project were to do with maths, where I would work out how something should be done but after implementation it doesn't work. These were overcome through much trial and error and more thinking over the problems until eventually I found something that worked.
 
 
 \end{document}
