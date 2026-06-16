@@ -1,0 +1,217 @@
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuietSpace</title>
+    <style>
+* { font-family: sans-serif; }
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+/*canvas { image-rendering: pixelated; }*/
+canvas, #playerContainer > svg, #overl, img, .popwrap, #news, #bpconts {
+    position: absolute;
+}
+.popcont, .popcont + *, .marks > *, #nowmarks, #news *, #bpimg {
+    user-select: none;
+}
+#overl {
+    background-color: #CCC8;
+    width: 100vw;
+    height: 100vh;
+}
+#overl:not([class]), #overl[class=""],
+#overl:not(.bkpk) > #bkpk,
+#overl:not(.fsel) > #fsel,
+#overl:not(.fsel) > #savt {
+    display: none;
+}
+#fsel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: left top;
+}
+#fsel svg { overflow: visible; }
+.txt {
+    position: absolute;
+    transform: translate(0, -50%);
+    padding: 7.5%;
+    width: 85%;
+    text-align: center;
+    font-weight: bold;
+}
+input {
+    margin-left: 7.5%;
+    padding: 0.5% !important;
+    top: 15%;
+    background: #FFF5;
+    border-radius: 15%;
+    border: none;
+    border-bottom: gray 5px solid;
+}
+.imgbtn:hover {
+    rotate: -1deg;
+}
+.imgbtn {
+    transition: rotate 0.3s ease;
+    rotate: 3deg;
+    cursor: pointer;
+    width: 100%;
+}
+.marks {
+    position: absolute;
+    translate: 0 -15%;
+    z-index: -1;
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+    margin-left: 3%;
+}
+.marks > * {
+    cursor: pointer;
+    transition: translate 0.1s ease;
+}
+.marks > *:hover { translate: 0 -12%; }
+#nowmarks {
+    position: absolute;
+    transform: translate(50%);
+    right: 103%;
+    top: -5%;
+}
+.circle {
+    position: absolute;
+    left: calc(50vw - 5px);
+    top: calc(50vh - 5px);
+    z-index: 1;
+    height: 10px;
+    width: 10px;
+    background-color: blue;
+    border-radius: 50%;
+}
+.hidden {
+    display: none;
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+.popwrap .popcont {
+    position: absolute;
+    bottom: 125%;
+    left: 45%;
+    text-align: center;
+    width: 120%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.popcont:has(+ *:hover) {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
+}
+#savt {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    margin: 0;
+    font-size: 24;
+    font-weight: bold;
+    color: white;
+    background: #666;
+    padding: 5px;
+    border-radius: 8px;
+}
+#news {
+    padding-top: 2vh;
+}
+#news > div, #bpconts {
+    background: #6A5A5B;
+    padding: 15px;
+    border-radius: 20px;
+    border: #4F3C3B 10px solid;
+    box-shadow: 5px 5px 0 #3E313069;
+}
+#news > div {
+    margin-left: 5vw;
+    margin-top: 3vh;
+    width: fit-content;
+    display: grid;
+    place-items: center;
+    transition: opacity 1.0s ease, transform 1.0s ease;
+}
+#news span {
+    text-align: center;
+    display: block;
+}
+#news canvas {
+    position: static !important;
+}
+#bpimg {
+    right: 5%;
+    bottom: 5%;
+    width: 20%;
+    cursor: pointer;
+}
+#bpconts {
+    top: 5%;
+    left: 5%;
+    width: calc(65% - 50px);
+    height: calc(90% - 50px);
+    border-radius: 50px;
+    box-shadow: 8px 8px 0 #3E313069;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3%;
+    justify-content: center;
+    align-items: center;
+    align-content: flex-start;
+    overflow-x: clip;
+    overflow-y: scroll;
+}
+#bpconts > div {
+    text-align: center;
+    flex-grow: 1;
+    display: grid;
+    padding: 1% 0;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    border-radius: 20px;
+}
+#bpconts > div:hover {
+    background-color: #846859E5;
+    cursor: pointer;
+}
+#bpconts span {
+    margin-bottom: 5px;
+}
+#bpconts canvas {
+    position: static;
+    display: block;
+    margin: 0 auto;
+}
+    </style>
+</head>
+<body>
+    <canvas id="canvas1">
+        If you can read this, you can't see the beautiful game I made! Sad.
+    </canvas>
+    <div id="playerContainer"></div>
+    <canvas id="canvas2"></canvas>
+    <!--div class="circle"></div-->
+    <div id="news"></div>
+    <div id="overl">
+        <div id="bkpk">
+            <div id="bpconts"></div>
+            <img id="bpimg" src="./assets/bkpk/bkpk.svg">
+        </div>
+        <p id="savt">Saved!</p>
+        <div id="fsel"></div>
+    </div>
+    <script src="src/main.js"></script>
+</body>

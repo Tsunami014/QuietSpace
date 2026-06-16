@@ -1,17 +1,7 @@
-const canvas1 = document.getElementById('canvas1');
-const canvas2 = document.getElementById('canvas2');
-const ctx1 = canvas1.getContext('2d');
-const ctx2 = canvas2.getContext('2d');
-
-var tiles;
-var player;
-var gen;
-var draw;
-var phys;
-var mouse;
-var fsel;
-var worlds;
-var bkpk;
+window.canvas1 = document.getElementById('canvas1');
+window.canvas2 = document.getElementById('canvas2');
+window.ctx1 = canvas1.getContext('2d');
+window.ctx2 = canvas2.getContext('2d');
 
 const pbhei = 40
 const pbgap = 4
@@ -44,34 +34,34 @@ async function load() {
         }
         i++
     }
-    worlds = await import("./worlds.js")
+    window.worlds = await import("./worlds.js")
     nxt()
-    worlds.load_all()
+    window.worlds.load_all()
     nxt()
-    bkpk = await import("./bkpk.js")
+    window.bkpk = await import("./bkpk.js")
     bkpk.init()
     nxt()
-    fsel = await import("./filesel.js")
+    window.fsel = await import("./filesel.js")
     nxt()
     await fsel.init(nxt)
     nxt()
-    draw = await import("./draw.js")
+    window.draw = await import("./draw.js")
     nxt()
-    tiles = await import("./tiles.js")
+    window.tiles = await import("./tiles.js")
     resizeCanvas(true) // Does this while loading! (needs draw to be loaded)
     nxt()
-    phys = await import("./phys.js")
+    window.phys = await import("./phys.js")
     nxt()
     await tiles.load(nxt)
     nxt()
-    gen = await import("./gen.js")
+    window.gen = await import("./gen.js")
     gen.randSeed()
     nxt()
-    player = await import("./player.js")
+    window.player = await import("./player.js")
     nxt()
     await player.load(nxt)
     nxt()
-    mouse = await import("./mouse.js")
+    window.mouse = await import("./mouse.js")
     nxt()
     worlds.loadLast()
 
