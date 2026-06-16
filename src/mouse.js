@@ -12,10 +12,10 @@ document.addEventListener('mousedown', (e) => {
     mx = event.clientX; my = event.clientY
     if (e.button === 0) {
         dragL = true
-        click_left(false)
+        click_left(false, true)
     } else if (e.button === 2) {
         dragR = true
-        click_right(false)
+        click_right(false, true)
     }
 });
 window.addEventListener('mousemove', (event) => {
@@ -23,8 +23,8 @@ window.addEventListener('mousemove', (event) => {
     move()
 });
 export function move() {
-    if (dragL) click_left(true)
-    if (dragR) click_right(true)
+    if (dragL) click_left(true, true)
+    if (dragR) click_right(true, true)
 }
 document.addEventListener('mouseup', (e) => {
     if (e.button === 0) {
@@ -35,18 +35,18 @@ document.addEventListener('mouseup', (e) => {
 });
 export function press(keys, lastkeys) {
     if (keys['q']) {
-        click_left(lastkeys['q'])
+        click_left(lastkeys['q'], false)
     }
     if (keys['e']) {
-        click_right(lastkeys['e'])
+        click_right(lastkeys['e'], false)
     }
 }
 
 export var select = null;
 export function setsel(val = null) { select = val; }
-function click_left(drag) {
+function click_left(drag, mse) {
     if (fsel.fselopen || bkpk.open || mx === undefined) return;
-    if (touchFrame()) {
+    if (!drag && mse && touchFrame()) {
         bkpk.toggle()
         return;
     }
@@ -57,9 +57,9 @@ function click_left(drag) {
     bkpk.found(tle)
     gen.placeTile(realx, realy, select)
 }
-function click_right(drag) {
+function click_right(drag, mse) {
     if (fsel.fselopen || bkpk.open || mx === undefined) return;
-    if (touchFrame()) {
+    if (!drag && mse && touchFrame()) {
         bkpk.toggle()
         return;
     }
