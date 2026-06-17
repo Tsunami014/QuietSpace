@@ -175,18 +175,18 @@ function drawPage() {
     } else if (pagenum == 2) {
         addText("Menu Controls", 25, 5, true)
         addText(
-            "<i>Escape</i> to toggle this menu.\nOpen this menu to save!\n\n"+
-            "<i>I</i> to import a world.\nBookmarks jump to their page.",
+            "<b>Escape</b> to toggle this menu.\nOpen this menu to save!\n\n"+
+            "<b>I</b> to import a world.\nBookmarks jump to their page.",
         8, 60)
     } else if (pagenum == 3) {
         addText("Game controls", 25, 5, true)
         addText([
-            "<i>WSAD</i> or <i>arrow keys</i> to move.\n"+
-            "<i>Mouse</i> to highlight tiles.",
-            "<i>Left click (Q)</i> to place tiles.\n"+
-            "<i>Right click (E)</i> to select & discover tiles!",
-            "<i>Click on selected tile/backpack (R)</i> to open/close backpack of discovered tiles.\n"+
-            "<i>Click on an item (F)</i> on a backpack item to select it.",
+            "<b>WSAD</b> or <b>arrow keys</b> to move.\n"+
+            "<b>Mouse</b> to highlight tiles.",
+            "<b>Left click (Q)</b> to place tiles.\n"+
+            "<b>Right click (E)</b> to select & discover tiles!",
+            "<b>Click on selected tile/backpack (R)</b> to open/close backpack of discovered tiles.\n"+
+            "<b>Click on an item (F)</b> on a backpack item to select it.",
         ].join("\n\n"), 7, 60)
     } else if (pagenum == maxPage()) {
         addText(
