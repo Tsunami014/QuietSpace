@@ -80,7 +80,7 @@ window.addEventListener('keyup', (e) => keys[e.key] = false)
 
 var lastks = {}
 var lastpress = 0
-var nxttog = false // So the menu can vanish at the same time as world load
+window.nxttog = false // So the menu can vanish at the same time as world load
 function tick() {
     if (nxttog || (keys['Escape'] && !lastks['Escape'])) {
         nxttog = false
