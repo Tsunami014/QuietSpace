@@ -34,7 +34,7 @@ This is significant as these increases of stress in an already busy life can lea
 The project will provide a relaxing digital space on the internet users can explore and build within. The game will consist of a procedurally generated world that varies in each new world, while utilising relaxing scenery to decrease stress. Exploration and discovery will encourage revisiting without the need for high-pressure limited time or competitive mechanics. Additionally, players will be able to build structures with resources they discover, allowing for freedom of expression. This will be a single-player game focussed on exploration, creativity and relaxation to be played in downtime as opposed to including multiplayer elements requiring having friends available.
 
 \subsection{Stakeholder Requirements}
-% Identify stakeholders (client, users, teacher, peers). 
+% Identify stakeholders (client, users, teacher, peers).
 % Describe their needs, expectations, and how these influenced the project direction.
 The project stakeholders are the users of the game, which are the general public. The game should be easily accessible during short periods of downtime and provide a relaxing experience. It must also remain engaging to encourage revisiting, which influenced the inclusion of the procedural generation, exploration and building mechanics. Additionally, users require a low-stress environment. The need for a low-stress and potentially brief experience influenced the decision to make it single-player, without competitive or limited time elements.
 
@@ -52,7 +52,7 @@ The system must do the following:
 \end{itemize}
 
 \subsection{Non-Functional Requirements}
-% List and describe system qualities such as: 
+% List and describe system qualities such as:
     % Performance, Usability, Security, Reliability
 The system must have the following qualities:
 \begin{itemize}
@@ -70,7 +70,7 @@ The system must have the following qualities:
 \end{itemize}
 
 \subsection{Constraints}
-% Identify limitations affecting the project, such as: 
+% Identify limitations affecting the project, such as:
     % Time, Technical knowledge, Hardware/software access
 The limitations on this project are:
 \begin{itemize}
@@ -128,11 +128,12 @@ That choice additionally benefits efficient development, as it makes debugging e
       y unit title=0.4cm,
       y unit chart=0.5cm,
       vgrid,
-      hgrid, 
+      hgrid,
       title label anchor/.style={below=-1.6ex},
       title height=1,
       progress label text={},
-      bar height=0.7,
+      bar height=0.8,
+      bar top shift=0.1,
       ]{1}{14}
 
       % Title
@@ -166,7 +167,6 @@ That choice additionally benefits efficient development, as it makes debugging e
       \baritem{Finalising everything}{\ttwo}{6}{8}
     \end{ganttchart}
   \end{center}
-  \caption{Gantt Chart}
   \endgroup
 \end{figure}
 
@@ -183,7 +183,6 @@ This additionally ensures minimal backtracking to stick with the waterfall appro
 \subsection{Resource Allocation Justification}
 % Justify the resource allocation for the project, including:
     % Time, Software and hardware tools, Human input (client, peers, teacher feedback)
-\todo[Make more coherent]
 The time was split up such that the design would take up until about the first week of the holidays, such that I would have time to implement the app in time, but also in the holidays I can polish off the design as the last few weeks of term 1 are all exams. The core game loop doesn't contain any complex mechanics except the procedural world which I have assigned a long time for, in addition to drawing assets. These end in about week 4 as I will need to increase my study in other subjects, leaving less time.
 I will be learning how to develop various parts of the game including the core game mechanics, so I have decided to use plain HTML and JS to make it fit within the timeframe.
 Additionally, peer feedback will be incorporated throughout to ensure the game continually meets its functional requirements.
@@ -317,7 +316,7 @@ Additionally, peer feedback will be incorporated throughout to ensure the game c
 
 \subsection{IPO Chart}
 \todo[What inputs should I have???]
-\begin{xltabular}{\textwidth}{|X|X|X|} 
+\begin{xltabular}{\textwidth}{|X|X|X|}
   \hline
   Inputs & Processes & Outputs \\
   \hline\hline
@@ -337,7 +336,7 @@ Additionally, peer feedback will be incorporated throughout to ensure the game c
 \end{xltabular}
 
 \subsection{Data Dictionary}
-\begin{xltabular}{\textwidth}{|X|X|X|X|X|X|} 
+\begin{xltabular}{\textwidth}{|X|X|X|X|X|X|}
   \hline
   \multicolumn{5}{c}{\emph{Continued on next page}}
   \endfoot
@@ -403,6 +402,7 @@ The back-end engineering in storage and retrieval of the worlds allows users to 
 % Describe testing approaches, such as:
     % Unit testing, Integration testing, User testing
 % Explain how testing results were used to improve performance, efficiency, or reliability.
+% Tests don't have to be code tests
 
 \subsection{Test Cases and Results}
 % Table containing Test ID, Description, Expected Result, Actual Result, Pass/Fail
@@ -412,7 +412,7 @@ The back-end engineering in storage and retrieval of the worlds allows users to 
 % Evaluate your project in terms of how effectively you addressed compliance and legislative requirements (consider privacy, use of data, etc).
 
 \subsection{Improvements and Future Development}
-% Outline your project’s limitations. 
+% Outline your project’s limitations.
 % Explain realistic future enhancements.
 The project was limited as procedural generation requires a lot of variety to look good, and while I have some it can get a bit boring over time. Easy future improvements would be better procedural generative algorithms and more tiles and decorations.
 
@@ -423,18 +423,59 @@ The project was limited as procedural generation requires a lot of variety to lo
 \section{Feedback, Security and Reflection}
 
 \subsection{Summary of Client or Peer Feedback}
-% Summarise feedback received and explain how it influenced development. 
-    % You could collect a ‘PMI’ (Plus, Minus, Implication) table from at least three different people after testing, or record and summarise an interview with at least three three people who test the software. 
+% Summarise feedback received and explain how it influenced development.
+    % You could collect a ‘PMI’ (Plus, Minus, Implication) table from at least three different people after testing, or record and summarise an interview with at least three three people who test the software.
 % Evaluate your use of feedback to improve your project:
     % Consider your individual workflow and how well you responded to peer / stakeholder feedback
     % Consider how well you involved, empowered or negotiated with a peer/client throughout the process.
 
+% Please include positives, negatives and how it affected the project (e.g. did it make some positive features less positive?) and things you wish were added
+
+\begin{xltabular}{\textwidth}{|X|X|}
+  \hline
+  Positives & Negatives, Implications \& Future improvements \\
+  \hline\hline
+  \endhead
+  \multicolumn{2}{c}{\emph{Continued on next page}}
+  \endfoot
+  \hline
+  \endlastfoot
+
+  \multicolumn{2}{|c|}{\textbf{Miles}} \\ \hline
+  \begin{itemize}[topsep=0pt, label=+]
+    \item Intuative Keybinds
+    \item Great Asset Design
+    \item Good Movement Controls
+  \end{itemize} &
+  \begin{itemize}[topsep=0pt, label=-]
+    \item No Animations for Legs
+    \item Map Feels Repedative between Load files
+    \begin{itemize}[topsep=0pt, label=$\rightarrow$]
+      \item Made the range of items feel less special in a way
+    \end{itemize}
+  \end{itemize}
+  \begin{itemize}[topsep=0pt]
+    \item Could add houses
+  \end{itemize} \\ \hline\hline
+
+  \multicolumn{2}{|c|}{\textbf{Oliver}} \\ \hline
+  \begin{itemize}[topsep=0pt, label=+]
+    \item Everything works great together
+    \item Couldn't find any bugs
+    \item Cool tile interactions (for example the road lines and water)
+    \item Very enjoyable, nice and relaxing
+  \end{itemize} &
+  \begin{itemize}[topsep=0pt, label=-]
+    \item Not enough area types, but didn't detract from the overall feel much.
+  \end{itemize}
+\end{xltabular}
+
 \subsection{Secure Software Design and Data Handling}
 % Evaluate the approach undertaken to safely and securely collect, use, and store data.
-    % Your evaluation should address: 
+    % Your evaluation should address:
         % Secure coding practices applied during development
-        % Input validation and error handling 
-        % Data storage and protection methods 
+        % Input validation and error handling
+        % Data storage and protection methods
         % The impact of secure software design on user trust, data integrity, and system reliability
 
 \subsection{Personal Reflection}
