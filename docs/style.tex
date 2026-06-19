@@ -6,6 +6,22 @@
 % Be able to set bullet point styles
 \usepackage{enumitem}
 
+% Better tables
+\usepackage{xltabular}
+\NewDocumentEnvironment{brtbl}{ m m m }{%
+  \xltabular{\textwidth}{#1}
+    \hline
+    #3 \\
+    \hline\hline
+    \endhead
+    \multicolumn{#2}{c}{\emph{Continued on next page}}
+    \endfoot
+    \hline
+    \endlastfoot
+}{%
+  \endxltabular
+}
+
 % Font
 \usepackage[T1]{fontenc}
 \usepackage[sfdefault]{atkinson}

@@ -6,7 +6,6 @@
 % Chart packages
 \usepackage{float}
 \usepackage{pgfgantt}
-\usepackage{xltabular}
 
 \author{Max Worrall}
 \title{Quiet Space}
@@ -316,34 +315,20 @@ Additionally, peer feedback will be incorporated throughout to ensure the game c
 
 \subsection{IPO Chart}
 \todo[What inputs should I have???]
-\begin{xltabular}{\textwidth}{|X|X|X|}
-  \hline
-  Inputs & Processes & Outputs \\
-  \hline\hline
-  \endhead
-  \multicolumn{3}{c}{\emph{Continued on next page}}
-  \endfoot
-  \hline
-  \endlastfoot
-
+\begin{brtbl}{|X|X|X|}{3}{ Inputs & Processes & Outputs }
   User imports a world & Loads world data (decrypting it if necessary) into saves folder & World is displayed in world list \\ \hline
   User loads a world & Takes saved data and loads the world & Displays the loaded world \\ \hline
   User creates a new world & Generates blank world data and loads that & Displays the loaded world \\ \hline
   User movement & Buffer new terrain at edges of screen & New generated terrain in a buffer outside screen, so when user moves more it becomes visible \\ \hline
   User interaction & Modifies world data in accordance with what the user interacted with & Displays world with modifications \\ \hline
   User saves the game & Takes world data and stores it in the save location & Message is displayed to signal the game has been saved \\ \hline
-  User exports a world & Takes world data and encrypts it if required & Output world data to share \\ \hline
-\end{xltabular}
+  User exports a world & Takes world data and encrypts it if required & Output world data to share
+\end{brtbl}
 
 \subsection{Data Dictionary}
-\begin{xltabular}{\textwidth}{|X|X|X|X|X|X|}
-  \hline
-  \multicolumn{5}{c}{\emph{Continued on next page}}
-  \endfoot
-  \hline
-  \endlastfoot
+\begin{brtbl}{|X|X|X|X|X|}{5}{ Variable & Datatype & Description & Example & Validation }
   \multicolumn{5}{c}{\large{\textbf{World data}}} \\ \hline
-  Variable & Datatype & Description & Example & Validation \\ \hline \hline
+   \\ \hline \hline
   Seed & int & The seed for world generation & 1234567890 & No validation, any integer will work \\ \hline
   Changes & List[Changes (see below)] & The changes the user has made to the world & - & Must follow the valid change layout data format (below) \\ \hline
   \multicolumn{5}{c}{} \\
@@ -351,7 +336,7 @@ Additionally, peer feedback will be incorporated throughout to ensure the game c
   Variable & Datatype & Description & Example & Validation \\ \hline \hline
   Pos & Tuple[int, int] & The position of the change & (10, 32) & No validation, any point will work \\ \hline
   Item & Enum value & The decoration that replaces the one that would otherwise exist on that tile & Air & Must be a valid enum value \\ \hline
-\end{xltabular}
+\end{brtbl}
 
 \subsection{UML Class Diagram}
 % If OOP
@@ -414,7 +399,7 @@ The back-end engineering in storage and retrieval of the worlds allows users to 
 \subsection{Improvements and Future Development}
 % Outline your project’s limitations.
 % Explain realistic future enhancements.
-The project was limited as procedural generation requires a lot of variety to look good, and while I have some it can get a bit boring over time. Easy future improvements would be better procedural generative algorithms and more tiles and decorations.
+The project was limited as procedural generation requires a lot of variety to look good, and while I have some it can get a bit boring over time. Easy future improvements would be better procedural generative algorithms and more tiles and decorations. This would add a significant more amount of variety to make the game more interesting.
 
 \subsection{Evaluation of Social, Ethical and Communication Issues}
 % Evaluate your project in terms of
@@ -422,25 +407,22 @@ The project was limited as procedural generation requires a lot of variety to lo
 
 \section{Feedback, Security and Reflection}
 
-\subsection{Summary of Client or Peer Feedback}
+\subsection{Summary of Peer Feedback}
 % Summarise feedback received and explain how it influenced development.
     % You could collect a ‘PMI’ (Plus, Minus, Implication) table from at least three different people after testing, or record and summarise an interview with at least three three people who test the software.
 % Evaluate your use of feedback to improve your project:
     % Consider your individual workflow and how well you responded to peer / stakeholder feedback
     % Consider how well you involved, empowered or negotiated with a peer/client throughout the process.
 
-% Please include positives, negatives and how it affected the project (e.g. did it make some positive features less positive?) and things you wish were added
+\subsubsection{Peer feedback throughout development}
+\begin{itemize}
+  \item One user was trying to click various UI elements expecting them to do something when they did not (for example the current selected block in the top right), so I added in that functionality to make the app more flexible for users who do not find the controls I set convenient.
+  \item Throughout development I had a 'cycle' system for tiles, where clicking on a block cycled through all the things that were on that tile. This was not explained well (there wasn't much space to explain it in the intro screen anyway) and was confusing even when I explained it in person. I also planned on implementing a backpack system anyway, so I removed this in favour of a 'block discovery' system. This made selecting blocks much more intuative.
+  \item There was much confusion around the traffic cone tile as I drew it slightly odd, and many people thought it looked like a pizza slice. This was remedied later in development.
+\end{itemize}
 
-\begin{xltabular}{\textwidth}{|X|X|}
-  \hline
-  Positives & Negatives, Implications \& Future improvements \\
-  \hline\hline
-  \endhead
-  \multicolumn{2}{c}{\emph{Continued on next page}}
-  \endfoot
-  \hline
-  \endlastfoot
-
+\subsubsection{Peer feedback of final product}
+\begin{brtbl}{|X|X|}{2}{ Positives & Negatives, Implications \& Future improvements }
   \multicolumn{2}{|c|}{\textbf{Miles}} \\ \hline
   \begin{itemize}[topsep=0pt, label=+]
     \item Intuative Keybinds
@@ -468,7 +450,7 @@ The project was limited as procedural generation requires a lot of variety to lo
   \begin{itemize}[topsep=0pt, label=-]
     \item Not enough area types, but didn't detract from the overall feel much.
   \end{itemize}
-\end{xltabular}
+\end{brtbl}
 
 \subsection{Secure Software Design and Data Handling}
 % Evaluate the approach undertaken to safely and securely collect, use, and store data.
