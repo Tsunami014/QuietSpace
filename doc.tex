@@ -347,7 +347,7 @@ Additionally, peer feedback will be incorporated throughout development to ensur
 
 \subsection{UML Class Diagram}
 % If OOP
-A UML Class Diagram is not required in this case, as the code will not use OOP or classes.
+A UML Class Diagram is not required in this case, as the code will not include classes.
 
 
 \section{Producing and Implementing}
@@ -472,7 +472,13 @@ User testing additionally improved aspects of the UX design that were inefficien
 \subsection{Test Cases and Results}
 \todo
 % Table containing Test ID, Description, Expected Result, Actual Result, Pass/Fail
-\begin{brtbl}{|X|X|X|X|X|}{3}{ Test ID & Description & Expected result & Actual result & Pass/fail }
+  \begin{brtbl}{
+     |>{\hsize=0.5\hsize}X|
+      >{\hsize=1\hsize}X|
+      >{\hsize=2\hsize}X|
+      >{\hsize=1\hsize}X|
+      >{\hsize=0.5\hsize}X|
+    }{5}{ Test ID & Description & Expected result & Actual result & Pass/fail }
   T01 & Test movement speed of the player &
   The movement should be the same speed no matter what direction is being pressed, including diagonals &
   The player does move at a consistent speed & Pass
@@ -517,7 +523,6 @@ Continued asset creation and improvements to the generation algorithm are realis
 
 
 \section{Feedback, Security and Reflection}
-\todo[Up to here]
 
 \subsection{Summary of Peer Feedback}
 % Summarise feedback received and explain how it influenced development.
@@ -525,42 +530,41 @@ Continued asset creation and improvements to the generation algorithm are realis
 % Evaluate your use of feedback to improve your project:
     % Consider your individual workflow and how well you responded to peer / stakeholder feedback
     % Consider how well you involved, empowered or negotiated with a peer/client throughout the process.
-
 \subsubsection{Peer feedback throughout development}
 \begin{itemize}
-  \item One user was trying to click various UI elements expecting them to do something when they did not (for example the current selected block in the top right), so I added in that functionality to make the app more flexible for users who do not find the controls I set convenient.
-  \item Throughout development I had a 'cycle' system for tiles, where clicking on a block cycled through all the things that were on that tile. This was not explained well (there wasn't much space to explain it in the intro screen anyway) and was confusing even when I explained it in person. I also planned on implementing a backpack system anyway, so I removed this in favour of a 'block discovery' system. This made selecting blocks much more intuative.
-  \item There was much confusion around the traffic cone tile as I drew it slightly odd, and many people thought it looked like a pizza slice. This was remedied later in development.
+  \item Various UI elements, for example the currently selected block overlay, incorrectly appeared to users to be interactable. These had functionality added, which increased the flexibility of the game as a whole due to including multiple methods of interaction, allowing users to choose which way is more intuitive to them.
+  \item There was significant confusion around the traffic cone tile, as many people mistook it for a pizza slice. Later in development, the cone was redesigned to look more recognisable.
+  \item For most of development, the block selection system cycled through all blocks on the hovered tile. This was confusing to users even after being explained both in the game and in person. A backpack system was already considered for future improvements, but due to the severity of the confusion it was implemented sooner. It included a 'block discovery' system, making block selection more intuitive and significantly reduced user confusion.
 \end{itemize}
 
 \subsubsection{Peer feedback of final product}
-\begin{brtbl}{|X|X|}{2}{ Positives & Negatives, Implications \& Future improvements }
+\begin{brtbl}{|X|X|}{2}{ Positives & Negatives, Implications \& Future Improvements }
   \multicolumn{2}{|c|}{\textbf{Miles}} \\ \hline
   \begin{itemize}[topsep=0pt, label=+]
-    \item Intuative Keybinds
-    \item Great Asset Design
-    \item Good Movement Controls
+    \item Intuitive keybinds
+    \item Great asset design
+    \item Good movement controls
   \end{itemize} &
   \begin{itemize}[topsep=0pt, label=-]
-    \item No Animations for Legs
-    \item Map Feels Repedative between Load files
+    \item Player is not animated when moving
+    \item Map feels repetitive between saved worlds
     \begin{itemize}[topsep=0pt, label=$\rightarrow$]
-      \item Made the range of items feel less special in a way
+      \item Made the range of tiles feel less meaningful due to the lack of interesting features
     \end{itemize}
   \end{itemize}
   \begin{itemize}[topsep=0pt]
-    \item Could add houses
+    \item Could add houses to benefit world variety and creative ability
   \end{itemize} \\ \hline\hline
 
   \multicolumn{2}{|c|}{\textbf{Oliver}} \\ \hline
   \begin{itemize}[topsep=0pt, label=+]
-    \item Everything works great together
-    \item Couldn't find any bugs
-    \item Cool tile interactions (for example the road lines and water)
-    \item Very enjoyable, nice and relaxing
+    \item Everything fits together well
+    \item No bugs were found
+    \item Interesting tile interactions (such as the road lines and water)
+    \item Very enjoyable and relaxing
   \end{itemize} &
   \begin{itemize}[topsep=0pt, label=-]
-    \item Not enough area types, but didn't detract from the overall feel much.
+    \item Not enough variety throughout the world, although this did not detract from the overall feel much.
   \end{itemize}
 \end{brtbl}
 
@@ -571,20 +575,25 @@ Continued asset creation and improvements to the generation algorithm are realis
         % Input validation and error handling
         % Data storage and protection methods
         % The impact of secure software design on user trust, data integrity, and system reliability
-During development, the code was developed securely so no other websites could change the data.
-All inputs and the URL itself does not get executed, meaning attackers cannot use XSS.
-Additionally, save data is stored in the localstorage, meaning no other websites can access the data.
-Encryption was also utilised on exports so users can have an extra layer of security when sharing.
+The codebase was developed utilising secure coding practices to minimise data breaches.
+All inputs and the URL itself do not get executed, reducing the risk of XSS attacks.
+All external inputs such as world loading are also validated, ensuring errors are caught before they can cause damage to the system.
+Additionally, save data is stored in the page's local storage, meaning no other websites can access the data due to same-origin protections.
+Encryption was also applied to exported worlds, allowing users an extra layer of security when sharing their creations online.
 
-All these security aspects ensure the data is never accessible to attackers from within the browser, which increases system reliability and integrity as data breaches and hacks are much less likely, which in turn improves user trust.
+All these security aspects reduce the likelihood of unauthorised data access, increasing system reliability and integrity as security incidents are reduced, which in turn improves user trust.
 
 \subsection{Personal Reflection}
 % Reflect on what you learned during the project, including
     % Software engineering skills developed
     % Challenges encountered and how they were overcome
-During the project I improved my skills in web dev and maths. I hadn't done much web dev before, so I was constantly researching how to do simple things in JS or HTML or CSS and from that I learnt many common features of the languages and now can make future projects faster.
+During the project I improved my skills in web development and maths.
+Due to my limited prior experience, I was constantly researching and learning fundamental concepts and techniques in Javascript, HTML and CSS.
+From that I learnt many common features of the languages, which improved my future development efficiency and problem-solving ability.
 
-Most struggles I had during the project were to do with maths, where I would work out how something should be done but after implementation it doesn't work. These were overcome through much trial and error and more thinking over the problems until eventually I found something that worked.
+Most struggles I had during the project were to do with maths calculations, where I would work out how something should be done but after implementation it did not work.
+The largest problem was tile position calculations used for rendering, collisions and many other parts of the code.
+These were overcome through further problem solving and trial and error, utilising extensive testing, graph and diagram drawing and debugging calculations.
 
 
 \end{document}
