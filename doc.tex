@@ -188,18 +188,21 @@ It also improves development efficiency as non-essential elements would be force
 Furthermore, allocating a large amount of time for finalisation accommodates other assessment tasks occuring later in the term, reducing workload pressure to allow more focus on exam preparation.
 
 \subsection{Communication Plan}
-\todo[Up to here]
 % Explain how client or peer feedback was obtained and incorporated.
-Feedback will be obtained through regular peer testing throughout development.
-Testers will play the game and their actions will be recorded for future UX ideas (e.g. someone may try pressing something assuming it's a button, so to reduce confusion I'll make it an actual button)
-This repeated process helps ensure the project continues to meet the functional and usability requirements without requiring major redesigns, sticking to the ideals of the Waterfall approach.
+Feedback will be collected through regular peer testing throughout development.
+Testers will play the game and their interactions with the system will be observed to identify areas for improvement. For example, if testers repeatedly attempt to click a non-interactive element, the element may be visually or functionally redesigned to reduce confusion.
+This ongoing process helps ensure the project continues to meet functional and usability requirements.
 
 \subsection{Resource Allocation Justification}
 % Justify the resource allocation for the project, including:
     % Time, Software and hardware tools, Human input (client, peers, teacher feedback)
-The time was split up such that the design would take up until about the first week of the holidays, such that I would have time to implement the app in time, but also in the holidays I can polish off the design as the last few weeks of term 1 are all exams. The core game loop doesn't contain any complex mechanics except the procedural world which I have assigned a long time for, in addition to drawing assets. These end in about week 4 as I will need to increase my study in other subjects, leaving less time.
-I will be learning how to develop various parts of the game including the core game mechanics, so I have decided to use plain HTML and JS to make it fit within the timeframe.
-Additionally, peer feedback will be incorporated throughout to ensure the game continually meets its functional requirements.
+The project timeline was organised so that the design phase would end around the first week of the holidays, allowing enough time for implementation.
+This also allows time to finalise the design during the holidays, as the last few weeks of term 1 contain many exams, limiting available project development time.
+The core game loop does not contain complex mechanics apart from the procedural generation and asset creation, which have both been allocated a large amount of time.
+The game is expected to be completed by around week 4 or 5 due to increased study commitments from other subjects, leaving less time available for this project.
+
+Plain Javascript and HTML will be used due to their simplicity, as I am unfamiliar with web design and learning other frameworks would take longer and be more difficult to set up and run.
+Additionally, peer feedback will be incorporated throughout development to ensure the game continually meets its functional and usability requirements.
 
 
 \section{System Design}
@@ -295,7 +298,7 @@ Additionally, peer feedback will be incorporated throughout to ensure the game c
       node[pos=0.3,repeat] {\dfdLoop[0.3][0.8]{Until user quits}}
     ($(main.south) + (0,-1)$);
 
-  \node[module] (load) at (0.5, -2) {Progressively\\Load world};
+  \node[module] (load) at (0.5, -2) {Progressively\\load world};
       \draw[to] (gameplay.south) --
           node[pos=0.6,data={World\hspace*{1em}\\ID}] {\dfdData[white][-1]}
           node[pos=0.7,data flip={\hspace*{1em}World\\data}] {\dfdData}
@@ -322,24 +325,24 @@ Additionally, peer feedback will be incorporated throughout to ensure the game c
 
 \subsection{IPO Chart}
 \begin{brtbl}{|X|X|X|}{3}{ Inputs & Processes & Outputs }
-  User imports a world & Loads world data (decrypting it if necessary) into saved worlds list & World is displayed in world list and selected to show user that it succeeded \\ \hline
-  User loads a world & Takes saved data and loads the world & Displays the loaded world \\ \hline
-  User creates a new world & Generates blank world data and loads that & Displays the new loaded world \\ \hline
-  User movement & Buffer new terrain at edges of screen & New terrain tiles in a buffer outside screen, so when user moves further it becomes visible \\ \hline
-  User places tiles in the world & Modifies world data accordingly & Displays the world with modifications \\ \hline
-  User saves the game & Takes world data and stores it in the save location & Message is displayed to signal the game has been saved \\ \hline
-  User exports a world & Takes world data and encrypts it if required & Output world data to share
+  User imports a world with decryption key & Decrypts and loads world data into saved worlds list & Imported world is displayed in world list \\ \hline
+  User loads a world & Retrieves saved world data and loads it into the game & World is displayed \\ \hline
+  User creates a new world & Generates a new world and loads it & New world is displayed \\ \hline
+  User movement & Generates or displays new terrain at edges of screen & New terrain is generated at world edges as the player moves \\ \hline
+  User places tiles in the world & Updates world data with new tile placements & Displays the world with modifications \\ \hline
+  User saves the game & Stores world data & Save confirmation message is displayed \\ \hline
+  User exports a world with encryption key & Encrypts and exports world data for sharing & Shareable world file is saved to the user's device
 \end{brtbl}
 
 \subsection{Data Dictionary}
 \begin{brtbl}{|X|>{\raggedright\arraybackslash}X|X|X|X|}{5}{ Variable & Datatype & Description & Example & Validation }
   \multicolumn{5}{c}{\large{\textbf{World data}}} \\ \hline
-  Seed & int & The seed for world generation & 1234567890 & No validation, any integer will work \\ \hline
-  Changes & List[Changes (see below)] & The changes the user has made to the world & - & Must follow the valid change layout data format (below) \\ \hline
-  \multicolumn{5}{c}{\large{\textbf{Changes data}}} \\ \hline
+  Seed & int & The seed for world generation & 1234567890 & No validation required \\ \hline
+  Changes & List[Changes data] & The changes the user has made to the world & - & Must follow the valid change layout data format (below) \\ \hline
+  \multicolumn{5}{c}{\large{\textbf{Changes data structure}}} \\ \hline
   Variable & Datatype & Description & Example & Validation \\ \hline
-  Pos & Tuple[int, int] & The position of the change & (10, 32) & No validation, any point will work \\ \hline
-  Item & Enum value & The decoration that replaces the one that would otherwise exist on that tile & Air & Must be a valid enum value \\ \hline
+  Pos & Tuple[int, int] & The position of the change & (10, 32) & No validation required \\ \hline
+  Item & Enum value & The tile or decoration replacing the tile at that location & Footpath & Must be a valid enum value \\ \hline
 \end{brtbl}
 
 \subsection{UML Class Diagram}
@@ -353,7 +356,18 @@ A UML Class Diagram is not required in this case, as the code will not use OOP o
 % Describe how the solution was built and implemented.
 % Justify the engineering techniques used, such as:
     % Modular design, Object-oriented principles, Reuse of code, Validation and error handling
-The solution was built with a modular design, where each feature was built in a separate file. OOP was not utilised as there was no need for reuse - every function handles a different part of the gameplay, nothing needed to be extended upon. Validation and error handling were implemented through inbuilt js prompts which are simple and cross-platform, and as errors should be rare (apart from loading external worlds) it should not impact user experience.
+The solution was built with a modular design in which each feature (e.g. collisions, rendering, and terrain generation) was implemented in a separate file, which reduces interdependencies between modules and overall improves the maintainability of the whole system.
+Due to the independent nature of the code, there was minimal code reuse as isolation betwen sections improved debugging by allowing modules to be tested independently.
+For example, the collisions module was independent from the other modules and handled only the collision logic, allowing it to be isolated for debugging.
+This enabled iterative development and reduced integration complexity during development.
+
+OOP was not utilised as the app did not require complex object hierarchies or abstraction layers.
+Each feature operated independently with minimal shared logic or state, and the separation of files using Javascript modules with scoped exports allowed clean interactions between different modules.
+This results in a modular architecture that shares some similarities with OOP, particularly encapsulation, without introducing class-based complexity.
+
+Validation and error handling were implemented through built-in Javascript prompts which provide a lightweight, simple and cross-platform solution.
+Although these prompts are not visually integrated with the rest of the app, and controlled inputs reduce errors except when loading external world files.
+As a result, these prompts are unlikely to impact user experience as they are not seen during normal usage.
 
 
 \subsection{Key Features Developed}
@@ -361,22 +375,25 @@ The solution was built with a modular design, where each feature was built in a 
 % Justify their inclusion.
 The system contains the following key features:
 \begin{itemize}
-  \item The core system (in \verb|main.js|) which loads all the other features and handles the core gameplay loop.
-  \item The world display (in \verb|draw.js|) which handles the drawing to the screen each tick.
-  \item The tile loader (in \verb|tiles.js|) which is used by the world display which loads the tileset so the display has something to draw with.
-  \item The player (in \verb|player.js|) which loads the player image and handles drawing that to the screen
-  \item The player physics (in \verb|phys.js|) which handles player movement and collision
-  \item The mouse user interaction (in \verb|mouse.js|), and while I could've added this in the \verb|main.js| it was large enough that I wanted to make it a separate file.
-  \item The terrain generation (in \verb|gen.js|) as that was a core part of the design
-  \item The menu/file select sequence (in \verb|filesel.js|) because I needed some method for changing between different worlds and displaying controls so I put them all in one place for user convenience.
-  \item The loading/saving of worlds (in \verb|worlds.js|) was a core part of the functionality
-  \item The backpack (in \verb|bkpk.js|) was a feature I added to aid user experience and allow ease of building as everything the user has found is in one spot. It also assists with an issue I had before implementing it where to select a decoration a block needed to be clicked multiple times, and explaining that feature was confusing.
+  \item The core system (in \verb|main.js|) is responsible for loading all modules and handling the main gameplay loop.
+  \item The world display (in \verb|draw.js|) handles rendering the game world each tick.
+  \item The tile loader (in \verb|tiles.js|) is used by the world display to load the tileset and break it into individual tiles for rendering.
+  \item The player (in \verb|player.js|) handles loading the player image and drawing it to the screen.
+  \item The player physics (in \verb|phys.js|) handles player movement and collision detection.
+  \item Mouse interaction (in \verb|mouse.js|) was separated from \verb|main.js| due to its size and complexity.
+  \item The terrain generation (in \verb|gen.js|) is a core part of the system's design.
+  \item The menu/file select overlay (in \verb|filesel.js|) enables changing between different worlds and displaying controls in one place for improved organisation and navigation.
+  \item The loading/saving of worlds (in \verb|worlds.js|) is a key functional requirement of the system.
+  \item The backpack (in \verb|bkpk.js|) improves user experience by combining all collected items in one place, simplifying the building process. This was added to resolve earlier confusion around requiring multiple clicks to select a decoration, which was unintuitive to all testers and difficult to succinctly explain.
 \end{itemize}
 
 \subsection{Back-End Engineering Contribution}
 % Explain how back-end engineering contributed to the success and ease of use of the software, including:
     % Data processing, Validation and logic, Storage and retrieval, Authentication (if applicable)
-The back-end engineering in storage and retrieval of the worlds allows users to explore many different worlds and find different things one world may not have. It creates ease of use through accepting mistakes (allowing users to make backups of worlds where needed) and share worlds with others (making others want to use the game too, leading to its success).
+The back-end engineering in the storage and retrieval of worlds allows users to access multiple saved worlds, each containing different gameplay content.
+This improves diversity of gameplay experiences since a single world may not cover the full range of available content.
+It additionally enables the separation of creations into multiple worlds, increasing the avaliable building space for users.
+This allows users to make backups of worlds in case of accidental changes during building makes the game easier to use, while sharing worlds with others promotes the game and contributes to its success.
 
 \subsection{Screenshots of Interface}
 % Include annotated screenshots explaining how the user interacts with the system.
@@ -419,37 +436,17 @@ The back-end engineering in storage and retrieval of the worlds allows users to 
 
 \subsection{Version Control Summary}
 % Summarise commits, iterations, or sprints if version control was used.
-First, the basic tile drawing was implemented.
-A loading screen was then added.
-Then implemented movement and finished the basic rendering.
-Then basic terrain generation was implemented.
-Afterwards there was some optimisation and bugfixing.
-Improved the generation even more.
-Then implemented the player, found out the drawing was slightly off and fixed it.
-Added collision between the player and some blocks.
-Then implemented multilayer rendering with a tree.
-Then some improvements and speed-ups.
-Then implemented a block select highlight and hotbar.
-Also improved controls too.
-Made picking up blocks better and added placing blocks.
-Slightly improved some things.
-Then added a journal as an intro to the game with bookmarks and world loading capabilities.
-Then added saving and loading worlds.
-Stored placed tiles in world info.
-Various minor improvements and bugfixes.
-Added rename and delete world capabilities.
-More various minor improvements.
-Added another page for controls, improving backend page usage.
-Various minor improvements.
-Spent a while implementing a rule-based tile generation.
-Various minor Improvements and fixes.
-Added export and import with encryption.
-Various improvements and extremely minor features.
-Made menuing easier.
-Many minor improvements and fixes.
-Added a find block system instead of cycling with a backpack.
-Major backend fixes to the journal.
-Minor improvements and fixes, and added compilation to make loading faster.
+Initially, the tile rendering, movement, and a loading screen were implemented.
+Afterwards, terrain generation was implemented and the renderer was further optimised.
+The player was implemented, and an issue was identified where tile rendering was off-centred, which was subsequently fixed.
+Player collision was added alongside multilayer rendering for tall objects (initially using a tree) to allow the player to move in front of or behind objects.
+Later stages involved various improvements, including block selection and placement with a highlighted cursor, improved player controls and a hotbar.
+Afterwards, a journal was added as an intro to the game, including bookmarks and world saving and loading functionality.
+Minor improvements were then implemented, including world renaming, deletion and improved back-end functionality for journal pages.
+Then a rule-based tile generation system was implemented to significantly reduce generation and placement complexity.
+Exporting and importing worlds were implemented, alongside general bugfixes and minor improvements.
+A backpack was then added with a block discovery system, improving aspects of the previous design that testers found inconvenient or confusing.
+Lastly, more back-end improvements were made to the journal and compilation was introduced to speed up loading.
 
 
 \section{Testing and Evaluation}
@@ -458,14 +455,22 @@ Minor improvements and fixes, and added compilation to make loading faster.
 % Describe testing approaches, such as:
     % Unit testing, Integration testing, User testing
 % Explain how testing results were used to improve performance, efficiency, or reliability.
-Testing was done through unit, system and user tests.
-To ensure different parts were working, the codebase was stripped of features that got in the way of the test (for example, occasionally the generation algorithm was stripped down to alternating tiles for clearer visibility of tile boundaries) and the unit tests were conducted through repeatedly doing the same action and verifying it matches with the expected outcomes. These unit tests both made features more reliable and more efficient, as bugs were ironed out and inefficiencies were spotted and dealt with.
+Testing was conducted through unit, system, and user testing.
+To ensure individual modules worked, the codebase was stripped of features that interfered with testing.
+For example, the generation algorithm was occasionally stripped down to alternating tiles for clearer visibility of tile boundaries which helped while testing tile interaction components.
+Unit testing was conducted by repeatedly performing actions and verifying that outputs matched expected results.
+These unit tests improved reliability and performance by identifying and resolving bugs and inefficiencies.
 
-There were no integration tests done as the different parts ran separately, without needing to collaborate. Because some modules rely on functions from others, the parts with no dependencies were tested first before progressively testing the other units separately to ensure everything works.
+No integration tests were performed, as the system components were designed to operate mostly independently rather than through tightly coupled interactions.
+Modules without dependencies were tested first, followed by progressively dependent components to ensure correct functionality throughout the codebase.
 
-There was system and user testing to ensure the system worked all together as expected, as when there were issues, the parts where the problem occurred were singled out and subject to more extensive unit testing. This allowed for even more performance and reliability increases as more issues were discovered due to seeing everything work together. User testing additionally improved parts of the UX design that were inefficient or difficult to understand.
+System and user testing were conducted to verify overall functionality.
+When issues were identified, the affected components were isolated and subjected to further unit testing.
+This increased performance and reliability by revealing issues only became apparent during full system testing.
+User testing additionally improved aspects of the UX design that were inefficient or difficult to understand.
 
 \subsection{Test Cases and Results}
+\todo
 % Table containing Test ID, Description, Expected Result, Actual Result, Pass/Fail
 \begin{brtbl}{|X|X|X|X|X|}{3}{ Test ID & Description & Expected result & Actual result & Pass/fail }
   T01 & Test movement speed of the player &
@@ -482,20 +487,37 @@ There was system and user testing to ensure the system worked all together as ex
 \subsection{Evaluation Against Requirements}
 % Evaluate how effectively the solution meets the identified functional and non-functional requirements. Consider your ongoing quality assurance processes.
 % Evaluate your project in terms of how effectively you addressed compliance and legislative requirements (consider privacy, use of data, etc).
-The game effectively meets almost all functional and non-functional requirements satisfactorily. The game's visuals provide a relaxing atmosphere and users are able to make new worlds, export, import and load worlds, among even more world management features, in a clean and efficient manner. Worlds are exported with a password for security when sharing online, and changes made to worlds can be saved. Users are also able to move and add/remove tiles in the world and are guided on how to do so by a controls screen. This means all functional requirements are achieved satisfactorily.
+The game effectively meets all functional and most non-functional requirements.
 
-The non-functional requirements are almost fully satisfied. The game stores data in local storage, which other apps cannot access - making it secure from other websites and users (as it is in the user's config which other users on the same computer cannot access without permission). The game was designed to conform to any sized screen (including mobile sizes) and work on any modern browser, and does not detriment from user experience when running into unhandled errors. Bugs and crashes additionally do not occur during normal gameplay. With loading, while chunks are loaded quickly and efficiently offscreen and worlds load within a second, the game does not start within 2 seconds unless it has already loaded before and assets have been cached. But this is ok, as it does not take a long time to load the first time and subsequent loads are still within 2 seconds - meaning overall, the solution meets almost all the identified requirements satisfactorily.
+Users are able to create new worlds and copy, rename, delete, export, import and load existing worlds in a straightforward manner.
+World exports are additionally encrypted with a password to protect world data, providing greater security to users when sharing online.
+No personal user data is collected or transmitted, helping ensure user privacy and regulatory compliance.
+Users are guided on how to place different tiles in their worlds, and all changes can be saved.
+The game's visuals provide a relaxing atmosphere through the hand-crafted assets.
+All these functional requirements have been met satisfactorily.
+
+All non-functional requirements were met except one.
+The game stores data in local storage, which other websites cannot access, improving data security.
+The game conforms to any screen size and works on any modern browser.
+No bugs or crashes have been found during testing, but if runtime errors do occur they are handled in the background without disrupting gameplay.
+Chunks are loaded quickly and efficiently offscreen, and worlds load within a second, but the game does not start within 2 seconds unless it has previously loaded and assets have been cached.
+While this is not optimal, the initial load time remains relatively short, and subsequently loads in under 2 seconds, meaning overall the solution meets almost all the identified requirements satisfactorily.
 
 \subsection{Improvements and Future Development}
 % Outline your project’s limitations.
 % Explain realistic future enhancements.
-The project was limited as procedural generation requires a lot of variety to look good, and while I have some it can get a bit boring over time. Easy future improvements would be better procedural generative algorithms and more tiles and decorations. This is where I would draw more tiles and decorations and improve the generation algorithm to generate more interestingly shaped or varied terrain. This would add a significant more amount of variety to make the game more interesting.
+The procedural generation was limited by the difficulty in achieving the level of variety required for visual appeal.
+This project does not achieve much content diversity, leading to repetition and decreased player engagement.
+This is due to the difficulty of creating a wide variety of assets and a more sophisticated generation system, making development highly time-consuming.
+Continued asset creation and improvements to the generation algorithm are realistic future enhancements to improve replayability and visual diversity, increasing player engagement.
 
 \subsection{Evaluation of Social, Ethical and Communication Issues}
+\todo
 % Evaluate your project in terms of
 
 
 \section{Feedback, Security and Reflection}
+\todo[Up to here]
 
 \subsection{Summary of Peer Feedback}
 % Summarise feedback received and explain how it influenced development.
