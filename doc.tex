@@ -96,14 +96,22 @@ Overall, prioritising the core functionality allows the app to fit the criteria 
 % Describe the development approach used (e.g. Agile, Waterfall, WAgile).
 % Justify the suitability of this methodology. You could consider...
     % Project size and complexity, Time constraints, Feedback and iteration requirements
-The Waterfall approach was chosen for this app due to the complexity that arises through the procedural generation. The Waterfall approach is where the development happens step by step, where the plan is laid out at the start of development and it is not changed much throughout the development.
-This approach ensures the purpose, style and gameplay choices of the app remain consistant and do not overshoot the requirements laid out at the start. It is additionally helpful as the project will be plan-based due to the generation algorithm needing to be planned well, and deviations from the plan may result in creating useless assets or may make strange-looking terrain. Waterfall allows this plan to be set at the start and be followed closely.
+The Waterfall approach was chosen for this app due to the complexity in the connection between different systems in the app, including the procedural generation and asset development.
+
+The Waterfall approach is where the development happens step by step, where requirements are established at the start of development and major design changes are avoided throughout development.
+This approach ensures the purpose, style and gameplay choices of the app remain consistent and do not overshoot the requirements laid out at the start.
+This project fits this approach due to its need for a clearly defined scope and feature set to avoid wasting development time creating assets that don't fit the structure or reworking the generation to fit the assets, which are both extremely time-consuming.
+Although the waterfall approach does not allow for much adaptation to incorporate user feedback, this same approach can be utilised for future revisions of the app to improve the design as requested whilst still maintaining quality.
 
 \subsection{Tools and Technologies}
 % Justify the selection of software applications, engines, developer tools, programming languages, IDEs, frameworks, libraries and/or hardware components.
 % Explain how these tools supported efficient and effective development.
-The project will use plain HTML and Javascript due to its simplicity and ease of use. It also allows the app to be statically hosted, and also decreases load time due to reduced dependency loading requirements. This also increases privacy and security as there is less reliance on other tools, in addition to reducing bugs from upstream changes.
-That choice additionally benefits efficient development, as it makes debugging easy as browsers' built-in debuggers will use the exact code I have written instead of the compiled version of it. Lastly, plain HTML ensures compatability with all modern browsers.
+The project will use plain HTML and Javascript without any external libraries, frameworks or game engines.
+This was chosen due to its simplicity and compatibility, but additionally because it decreases load time due to reduced dependency loading requirements and reduces vulnerabilities and bugs introduced through external dependencies or upstream changes.
+The project's requirements are simple enough that external requirements do not offer improvements in development quality over this approach.
+It also allows the app to be statically hosted, creating more hosting options, and makes debugging more straightforward due to the lack of a build process, and easier as browsers include effective built-in debuggers.
+
+This will be developed in neovim due to its efficiency and simplicity for programming and will use Git for effective version control. I also have extensive experience with these 2 tools, allowing a more efficient and streamlined development experience.
 
 \subsection{Gantt Chart / Timeline}
 % Include a timeline showing key project milestones.
@@ -170,14 +178,21 @@ That choice additionally benefits efficient development, as it makes debugging e
 \end{figure}
 
 % Explain how time was allocated to planning, development, testing, and evaluation.
-Time was allocated such that the planning would take place within term 1 and the holidays, allowing term 2 to be dedicated to the development. The allocation of the holidays for finalising the planning was due to the exams at the end of term 1, meaning if the planning was not complete I had the 2 weeks to do so. This would give enough time to finish it properly.
+Planning was scheduled for term 1 and the holidays, allowing term 2 to be dedicated to game development.
+The holidays were allocated for finalising the planning due to the exams at the end of term 1 potentially reducing working time.
+This ensures enough time to thoroughly finish the plan.
 
-Additionally, the entire game is planned to be finished by around week 4. This constraint allows plenty of time afterwards for testing, evaluation and makes the finalisation of the project not rushed. It also means the game creation will be efficient, as not productive elements would be prioritised out of development due to the limited time frame. If anything important was skipped, it may be completed at the end if there is time left. Not only this, but the large time allocated to finalisation is helpful as by that time there would be other exams and assessments that require study too, so the project can slow down near the end.
+The base game functionality is planned to be completed by week 4.
+This allows for at least 6 weeks afterwards for testing, bugfixing, evaluation and unexpected delays, which will reduce the risk of rushed development to improve project quality.
+It also improves development efficiency as non-essential elements would be forced to be deprioritised due to the limited time frame, ensuring the core functionality is complete before adding additional features, helping prevent scope creep.
+Furthermore, allocating a large amount of time for finalisation accommodates other assessment tasks occuring later in the term, reducing workload pressure to allow more focus on exam preparation.
 
 \subsection{Communication Plan}
+\todo[Up to here]
 % Explain how client or peer feedback was obtained and incorporated.
-Peer feedback will be obtained through showcasing the project throughout the stages of development to ensure the plan always satisfied the core requirements before continuing.
-This additionally ensures minimal backtracking to stick with the waterfall approach.
+Feedback will be obtained through regular peer testing throughout development.
+Testers will play the game and their actions will be recorded for future UX ideas (e.g. someone may try pressing something assuming it's a button, so to reduce confusion I'll make it an actual button)
+This repeated process helps ensure the project continues to meet the functional and usability requirements without requiring major redesigns, sticking to the ideals of the Waterfall approach.
 
 \subsection{Resource Allocation Justification}
 % Justify the resource allocation for the project, including:
@@ -188,7 +203,6 @@ Additionally, peer feedback will be incorporated throughout to ensure the game c
 
 
 \section{System Design}
-\todo
 
 \subsection{Data Flow Diagrams}
 \subsubsection{Level 0 (Context diagram)}
@@ -244,13 +258,13 @@ Additionally, peer feedback will be incorporated throughout to ensure the game c
         node[midway,right,align=left] {Display\\screen}
       (playr);
     \draw[to] (generate) --
-        node[midway,left,align=right] {New\\terrain}
+        node[midway,left,align=right] {Generate\\terrain\\data}
       (displ);
     \draw[to] (worlddat) to[bend left=10]
         node[midway,align=left,xshift=0.6em,yshift=1em] {Get world\\\hspace*{1.5em}data}
       (displ);
     \draw[to] (interac) --
-        node[midway,right,align=left] {Update world\\data\\}
+        node[midway,right,align=left] {Update\\world\\data}
       (worlddat);
     \draw[to] (playr) to[bend left=25]
         node[midway,right,align=left,yshift=0.5em] {Interact}
@@ -267,73 +281,63 @@ Additionally, peer feedback will be incorporated throughout to ensure the game c
 \end{figure}
 
 \subsection{Structure Chart}
-\todo[Select world branch, and just general stuff]
-\begin{figure}[H]
-  \begin{center}
-  \begin{structc}
+\begin{figure}[H]\begin{center}\begin{structc}
+  \node[module] (main) at (0, 0) {Game system};
 
-    \node[module] (main) at (0, 0) {Game system};
+  \node[module] (startup) at (-1, -1) {Startup\\(world selection)};
+      \draw[to] (main.south) --
+        (startup.north);
+  \node[module] (gameplay) at (1, -1) {Gameplay};
+      \draw[to] (main.south) --
+          node[pos=0.8,data={World\\ID}] {\dfdData}
+        (gameplay.north);
+  \draw[to,draw=none] (main.south) --
+      node[pos=0.3,repeat] {\dfdLoop[0.3][0.8]{Until user quits}}
+    ($(main.south) + (0,-1)$);
 
-    \node[module] (startup) at (-1, -1) {Startup\\(world selection)};
-        \draw[to] (main.south) --
-          (startup.north);
-    \node[module] (gameplay) at (1, -1) {Gameplay};
-        \draw[to] (main.south) --
-            node[pos=0.8,data={World\\ID}] {\dfdData}
-          (gameplay.north);
-    \draw[to,draw=none] (main.south) --
-        node[pos=0.3,repeat] {\dfdLoop[0.3][0.8]{Until user quits}}
-      ($(main.south) + (0,-1)$);
+  \node[module] (load) at (0.5, -2) {Progressively\\Load world};
+      \draw[to] (gameplay.south) --
+          node[pos=0.6,data={World\hspace*{1em}\\ID}] {\dfdData[white][-1]}
+          node[pos=0.7,data flip={\hspace*{1em}World\\data}] {\dfdData}
+        (load);
+  \node[module] (save) at (2, -2) {Save world};
+      \draw[to] (gameplay) --
+          node[pos=0,diamondmark] {}
+          node[pos=0.5,data={World\\ID}] {\dfdData}
+          node[pos=0.8,data={\hspace*{2em}Changes}] {\dfdData}
+        (save);
 
-    \node[module] (load) at (0.5, -2) {Load world};
-        \draw[to] (gameplay.south) --
-            node[pos=0.6,data={World\hspace*{1em}\\ID}] {\dfdData[white][-1]}
-            node[pos=0.7,data flip={\hspace*{1em}World\\data}] {\dfdData}
-          (load);
-    \node[module] (save) at (2, -2) {Save world};
-        \draw[to] (gameplay) --
-            node[pos=0,diamondmark] {}
-            node[pos=0.5,data={World\\ID}] {\dfdData}
-            node[pos=0.8,data={\hspace*{2em}Changes}] {\dfdData}
-          (save);
-
-    \node[module] (choose) at (-2.5, -2) {Select world};
-        \draw[to] (startup.south) --
-            node[pos=0.5,data custom={[data label]135:{World\\ID}}] {\dfdData[black]}
-         (choose.north);
-    \node[module] (xprt) at (-1, -2) {Export world};
-        \draw[to] (startup.south) --
-            node[pos=0.5,data={\hspace*{1em}World\\ID}] {\dfdData}
-          (xprt.north);
-    \draw[to,draw=none] (startup.south) --
-        node[pos=0,diamondmark flip] {}
-      ($(choose)!0.5!(xprt)$);
-
-  \end{structc}
-  \end{center}
-\end{figure}
+  \node[module] (choose) at (-2.5, -2) {Select world};
+      \draw[to] (startup.south) --
+          node[pos=0.5,data custom={[data label]135:{World\\ID}}] {\dfdData[black]}
+       (choose.north);
+  \node[module] (xprt) at (-1, -2) {Export world};
+      \draw[to] (startup.south) --
+          node[pos=0.5,data={\hspace*{1em}World\\ID}] {\dfdData}
+        (xprt.north);
+  \draw[to,draw=none] (startup.south) --
+      node[pos=0,diamondmark flip] {}
+    ($(choose)!0.5!(xprt)$);
+\end{structc}\end{center}\end{figure}
 
 \subsection{IPO Chart}
-\todo[What inputs should I have???]
 \begin{brtbl}{|X|X|X|}{3}{ Inputs & Processes & Outputs }
-  User imports a world & Loads world data (decrypting it if necessary) into saves folder & World is displayed in world list \\ \hline
+  User imports a world & Loads world data (decrypting it if necessary) into saved worlds list & World is displayed in world list and selected to show user that it succeeded \\ \hline
   User loads a world & Takes saved data and loads the world & Displays the loaded world \\ \hline
-  User creates a new world & Generates blank world data and loads that & Displays the loaded world \\ \hline
-  User movement & Buffer new terrain at edges of screen & New generated terrain in a buffer outside screen, so when user moves more it becomes visible \\ \hline
-  User interaction & Modifies world data in accordance with what the user interacted with & Displays world with modifications \\ \hline
+  User creates a new world & Generates blank world data and loads that & Displays the new loaded world \\ \hline
+  User movement & Buffer new terrain at edges of screen & New terrain tiles in a buffer outside screen, so when user moves further it becomes visible \\ \hline
+  User places tiles in the world & Modifies world data accordingly & Displays the world with modifications \\ \hline
   User saves the game & Takes world data and stores it in the save location & Message is displayed to signal the game has been saved \\ \hline
   User exports a world & Takes world data and encrypts it if required & Output world data to share
 \end{brtbl}
 
 \subsection{Data Dictionary}
-\begin{brtbl}{|X|X|X|X|X|}{5}{ Variable & Datatype & Description & Example & Validation }
+\begin{brtbl}{|X|>{\raggedright\arraybackslash}X|X|X|X|}{5}{ Variable & Datatype & Description & Example & Validation }
   \multicolumn{5}{c}{\large{\textbf{World data}}} \\ \hline
-   \\ \hline \hline
   Seed & int & The seed for world generation & 1234567890 & No validation, any integer will work \\ \hline
   Changes & List[Changes (see below)] & The changes the user has made to the world & - & Must follow the valid change layout data format (below) \\ \hline
-  \multicolumn{5}{c}{} \\
   \multicolumn{5}{c}{\large{\textbf{Changes data}}} \\ \hline
-  Variable & Datatype & Description & Example & Validation \\ \hline \hline
+  Variable & Datatype & Description & Example & Validation \\ \hline
   Pos & Tuple[int, int] & The position of the change & (10, 32) & No validation, any point will work \\ \hline
   Item & Enum value & The decoration that replaces the one that would otherwise exist on that tile & Air & Must be a valid enum value \\ \hline
 \end{brtbl}
@@ -376,9 +380,76 @@ The back-end engineering in storage and retrieval of the worlds allows users to 
 
 \subsection{Screenshots of Interface}
 % Include annotated screenshots explaining how the user interacts with the system.
+\begin{figure}[H]\begin{center}\begin{tikzpicture}
+  \node[anchor=south west, inner sep=0] (image) at (0,0) {\includegraphics[width=0.8\textwidth]{docs/imgs/UI1.png}};
+    \begin{scope}[x={(image.south east)}, y={(image.north west)}]
+        \draw[gray, ultra thick] (0.56, 0.86) circle (0.05);
+        \node[fill=white, rounded corners] at (0.6, 0.8) {Clickable bookmarks with hover};
+        \draw[latex-, ultra thick, black] (0.3, 0.4) -- (0.1, 0.25)
+            node[below, color=black] {Current page's bookmark};
+        \node[fill=white, rounded corners] at (0.7, 0.29) {Clear information on each page of book};
+    \end{scope}
+\end{tikzpicture}\end{center}\end{figure}
+\begin{figure}[H]\begin{center}\begin{tikzpicture}
+  \node[anchor=south west, inner sep=0] (image) at (0,0) {\includegraphics[width=0.8\textwidth]{docs/imgs/UI2.png}};
+    \begin{scope}[x={(image.south east)}, y={(image.north west)}]
+        \draw[gray, ultra thick] (0.78, 0.25) circle (0.05);
+        \node[fill=white, rounded corners] at (0.78, 0.2) {Easy obvious buttons with hover labels};
+        \draw[latex-, ultra thick, black] (0.45, 0.5) -- (0.3, 0.4)
+            node[below, color=gray] {Clear user instruction when not obvious};
+    \end{scope}
+\end{tikzpicture}\end{center}\end{figure}
+\begin{figure}[H]\begin{center}\begin{tikzpicture}
+  \node[anchor=south west, inner sep=0] (image) at (0,0) {\includegraphics[width=0.8\textwidth]{docs/imgs/UI3.png}};
+    \begin{scope}[x={(image.south east)}, y={(image.north west)}]
+        \draw[gray, ultra thick] (0.37, 0.47) circle (0.05);
+        \node[fill=white, rounded corners] at (0.37, 0.42) {Current tile hover so users know};
+        \node[fill=white, rounded corners] at (0.37, 0.38) {what they are doing};
+        \node[fill=white, rounded corners] at (0.24, 0.75) {Clear prompts telling the user what happened};
+        \node[fill=white, rounded corners] at (0.9, 0.8) {Obvious current tile selection};
+    \end{scope}
+\end{tikzpicture}\end{center}\end{figure}
+\begin{figure}[H]\begin{center}\begin{tikzpicture}
+  \node[anchor=south west, inner sep=0] (image) at (0,0) {\includegraphics[width=0.8\textwidth]{docs/imgs/UI4.png}};
+    \begin{scope}[x={(image.south east)}, y={(image.north west)}]
+        \draw[black, ultra thick] (0.53, 0.77) circle (0.05);
+        \node[fill=white, rounded corners] at (0.53, 0.72) {Hover effects};
+    \end{scope}
+\end{tikzpicture}\end{center}\end{figure}
 
-\subsection{Version Control Summary (Optional)}
+\subsection{Version Control Summary}
 % Summarise commits, iterations, or sprints if version control was used.
+First, the basic tile drawing was implemented.
+A loading screen was then added.
+Then implemented movement and finished the basic rendering.
+Then basic terrain generation was implemented.
+Afterwards there was some optimisation and bugfixing.
+Improved the generation even more.
+Then implemented the player, found out the drawing was slightly off and fixed it.
+Added collision between the player and some blocks.
+Then implemented multilayer rendering with a tree.
+Then some improvements and speed-ups.
+Then implemented a block select highlight and hotbar.
+Also improved controls too.
+Made picking up blocks better and added placing blocks.
+Slightly improved some things.
+Then added a journal as an intro to the game with bookmarks and world loading capabilities.
+Then added saving and loading worlds.
+Stored placed tiles in world info.
+Various minor improvements and bugfixes.
+Added rename and delete world capabilities.
+More various minor improvements.
+Added another page for controls, improving backend page usage.
+Various minor improvements.
+Spent a while implementing a rule-based tile generation.
+Various minor Improvements and fixes.
+Added export and import with encryption.
+Various improvements and extremely minor features.
+Made menuing easier.
+Many minor improvements and fixes.
+Added a find block system instead of cycling with a backpack.
+Major backend fixes to the journal.
+Minor improvements and fixes, and added compilation to make loading faster.
 
 
 \section{Testing and Evaluation}
@@ -387,19 +458,38 @@ The back-end engineering in storage and retrieval of the worlds allows users to 
 % Describe testing approaches, such as:
     % Unit testing, Integration testing, User testing
 % Explain how testing results were used to improve performance, efficiency, or reliability.
-% Tests don't have to be code tests
+Testing was done through unit, system and user tests.
+To ensure different parts were working, the codebase was stripped of features that got in the way of the test (for example, occasionally the generation algorithm was stripped down to alternating tiles for clearer visibility of tile boundaries) and the unit tests were conducted through repeatedly doing the same action and verifying it matches with the expected outcomes. These unit tests both made features more reliable and more efficient, as bugs were ironed out and inefficiencies were spotted and dealt with.
+
+There were no integration tests done as the different parts ran separately, without needing to collaborate. Because some modules rely on functions from others, the parts with no dependencies were tested first before progressively testing the other units separately to ensure everything works.
+
+There was system and user testing to ensure the system worked all together as expected, as when there were issues, the parts where the problem occurred were singled out and subject to more extensive unit testing. This allowed for even more performance and reliability increases as more issues were discovered due to seeing everything work together. User testing additionally improved parts of the UX design that were inefficient or difficult to understand.
 
 \subsection{Test Cases and Results}
 % Table containing Test ID, Description, Expected Result, Actual Result, Pass/Fail
+\begin{brtbl}{|X|X|X|X|X|}{3}{ Test ID & Description & Expected result & Actual result & Pass/fail }
+  T01 & Test movement speed of the player &
+  The movement should be the same speed no matter what direction is being pressed, including diagonals &
+  The player does move at a consistent speed & Pass
+\\ \hline
+  T02 & Test collision &
+  When walking diagonally into a tile with collision the player should slide off at the same speed as movement, and when walking perpendicular into the block the player should be stopped. &
+  This does happen & Pass
+\\ \hline
+  T03 & Test 
+\end{brtbl}
 
 \subsection{Evaluation Against Requirements}
 % Evaluate how effectively the solution meets the identified functional and non-functional requirements. Consider your ongoing quality assurance processes.
 % Evaluate your project in terms of how effectively you addressed compliance and legislative requirements (consider privacy, use of data, etc).
+The game effectively meets almost all functional and non-functional requirements satisfactorily. The game's visuals provide a relaxing atmosphere and users are able to make new worlds, export, import and load worlds, among even more world management features, in a clean and efficient manner. Worlds are exported with a password for security when sharing online, and changes made to worlds can be saved. Users are also able to move and add/remove tiles in the world and are guided on how to do so by a controls screen. This means all functional requirements are achieved satisfactorily.
+
+The non-functional requirements are almost fully satisfied. The game stores data in local storage, which other apps cannot access - making it secure from other websites and users (as it is in the user's config which other users on the same computer cannot access without permission). The game was designed to conform to any sized screen (including mobile sizes) and work on any modern browser, and does not detriment from user experience when running into unhandled errors. Bugs and crashes additionally do not occur during normal gameplay. With loading, while chunks are loaded quickly and efficiently offscreen and worlds load within a second, the game does not start within 2 seconds unless it has already loaded before and assets have been cached. But this is ok, as it does not take a long time to load the first time and subsequent loads are still within 2 seconds - meaning overall, the solution meets almost all the identified requirements satisfactorily.
 
 \subsection{Improvements and Future Development}
 % Outline your project’s limitations.
 % Explain realistic future enhancements.
-The project was limited as procedural generation requires a lot of variety to look good, and while I have some it can get a bit boring over time. Easy future improvements would be better procedural generative algorithms and more tiles and decorations. This would add a significant more amount of variety to make the game more interesting.
+The project was limited as procedural generation requires a lot of variety to look good, and while I have some it can get a bit boring over time. Easy future improvements would be better procedural generative algorithms and more tiles and decorations. This is where I would draw more tiles and decorations and improve the generation algorithm to generate more interestingly shaped or varied terrain. This would add a significant more amount of variety to make the game more interesting.
 
 \subsection{Evaluation of Social, Ethical and Communication Issues}
 % Evaluate your project in terms of
@@ -459,6 +549,12 @@ The project was limited as procedural generation requires a lot of variety to lo
         % Input validation and error handling
         % Data storage and protection methods
         % The impact of secure software design on user trust, data integrity, and system reliability
+During development, the code was developed securely so no other websites could change the data.
+All inputs and the URL itself does not get executed, meaning attackers cannot use XSS.
+Additionally, save data is stored in the localstorage, meaning no other websites can access the data.
+Encryption was also utilised on exports so users can have an extra layer of security when sharing.
+
+All these security aspects ensure the data is never accessible to attackers from within the browser, which increases system reliability and integrity as data breaches and hacks are much less likely, which in turn improves user trust.
 
 \subsection{Personal Reflection}
 % Reflect on what you learned during the project, including
