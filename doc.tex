@@ -65,7 +65,7 @@ The system must have the following qualities:
   \item The system must run reliably, handling unexpected errors without interrupting user experience
   \item The UI must be designed to work on various sized screens including both phone and desktop
   \item The website must be playable in any modern browser
-  \item The game must store data in a secure location, protected from other users
+  \item The game must store data in a secure location where it is unable to be accessed from outside the website
 \end{itemize}
 
 \subsection{Constraints}
@@ -470,24 +470,46 @@ This increased performance and reliability by revealing issues only became appar
 User testing additionally improved aspects of the UX design that were inefficient or difficult to understand.
 
 \subsection{Test Cases and Results}
-\todo
 % Table containing Test ID, Description, Expected Result, Actual Result, Pass/Fail
   \begin{brtbl}{
-     |>{\hsize=0.5\hsize}X|
+     |>{\hsize=0.25\hsize}X|
       >{\hsize=1\hsize}X|
-      >{\hsize=2\hsize}X|
       >{\hsize=1\hsize}X|
-      >{\hsize=0.5\hsize}X|
-    }{5}{ Test ID & Description & Expected result & Actual result & Pass/fail }
-  T01 & Test movement speed of the player &
-  The movement should be the same speed no matter what direction is being pressed, including diagonals &
-  The player does move at a consistent speed & Pass
+      >{\hsize=1\hsize}X|
+      >{\hsize=0.3\hsize}X|
+    }{5}{ Test ID & Description & Expected Result & Actual Result & Pass/Fail }
+
+  T01 & Test player movement speed &
+  Player movement should be the same speed in all directions, including diagonals. &
+  Movement speed remained consistent in all directions. & Pass
 \\ \hline
-  T02 & Test collision &
-  When walking diagonally into a tile with collision the player should slide off at the same speed as movement, and when walking perpendicular into the block the player should be stopped. &
-  This does happen & Pass
+  T02 & Test player collision &
+  The player should slide along collidable tiles while maintaining normal movement speed, except when moving perpendicular into an edge. &
+  The player slid along obstacles and stopped on direct collision, preventing movement through collision tiles. & Pass
 \\ \hline
-  T03 & Test 
+  T03 & Test tile hover and selection &
+  The hover effect should appear on the tile under the mouse, and clicking it should select the block on that tile. &
+  The hover effect appeared correctly and clicking selected blocks on the corresponding tile. & Pass
+\\ \hline
+  T04 & Test tile placement &
+  Blocks should be placed on the selected tile, overriding any existing blocks. &
+  Blocks were placed on the correct tile and replaced existing blocks as expected. & Pass
+\\ \hline
+  T05 & Test screen resizing &
+  The game UI should scale with changes in screen size while maintaining layout consistency. &
+  The UI correctly adapted to different screen sizes and all UI elements were scaled appropriately. & Pass
+\\ \hline
+  T06 & Test error handling by introducing temporary faults into system components. &
+  Errors should be handled gracefully without interrupting the user. &
+  Errors were logged in the background and did not disrupt gameplay. & Pass
+\\ \hline
+  T07 & Test world operations, including saving, loading, renaming, deleting, copying and creating new worlds &
+  Users should be able to perform all world management operations successfully. &
+  All world management operations functioned as expected. & Pass
+\\ \hline
+  T08 & Test world importing and exporting with different passwords &
+  World data should transfer correctly, and only the export password should allow importing. &
+  Worlds failed to load if the incorrect password was used, while imported worlds retained all data correctly from the original. & Pass
 \end{brtbl}
 
 \subsection{Evaluation Against Requirements}
