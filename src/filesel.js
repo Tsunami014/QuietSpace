@@ -4,11 +4,13 @@ var page1; var page2; var pageconts
 var width; var height
 var pagenum = 0
 
+/// Go to the current world page
 export function goCurWorld() {
     pagenum = worlds.world_idx()+extraPages+2
 }
 
 const extraPages = 3
+/// Get the maximum page length
 function maxPage() {
     return worlds.world_nams.length+extraPages+2
 }
@@ -21,6 +23,7 @@ const marks = [
     [extraPages+2, "l", "#8C6348"]
 ]
 
+/// A list of assets to load but that aren't important and can really load whenever
 const precache = [
   './assets/journal/play.svg',
   './assets/journal/copy.svg',
@@ -28,9 +31,7 @@ const precache = [
   './assets/journal/xport.svg',
 ];
 
-function avaliable() {
-    return document.activeElement == document.body
-}
+function avaliable() { return document.activeElement == document.body; }
 
 
 var bmwid; var bmhei
@@ -45,12 +46,13 @@ export async function init(nxt) {
         });
     }));
 
-
+    // Load some svgs
     const jrnlstr = await (await fetch("./assets/journal/jrnl.svg")).text()
     nxt()
     const markstr = await (await fetch("./assets/journal/mark.svg")).text()
     nxt()
 
+    // Generate some html!
     aftms = document.createElement("div")
     aftms.className = "marks"
     aftms.style.flexDirection = "row-reverse"
@@ -60,6 +62,7 @@ export async function init(nxt) {
     nowms.id = "nowmarks"
     nowms.ondblclick = function() { press(-1); }
 
+    // Add the bookmark contents html *inside* the svgs!
     const parser = new DOMParser()
     const markDoc = parser.parseFromString(markstr, 'image/svg+xml')
     bmwid = parseInt(markDoc.documentElement.getAttribute("width")); bmhei = parseInt(markDoc.documentElement.getAttribute("height"))
@@ -84,6 +87,7 @@ export async function init(nxt) {
         mn.appendChild(t)
     })
 
+    // Do more html creation
     const jrnlDoc = parser.parseFromString(jrnlstr, 'image/svg+xml')
     contnr = document.getElementById("overl")
     inncontnr = document.getElementById("fsel")
@@ -109,6 +113,7 @@ export async function init(nxt) {
         nowms)
 }
 
+/// Toggle the journal
 export function toggle() {
     if (contnr.classList.contains('fsel')) {
         contnr.classList.remove("fsel")
@@ -125,6 +130,7 @@ export function toggle() {
     }
 }
 
+// Utility functions for 'drawing' the page (adding the html elements)
 var s; var startend;
 function addText(txt, sze, hei, bold=false) {
     const t = document.createElement('p')
@@ -154,6 +160,7 @@ function mkButton(src, right, cont, onclick) {
     pageconts.appendChild(wrap)
     return btn
 }
+/// Creates page contents depending on which page it is
 function drawPage() {
     if (pagenum == 0) {
         addText("Quiet Space", 30, 6, true)
@@ -262,6 +269,7 @@ function drawPage() {
 
 const mainfill = "#753127"
 const subfill = "#ECE4D5"
+/// Redraws the pages
 export function redraw() {
     const mx = maxPage()
     startend = pagenum == 0 || pagenum == mx
@@ -270,6 +278,7 @@ export function redraw() {
     } else {
         s = canvas1.height/height * 0.7
     }
+    // Transforms the pages and their contents
     inncontnr.style.transform = `rotate(-1deg) translate(${startend ? -50 : -30}%, -50%)`
     pageconts.setAttribute("width", width*s); pageconts.setAttribute("height", height*s)
     if (pagenum == mx) {
@@ -288,9 +297,11 @@ export function redraw() {
     page2.style.transform = pagenum == mx ? `scale(-1, 1)` : ""
     page2.setAttribute("width", width*s); page2.setAttribute("height", height*s)
 
+    // Adds the contents to the page
     pageconts.replaceChildren()
     drawPage()
 
+    // Updates all the bookmark's styling
     aftms.style.right = pagenum == mx ? "3%" : "100%"
     marks.forEach(m=>{
         const mn = m[3]
@@ -315,6 +326,7 @@ export function redraw() {
     })
 }
 
+// Handle keypresses
 export function press(dx, keys = {}, lastks = {}) {
     if (!avaliable()) return;
     if (keys[' '] && !lastks[' ']) {
@@ -354,6 +366,7 @@ export function press(dx, keys = {}, lastks = {}) {
         worlds.impor()
         return;
     }
+    // Check for bookmark keys pressed and left/right
     var topage = marks.find(it=>{ return keys[it[1]] && !lastks[it[1]] })
     if (topage !== undefined) {
         pagenum = topage[0]

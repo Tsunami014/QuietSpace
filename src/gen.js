@@ -24,6 +24,7 @@ var islandSze
 var outerRingSze
 var sandDist
 export function setSeed(nseed) {
+    // Sets the seed... and some other variables
     seed = nseed
     x_wonk = (hash(-999, 0)%10) / 20 + 0.5
     y_wonk = (hash(-999, 1)%10) / 20 + 0.5
@@ -38,31 +39,35 @@ export function setSeed(nseed) {
 
     tleCache = new Map();
 }
+/// Pick a new random seed
 export function randSeed() {
     setSeed(Math.round(Math.random()*(10**15)))
     placeds = new Map();
 }
+/// Use a default seed
 export function defltSeed() {
     setSeed(42) // Has a good array of stuff around the start
     placeds = new Map();
 }
 
-var _cache = []
-const mxCacheLen = 15+3
+const cache = new Map();
+const mxCacheLen = 18;
+/// Cache the hash function for *speed*
 function cachehash(...args) {
-    for (let i = _cache.length-1; i >= 0; i--) {
-        const [args2, val] = _cache[i]
-        if (args === args2) return val;
+    const key = JSON.stringify(args);
+
+    if (cache.has(key)) { return cache.get(key); }
+    const out = hash(...args);
+    if (cache.size >= mxCacheLen) {
+        cache.delete(cache.keys().next().value); // remove oldest
     }
-    if (_cache.length+1 > mxCacheLen) {
-        _cache = _cache.slice(1)
-    }
-    const out = hash(...args)
-    _cache.push([args, out])
-    return out
+
+    cache.set(key, out);
+    return out;
 }
 
 
+/// Get a tile inside a plot based on the plot type
 function getTileInner(tlx, tly, loclx, locly, pltsze, rx, ry, sandy) {
     if (sandy > 2) {
         return ["sand"]
@@ -88,14 +93,17 @@ const plotSze = 10+5
 const dirs = [
     [0, 0], [1, 0], [1, 1], [0, 1]
 ]
+/// Converts a position to a 'real position' (much easier for making nicer patterns with)
 export function realPos(x, y) {
     return [x-Math.floor((y-1)/2),
         -(x+Math.floor(y/2))]
 }
+
+// Gets a tile at a position. This also checks if a tile has been placed and uses that instead.
+
 export function getTile(x, y) {
     return getRealTile(...realPos(x, y))
 }
-
 var placeds = new Map();
 var tleCache = new Map();
 export function getRealTile(rx, ry) {
@@ -133,13 +141,16 @@ export function setPlaced(nps) {
 
 let lastClear = 0
 const clearEvery = 5
+/// Clear the cache *just enough* to be efficient
 export function cacheTick() {
     if (++lastClear > clearEvery) {
         tleCache = new Map()
     }
 }
 
+/// Generates a tile!
 function _getRealTile(realx, realy) {
+    // If outside the 'island', output water (or sand)
     let dist = realx*realx*x_wonk + realy*realy*y_wonk
     if (dist > islandSze) {
         if (dist > islandSze+outerRingSze+1) {
@@ -148,6 +159,7 @@ function _getRealTile(realx, realy) {
         return ["sand"]
     }
 
+    // Determine local position in a plot
     const loclx = ((realx%plotSze)+plotSze) % plotSze
     const locly = ((realy%plotSze)+plotSze) % plotSze
     const tlx = Math.floor(realx/plotSze)
@@ -159,6 +171,7 @@ function _getRealTile(realx, realy) {
         return prev + (dist > sandDist? 1:0)
     }, 0)
 
+    // Handle borders
     if (sandy > 1 && (
         loclx <= 2 || locly <= 2 || loclx >= plotSze-2 || locly >= plotSze-2
     )) {
@@ -182,5 +195,6 @@ function _getRealTile(realx, realy) {
     if (loclx == 2 || locly == 2 || loclx >= plotSze-2 || locly >= plotSze-2) {
         return ["footpath"]
     }
+    // Get the inner tile
     return getTileInner(tlx, tly, loclx+3, locly+3, plotSze-5, realx, realy, sandy)
 }

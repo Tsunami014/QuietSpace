@@ -1,6 +1,7 @@
 var elm;
 var width; var height;
 export async function load(nxt) {
+    // Loads the player and sets some variables
     const str = await (await fetch("./assets/player.svg")).text()
     nxt()
     const parser = new DOMParser()

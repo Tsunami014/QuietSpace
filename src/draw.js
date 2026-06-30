@@ -14,7 +14,8 @@ export function getSizes() {
     return [cols, rows, blk, hblk, qblk]
 }
 
-const framescale = 1.4
+const framescale = 1.4 /// The size of the current block frame in blk units
+/// Get the position of the current block frame
 export function framePos() {
     const [cols, rows, blk, hblk, qblk] = getSizes()
     return [
@@ -55,6 +56,7 @@ export function draw() {
             const ty = i-tyoffs
             const [realx, realy] = gen.realPos(tx, ty)
             const tles = gen.getRealTile(realx, realy)
+            // Loop over each tile generated
             tles.forEach((tle, idx)=>{
                 if (!tle) return;
                 const getfn = (x, y)=>{ return gen.getRealTile(realx+x, realy+y).includes(tle); }
@@ -63,6 +65,7 @@ export function draw() {
                 if (idx == 0 && !tiles.nodecor.includes(tle)) {
                     g = g.concat(tiles.addBorders(tle, fullgetfn))
                 }
+                // Loop over the tile plus any decorations
                 for (const tle2 of g) {
                     idx++
                     const rtle = tiles.getBaseTile(tle2, tles, getfn)
@@ -76,6 +79,7 @@ export function draw() {
                     const basey = qblk*i+yoffs
                     const ypos = basey - hei+hblk - (idx==1? 1:2)
                     if (!tiles.pixel) { wid+=(idx==1? 4:8); hei+=(idx==1? 2:4); }
+                    // Draw either behind or in front of the player
                     if (basey >= midp && tiles.decor.includes(rtle)) {
                         ctx2.drawImage(source.img, xpos, ypos, wid, hei)
                     } else {
@@ -90,6 +94,7 @@ export function draw() {
     const opens = fsel.fselopen || bkpk.open
     const mtf = !opens && mouse.touchFrame()
     if (!opens && !mtf && mouse.hasMouse()) {
+        // Draw the mouse hover effect
         const [mx, my] = mouse.getPos()
         var offs = Math.abs((Math.abs(mx)*2+1)%2-1) >= Math.abs(Math.abs(my)%2-1) ? 0.5:0
         const wid = blk*(48/32)
@@ -99,6 +104,7 @@ export function draw() {
             ((Math.round(my/2) - offs)*2 + tyoffs + offs*Math.abs(Math.floor(my+1)%2)*4 - 0.75)*qblk + hei/2 + yoffs,
             wid, hei)
     }
+    // Draw the current block frame
     const [framex, framey, framew, frameh] = framePos()
     ctx2.drawImage(tiles.UI, 0, 24+(mtf? 24:0), 48, 24,
         framex, framey, framew, frameh)

@@ -10,11 +10,13 @@ function drawLoading(progress) {
     const pbx = canvas1.width / 6
     const pby = (canvas1.height - pbhei) / 2;
     const pbwid = canvas1.width - pbx*2;
-    ctx2.clearRect(0, 0, canvas1.width, canvas1.height); 
-    ctx1.clearRect(0, 0, canvas1.width, canvas1.height); 
+    ctx2.clearRect(0, 0, canvas1.width, canvas1.height);
+    ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+    // Draw loading text
     ctx1.font = "bold 32px sans serif";
     ctx1.fillStyle = "black";
     ctx1.fillText("Loading...", pbx, pby-32-2);
+    // Draw loading bar
     ctx1.beginPath()
     ctx1.roundRect(pbx, pby, pbwid, pbhei, pbhei/3);
     ctx1.fill();
@@ -29,9 +31,7 @@ async function load() {
     const max = 22;
     var i = 0
     function nxt() {
-        if (i <= max) {
-            drawLoading(i/max)
-        }
+        if (i <= max) drawLoading(i/max);
         i++
     }
     window.worlds = await import("./worlds.js")
@@ -70,7 +70,7 @@ async function load() {
     } else if (i < max) {
         console.warn("Went under maximum by "+(max-i)+" (should be "+i+")")
     }
-    fsel.toggle()
+    fsel.toggle() // Start with the journal open
 }
 
 // Keep keys in a dict
@@ -82,6 +82,7 @@ var lastks = {}
 var lastpress = 0
 window.nxttog = false // So the menu can vanish at the same time as world load
 function tick() {
+    // Check for toggles
     if (nxttog || (keys['Escape'] && !lastks['Escape'])) {
         nxttog = false
         if (bkpk.open) {
@@ -91,10 +92,12 @@ function tick() {
         }
     }
 
+    // Store last direction press (different from last keys)
     var dx = 0
     if (keys['ArrowLeft'] || keys['a']) dx = -1
     if (keys['ArrowRight'] || keys['d']) dx = 1
 
+    // Journal open does not draw like normal
     if (fsel.fselopen) {
         if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {
             resizeCanvas(true)
@@ -113,9 +116,11 @@ function tick() {
     }
     lastpress = dx
 
+    // Check for backpack toggle
     mouse.press(keys, lastks)
     if (keys['r'] && !lastks['r']) bkpk.toggle()
     if (bkpk.open && keys['f'] && !lastks['f']) bkpk.select()
+    // Backpack open does not draw like normal
     if (bkpk.open) {
         if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {
             resizeCanvas(true)
@@ -127,6 +132,7 @@ function tick() {
         return
     }
     lastks = { ...keys }
+    // Resize blocks if changed
     if (canvas1.width !== window.innerWidth || canvas1.height !== window.innerHeight) {
         resizeCanvas(true)
         if (!tiles.pixel) {
@@ -140,6 +146,7 @@ function tick() {
         }
         draw.draw()
     }
+    // Move and draw
     var dy = 0
     if (keys['ArrowUp'] || keys['w']) dy = -1
     if (keys['ArrowDown'] || keys['s']) dy = 1
@@ -160,6 +167,7 @@ function resizeCanvas(loaded) {
     canvas2.width = window.innerWidth;
     canvas2.height = window.innerHeight;
     if (loaded) {
+        // If loaded, update all the submodules
         const [cols, rows, blk, hblk, qblk] = draw.getSizes()
         bkpk.resized(blk)
         fsel.redraw()

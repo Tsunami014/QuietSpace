@@ -1,9 +1,7 @@
 export var x = 0
 export var y = 0
 
-export function teleport(nx, ny) {
-    x = nx; y = ny
-}
+export function teleport(nx, ny) { x = nx; y = ny }
 
 export function realpos(nx, ny) {
     return [Math.floor(nx-((ny-1)/2)), -Math.floor(nx+(ny/2) + 0.5)]
@@ -22,17 +20,20 @@ export function realPlayerPos() {
 
 
 const speed = 0.25
-const speeddiag = Math.sqrt(5)*speed/2
+const speeddiag = Math.sqrt(5)*speed/2 // I did the math and this is the right speed
+/// Returns true if moved successfully
 export function tick(dx, dy) {
-    if (dx == 0 && dy == 0) return false
+    if (dx == 0 && dy == 0) return false // Didn't move
     dy *= 2
     if (dx != 0 && dy != 0) {
+        // Moved diagonally - if collides, there's nothing that can be done
         let nx = x+speeddiag*dx; let ny = y+speeddiag*dy
         if (collides(nx, ny)) return false
         x = nx; y = ny
         return true
     }
     if (collides(x+speed*dx, y+speed*dy*2)) {
+        // If moving in one direction and collide, slides off the block appropriately
         if (dx == 0) {
             let ny = y + speeddiag*dy
             let d1 = collides(x+speeddiag, ny)

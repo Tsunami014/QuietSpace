@@ -1,12 +1,14 @@
 var mx; var my;
+/// Get the element at the mouse position
 export function elmAtMouse() {
     if (mx === undefined) return null;
     return document.elementFromPoint(mx, my)
 }
 
 window.addEventListener('contextmenu', function(event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent right click popup
 });
+// Remember mouse movements and drags
 var dragL; var dragR;
 document.addEventListener('mousedown', (e) => {
     mx = event.clientX; my = event.clientY
@@ -33,6 +35,7 @@ document.addEventListener('mouseup', (e) => {
         dragR = false
     }
 });
+// Do a similar functionality with keypresses
 export function press(keys, lastkeys) {
     if (keys['q']) {
         click_left(lastkeys['q'], false)
@@ -70,10 +73,12 @@ function click_right(drag, mse) {
     select = tiles.normalise(tle[0])
 }
 
+// Only false when the game just started and the player hasn't moved the mouse yet
 export function hasMouse() {
     return mx !== undefined
 }
 
+/// Get the mouse position in terms of blocks
 export function getPos() {
     const [cols, rows, blk, hblk, qblk] = draw.getSizes()
     return [
@@ -81,6 +86,7 @@ export function getPos() {
         (my - Math.round(canvas1.height/2))/qblk + phys.y/draw.units]
 }
 
+/// Is the cursor touching the current block frame?
 export function touchFrame() {
     const [framex, framey, framew, frameh] = draw.framePos()
     if (mx < framex || mx > framex+framew || my < framey || my > framey+frameh) return false;

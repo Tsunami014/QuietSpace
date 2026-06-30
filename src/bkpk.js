@@ -16,12 +16,14 @@ export function toggle() {
         open = true
     }
 }
+/// Fake a click on the currently selected item
 export function select() {
     const e = mouse.elmAtMouse()
     if (conts.contains(e)) e.click();
 }
 
 var aimw = 0
+/// Draw a single tile
 function drawTile(nam) {
     const source = tiles.normalisedImg(nam);
     if (!source) return null;
@@ -55,14 +57,17 @@ function drawTile(nam) {
     return canvas
 }
 
+// Keep track of blocks the user has found
 export var founds = []
 export function loadFounds(fs) {
     founds = fs??[]
     redraw = true
 }
+/// Make the name nicer
 function prettify(nam) {
     return nam.charAt(0).toUpperCase()+nam.slice(1).replace('_', ' ')
 }
+/// Create a popup for when a new block was found
 function newfound(nam) {
     founds.push(nam)
     const n = document.createElement("div")
@@ -81,6 +86,7 @@ function newfound(nam) {
     setTimeout(()=> n.remove(), 2600)
     redraw = true
 }
+/// Loop over a tile and discover all the blocks that haven't been found yet
 export function found(blks) {
     blks.forEach(b=>{
         if (!founds.includes(b)) {
@@ -91,6 +97,7 @@ export function found(blks) {
 
 
 var redraw = true
+/// Handle resize events
 export function resized(blk) {
     redraw = true;
     aimw = blk*1.2
@@ -102,7 +109,7 @@ export function resized(blk) {
 
 
 export function draw() {
-    if (!redraw) return;
+    if (!redraw) return; // Only redraw blocks if have to
     conts.replaceChildren()
     founds.forEach(it=>{
         const canv = drawTile(it)

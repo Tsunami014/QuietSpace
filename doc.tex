@@ -35,7 +35,7 @@ The project will provide a relaxing digital space on the internet users can expl
 \subsection{Stakeholder Requirements}
 % Identify stakeholders (client, users, teacher, peers).
 % Describe their needs, expectations, and how these influenced the project direction.
-The project stakeholders are the users of the game, which are the general public. The game should be easily accessible during short periods of downtime and provide a relaxing experience. It must also remain engaging to encourage revisiting, which influenced the inclusion of the procedural generation, exploration and building mechanics. Additionally, users require a low-stress environment. The need for a low-stress and potentially brief experience influenced the decision to make it single-player, without competitive or limited time elements.
+The project stakeholders are the users of the game, which in this case is the general public. The game should be easily accessible during short periods of downtime and provide a relaxing experience. It must also remain engaging to encourage revisiting, which influenced the inclusion of the procedural generation, exploration and building mechanics. Additionally, users require a low-stress environment. The need for a low-stress and potentially brief experience influenced the decision to make it single-player, without competitive or limited time elements.
 
 \subsection{Functional Requirements}
 % List and describe what the system must do.
@@ -74,7 +74,7 @@ The system must have the following qualities:
 The limitations on this project are:
 \begin{itemize}
     \item I have not created HTML games before and have limited Javascript experience, which may increase development time.
-    \item Procedural generation is difficult and time-consuming to get accurate as it may require significant testing and trial-and-error to get right.
+    \item Procedural generation is difficult and time-consuming to feel right, as this is a subjective measure. It may require significant testing and trial-and-error.
     \item I will need to curate a set of assets to ensure the game looks nice, coherent and unique, which will increase development time.
 \end{itemize}
 
@@ -108,10 +108,10 @@ Although the waterfall approach does not allow for much adaptation to incorporat
 % Explain how these tools supported efficient and effective development.
 The project will use plain HTML and Javascript without any external libraries, frameworks or game engines.
 This was chosen due to its simplicity and compatibility, but additionally because it decreases load time due to reduced dependency loading requirements and reduces vulnerabilities and bugs introduced through external dependencies or upstream changes.
-The project's requirements are simple enough that external requirements do not offer improvements in development quality over this approach.
 It also allows the app to be statically hosted, creating more hosting options, and makes debugging more straightforward due to the lack of a build process, and easier as browsers include effective built-in debuggers.
 
-This will be developed in neovim due to its efficiency and simplicity for programming and will use Git for effective version control. I also have extensive experience with these 2 tools, allowing a more efficient and streamlined development experience.
+This will be developed in neovim due to its efficiency and simplicity for programming and will use Git for effective version control.
+I also have extensive experience with these 2 tools, allowing a more efficient and streamlined development experience.
 
 \subsection{Gantt Chart / Timeline}
 % Include a timeline showing key project milestones.
@@ -335,11 +335,17 @@ Additionally, peer feedback will be incorporated throughout development to ensur
 \end{brtbl}
 
 \subsection{Data Dictionary}
-\begin{brtbl}{|X|>{\raggedright\arraybackslash}X|X|X|X|}{5}{ Variable & Datatype & Description & Example & Validation }
+\begin{brtbl}{
+   |>{\hsize=0.5\hsize}X|
+    >{\hsize=0.75\hsize\raggedright\arraybackslash}X|
+    >{\hsize=1.5\hsize}X|
+    >{\hsize=0.75\hsize}X|
+    >{\hsize=1.5\hsize}X|
+  }{5}{ Variable & Datatype & Description & Example & Validation }
   \multicolumn{5}{c}{\large{\textbf{World data}}} \\ \hline
   Seed & int & The seed for world generation & 1234567890 & No validation required \\ \hline
   Changes & List[Changes data] & The changes the user has made to the world & - & Must follow the valid change layout data format (below) \\ \hline
-  \multicolumn{5}{c}{\large{\textbf{Changes data structure}}} \\ \hline
+  \hline \multicolumn{5}{c}{\large{\textbf{Changes data structure}}} \\ \hline
   Variable & Datatype & Description & Example & Validation \\ \hline
   Pos & Tuple[int, int] & The position of the change & (10, 32) & No validation required \\ \hline
   Item & Enum value & The tile or decoration replacing the tile at that location & Footpath & Must be a valid enum value \\ \hline
@@ -375,25 +381,26 @@ As a result, these prompts are unlikely to impact user experience as they are no
 % Justify their inclusion.
 The system contains the following key features:
 \begin{itemize}
-  \item The core system (in \verb|main.js|) is responsible for loading all modules and handling the main gameplay loop.
-  \item The world display (in \verb|draw.js|) handles rendering the game world each tick.
-  \item The tile loader (in \verb|tiles.js|) is used by the world display to load the tileset and break it into individual tiles for rendering.
-  \item The player (in \verb|player.js|) handles loading the player image and drawing it to the screen.
-  \item The player physics (in \verb|phys.js|) handles player movement and collision detection.
-  \item Mouse interaction (in \verb|mouse.js|) was separated from \verb|main.js| due to its size and complexity.
-  \item The terrain generation (in \verb|gen.js|) is a core part of the system's design.
-  \item The menu/file select overlay (in \verb|filesel.js|) enables changing between different worlds and displaying controls in one place for improved organisation and navigation.
-  \item The loading/saving of worlds (in \verb|worlds.js|) is a key functional requirement of the system.
-  \item The backpack (in \verb|bkpk.js|) improves user experience by combining all collected items in one place, simplifying the building process. This was added to resolve earlier confusion around requiring multiple clicks to select a decoration, which was unintuitive to all testers and difficult to succinctly explain.
+  \item The core system (in \verb|main.js|) is responsible for loading all modules in their correct order (including drawing the loading screen) and handling the main gameplay loop.
+  \item The world display (in \verb|draw.js|) handles rendering the game world each tick. This ensures tiles are drawn in the correct locations, either in front or behind the player as appropriate, and ensures there are no awkward seams between tiles.
+  \item The tile loader (in \verb|tiles.js|) is used by the world display to load the tileset and break it into individual tiles for rendering. This also handles tile interaction properties, such as adding borders around some tiles that go into adjacent spaces.
+  \item The player (in \verb|player.js|) handles loading the player image, resizing it when needed and drawing it to the screen.
+  \item The player physics (in \verb|phys.js|) handles player movement and collision detection. This additionally handles sliding the player along blocks when colliding at an angle.
+  \item Mouse interaction (in \verb|mouse.js|) was separated from \verb|main.js| due to its size and complexity. This handles all mouse events, remembering mouse position and drag states, and handles some keypresses to mimic the mouse. It also contains some utility functions for the mouse, for example determining which block the mouse is currently hovering over.
+  \item The terrain generation (in \verb|gen.js|) is a core part of the system's design. This includes a custom generation algorithm and handles all the generating and placing of tiles.
+  \item The menu/file select overlay (in \verb|filesel.js|) enables changing between different worlds and displaying controls in one place for improved organisation and navigation. This has to auto generate the html for the page contents and transform everything into the correct places.
+  \item The loading/saving of worlds (in \verb|worlds.js|) is a key functional requirement of the system. This file handles other world utilities such as renaming, deleting, copying, exporting and importing, handling collisions appropriately.
+  \item The backpack (in \verb|bkpk.js|) improves user experience by combining all collected items in one place, simplifying the building process. This was added to resolve earlier confusion around requiring multiple clicks to select a decoration, which was unintuitive to all testers and difficult to succinctly explain. This file handles discovery of blocks and backpack with block selection, including the discovery popup.
 \end{itemize}
 
 \subsection{Back-End Engineering Contribution}
 % Explain how back-end engineering contributed to the success and ease of use of the software, including:
     % Data processing, Validation and logic, Storage and retrieval, Authentication (if applicable)
 The back-end engineering in the storage and retrieval of worlds allows users to access multiple saved worlds, each containing different gameplay content.
-This improves diversity of gameplay experiences since a single world may not cover the full range of available content.
+This improves the diversity of gameplay experiences since a single world may not cover the full range of available content.
 It additionally enables the separation of creations into multiple worlds, increasing the available building space for users.
-This allows users to make backups of worlds in case of accidental changes during building makes the game easier to use, while sharing worlds with others promotes the game and contributes to its success.
+This allows users to make backups of worlds to revert to a previous state and reduces the impact of user errors, making the game more forgiving.
+Sharing worlds with others also promotes the game and contributes to its success.
 
 \subsection{Screenshots of Interface}
 % Include annotated screenshots explaining how the user interacts with the system.
@@ -455,13 +462,11 @@ Lastly, more back-end improvements were made to the journal and compilation was 
 % Describe testing approaches, such as:
     % Unit testing, Integration testing, User testing
 % Explain how testing results were used to improve performance, efficiency, or reliability.
-Testing was conducted through unit, system, and user testing.
+Testing was conducted through unit, integration, system, and user testing.
 To ensure individual modules worked, the codebase was stripped of features that interfered with testing.
 For example, the generation algorithm was occasionally stripped down to alternating tiles for clearer visibility of tile boundaries which helped while testing tile interaction components.
 Unit testing was conducted by repeatedly performing actions and verifying that outputs matched expected results.
-These unit tests improved reliability and performance by identifying and resolving bugs and inefficiencies.
-
-No integration tests were performed, as the system components were designed to operate mostly independently rather than through tightly coupled interactions.
+These unit and integration tests improved reliability and performance by identifying and resolving bugs and inefficiencies.
 Modules without dependencies were tested first, followed by progressively dependent components to ensure correct functionality throughout the codebase.
 
 System and user testing were conducted to verify overall functionality.

@@ -5,13 +5,16 @@ export const pixel = false
 
 export var UI;
 
+// Gets set on resize
 var tleWid;
 var tleHei;
 export function setTleSzes(wid, hei) {
     tleWid = wid*2
     tleHei = hei*2
 }
+// Generate an individual tile image from the sheet and some properties
 async function makeTile(sheet, tle, flipH = false, flipV = false, rotate = 0) {
+    // Some more calculations
     const r = (rotate+4) % 4
 
     const w = pixel? sheet.w :
@@ -25,6 +28,7 @@ async function makeTile(sheet, tle, flipH = false, flipV = false, rotate = 0) {
     const ctx = c.getContext("2d")
     ctx.imageSmoothingEnabled = false
 
+    // Apply transformations and draw image!
     ctx.translate(outW / 2, outH / 2)
     ctx.rotate(r * Math.PI / 2)
     ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1)
@@ -52,13 +56,17 @@ const corners = {
 }
 async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
     if ("#" in t) {
+        // These tiles are the 'normalised tiles', shown when collected.
         loadTileType(sheet, realnam+"_#", t["#"], fH, fV, r)
     }
     if (Array.isArray(t)) {
+        // A direct tile
         tiles.set(realnam, await makeTile(sheet, t, fH, fV, r))
     } else if (t.type == "use") {
+        // Use the same tile image as another (doesn't copy the image)
         tiles.set(realnam, {use: t.name})
     } else if (t.type == "rand") {
+        // Every tile's image is picked randomly from a list
         const lns = t.options.map(opt=>opt[2]??1)
         let i = 0
         for (const opt of t.options) {
@@ -66,7 +74,9 @@ async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
         }
         tiles.set(realnam, [t.options.map((_, idx)=>`${realnam}_rnd${idx}`), lns, lns.reduce((i,tot)=>i+tot)])
     } else if (t.type == "edge") {
-        await loadTileType(sheet, realnam, t["4"], fH, fV, r)
+        // These are tiles that are 'half one thing and half another'
+        await loadTileType(sheet, realnam, t["4"], fH, fV, r) // Render the full tile
+        // Render the corners
         var tle = t["1"].slice(1)
         var tnam = t["1"][0]
         var flipH = false; var flipV = false;
@@ -79,6 +89,7 @@ async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
             await pushTile()
             tnam = straightturns[tnam]
         }
+        // Render the edges
         txtranam = ""
         tle = t["2"].slice(1)
         tnam = t["2"][0]
@@ -91,6 +102,7 @@ async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
             if (nxt.x) flipH = !flipH
             if (nxt.y) flipV = !flipV
         }
+        // Render the 'inverse corners' (all corners but one are covered)
         flipH = false; flipV = false;
         tle = t["3"].slice(1)
         tnam = t["3"][0]
@@ -99,6 +111,8 @@ async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
             tnam = straightturns[tnam]
         }
     } else if (t.type == "line") {
+        // These are tiles that have a line going through the middle
+        // Render the end tiles (don't connect anywhere else)
         var tle = t["1"].slice(1)
         var tnam = t["1"][0]
         var flipH = false; var flipV = false;
@@ -112,6 +126,7 @@ async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
             if (nxt.x) flipH = !flipH
             if (nxt.y) flipV = !flipV
         }
+        // Render the straight line sections
         flipH = false; flipV = false;
         tle = t.straight.slice(1)
         tnam = t.straight[0]
@@ -119,6 +134,7 @@ async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
         tnam = straightflips[tnam]
         flipV = true
         await pushTile()
+        // Render the 2 corners
         for (const cornr of [t.corner1, t.corner2]) {
             flipV = false; flipH = false;
             tle = cornr.slice(1)
@@ -130,6 +146,7 @@ async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
             if (nxt.y) flipV = !flipV
             await pushTile()
         }
+        // Render the T intersections
         flipH = false; flipV = false;
         var thole = t["3"][0]
         tle = t["3"].slice(1)
@@ -148,6 +165,7 @@ async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
             if (nxt.x) flipH = !flipH
             if (nxt.y) flipV = !flipV
         }
+        // Render the 4-way intersection
         flipH = false; flipV = false;
         tle = t["4"]
         tnam = dirs.reduce((prev,nxt)=>{return prev+nxt})
@@ -158,6 +176,7 @@ async function loadTileType(sheet, realnam, t, fH=false, fV=false, r=0) {
     }
 }
 
+// Recurse through tile definitions
 async function loadTiles(sheet, tls, prefix="") {
     for (const tnam in tls) {
         const realnam = tnam == "."? prefix.slice(0,prefix.length-1):prefix+tnam
@@ -171,17 +190,18 @@ async function loadTiles(sheet, tls, prefix="") {
         }
     }
 }
-
 export async function reloadAllTiles() {
     for (const [nam, data] of files) {
         await loadTiles(data[0], data[1])
     }
 }
+
 var rules = {}; var borders; export var decor;
 export var nodecor = []
 export async function load(nxt) {
     const js1 = await (await fetch("./assets/tiles.json")).json()
     nxt()
+    // Load each asset image for each tile dimension and load the associated tiles
     for (const nam in js1) {
         const img = new Image()
         img.src = `assets/${nam.replace(".", "_")}.svg`
@@ -192,6 +212,7 @@ export async function load(nxt) {
         await loadTiles(dat, js1[nam])
         nxt()
     }
+    // Load the 'tile rules'
     const dat = await (await fetch("./assets/rules.json")).json()
     for (const r in dat.rules) {
         if (r[0] == "!") {
@@ -205,12 +226,14 @@ export async function load(nxt) {
     borders = dat.borders
     decor = dat.decor
     nxt()
+    // Preload the UI image
     UI = new Image()
     UI.src = "assets/ui.svg"
     await UI.decode()
     nxt()
 }
 
+/// Fetch a tile image from the name
 export function getTile(tname, rand, logOnFail=true) {
     if (tname === null) return null;
     const tle = tiles.get(tname)
@@ -218,9 +241,11 @@ export function getTile(tname, rand, logOnFail=true) {
         if (logOnFail) console.log("Unknown tile:", tname)
         return null
     } else if ('use' in tle) {
+        // If it's a reference to another tile
         return getTile(tle.use, rand, logOnFail)
     } else {
         if (Array.isArray(tle)) {
+            // Multiple options - random! Pick one
             if (rand == -1) return getTile(tle[0][(tle[0].length-2)%tle[0].length], -1, logOnFail)
             var num = rand%tle[2]
             const mx = tle[0].length
@@ -231,9 +256,12 @@ export function getTile(tname, rand, logOnFail=true) {
             // Fallback
             return getTile(tle[0][rand%mx], rand*mx)
         }
+        // Just the one possible tile
         return tle
     }
 }
+
+/// Gets the free directions around the current position using the tilefn
 function getAround(n, edge, tilefn) {
     const out = []
     for (let x = -n; x <= n; x++) {
@@ -253,6 +281,7 @@ function getAround(n, edge, tilefn) {
     }
     return out.sort().join("")
 }
+/// Handles string group names
 function handleStrBaseT(gname, edge, tilefn) {
     if (gname.endsWith("_")) {
         const out = getAround(1, edge, tilefn)
@@ -262,8 +291,8 @@ function handleStrBaseT(gname, edge, tilefn) {
     return gname
 }
 export function getBaseTile(gname, tles, tilefn) {
-    if (gname.startsWith("$")) return gname.slice(1);
-    if (decor.includes(gname)) return gname;
+    if (gname.startsWith("$")) return gname.slice(1); // Direct reference
+    if (decor.includes(gname)) return gname; // Decor always exists
     const grp = rules[gname]
     if (!grp) {
         console.log("Unknown tile group:", gname)
@@ -276,12 +305,14 @@ export function getBaseTile(gname, tles, tilefn) {
         const v = it[k]
         switch (k) {
             case "decor":
+                // Ensure there is no decor on the current tile
                 if (!tles.every(it=>{ return it === gname || decor.includes(it) })) {
                     return v
                 }
                 break;
             case k.startsWith("edge") && k:
             case k.startsWith("connect") && k:
+                // Have a 'rim' around the edge of the tile
                 const edge = k.startsWith("edge")
                 var n = 1
                 if (k.endsWith("2")) { n = 2; }
@@ -306,9 +337,11 @@ export function getBaseTile(gname, tles, tilefn) {
 const alldirs = ["NW", "N", "EN", "E", "ES", "S", "SW", "W"]
 export function addBorders(gname, fulltilefn) {
     var outs = []
+    // Add borders to the current tile based on tiles around it
     for (const k in borders) {
         var dirs = []
         if (gname === k) continue;
+        // Find a list of all directions with the border in it
         for (const [dx, dy, d] of [
             [-1, 1,  0], // NW
             [0, 1,   1], // N
@@ -324,6 +357,7 @@ export function addBorders(gname, fulltilefn) {
             }
         }
         if (dirs.length > 0) {
+            // Connects segments together to get the out tiles; e.g. 1,2,3,5 becomes 1-3,5
             const tle = borders[k]
             dirs.push(99)
             var last = dirs.shift()
@@ -337,13 +371,13 @@ export function addBorders(gname, fulltilefn) {
                         continue // Come back to this at the end
                     }
                     if (best == 7 && first !== null) best = 8+first;
-                    if (last == best) {
+                    if (last == best) { // Single section
                         if (last%2 == 0) {
                             outs.push("$"+tle+alldirs[last]+"smol")
                         } else {
                             outs.push("$"+tle+alldirs[last])
                         }
-                    } else {
+                    } else { // Long section
                         const start = last+(1-last%2)
                         const end = best-(1-best%2)
                         if (start == end%8) {
@@ -367,11 +401,13 @@ export function addBorders(gname, fulltilefn) {
     return outs
 }
 
+/// Get rid of extra things from the tile
 export function normalise(tname) {
     if (!tname) return ""
     return tname.match(/(.+?)(?:_[NESW]+|_rnd[0-9]+|_plain)?$/)[1]
 }
 
+/// Find the normalised image of a tile
 export function normalisedImg(tname) {
     let source = getTile(tname+"_#", -1, false)
     if (source) return source;
